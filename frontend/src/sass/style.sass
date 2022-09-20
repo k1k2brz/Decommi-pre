@@ -1,0 +1,262 @@
+$purple-color: #AE6FFF
+$lightpurple-color: #FBF9FF
+$stroke-color: #D8D8D8
+$grey-color: #B4B4B4
+$darkgrey-color: #6C6C6C
+$red-color: #FF4040
+$blue-color: #346BF9
+$title-text: 32px
+$content-text: 15px
+$sm-text: 12px
+$title-weight: 700
+
+html
+  overflow-x: hidden
+  scroll-padding-top: 5.5rem
+  scroll-behavior: smooth
+
+body,html
+  margin: 0
+  padding: 0
+
+body,
+.fixed-top
+  padding-right: 0 !important
+
+h1
+  font-family: 'Noto Sans KR', sans-serif
+
+a,div,button,label,form,nav,p,h1,h2,h3,h4,h5,h6,span,ul,li,b,router-link
+  box-sizing: border-box
+  margin: 0
+  padding: 0
+  font-family: 'Noto Sans KR', sans-serif
+  font-weight: 300
+
+a
+  text-decoration: none
+  outline: none
+  color: black
+
+img
+  user-select: none
+  margin: 0
+  padding: 0
+
+hr
+    margin: 0
+    padding: 0
+    
+.bold
+  font-weight: 500
+
+.days
+  font-size: 14px
+
+.lastTime
+  font-size: 12px
+  color: $darkgrey-color
+
+.container
+  max-width: 1140px !important
+
+.container_default
+  width: 100%
+  height: 100vh
+  margin-left: auto
+  margin-right: auto
+
+.home-title
+  font-size: 36px
+  font-weight: 700
+
+.mini-title
+  font-size: 24px
+  font-weight: 700
+
+.btn-regular
+  padding: 7px 12px
+  background-color: $purple-color
+  border: none
+  border-radius: 10px
+  color: white
+  font-weight: 500
+  font-size: 14px
+  white-space: nowrap
+
+.btn-regular-round
+  padding: 7px 12px
+  background-color: $purple-color
+  border: none
+  border-radius: 30px
+  color: white
+  font-weight: 500
+  font-size: 14px
+  white-space: nowrap
+
+.btn-regular-full
+  padding: 7px 12px
+  width: 100%
+  background-color: $purple-color
+  border: none
+  border-radius: 30px
+  color: white
+  font-weight: 500
+  font-size: 16px
+  white-space: nowrap
+
+.btn-change
+  padding: 7px 12px
+  background-color: white
+  border: 0.5px solid $stroke-color
+  border-radius: 30px
+  font-weight: 500
+  font-size: 14px
+  &:hover
+    border: none
+    border: 0.5px solid $purple-color
+    background-color: $purple-color
+    color: white
+
+.btn-tag-sm
+  padding: 3px 10px
+  background-color: $purple-color
+  border: none
+  border-radius: 20px
+  color: white
+  font-weight: 300
+  font-size: 12px
+  white-space: nowrap
+
+.text-btn
+  padding: 0
+  color: $purple-color
+  background: none
+  border: none
+  font-weight: 500
+  font-size: 14px
+
+.btn-icon
+  border: none
+  outline: none
+  background: none
+
+.bi-three-dots
+  font-size: 20px
+  color: grey
+  &:hover
+    color: black
+
+.reportBtn
+  border: none
+  background: none
+  padding: 7px 12px
+
+.reportBtn-shadow
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px
+
+.reportBtn-text
+  font-size: 14px
+  color: $darkgrey-color
+  &:hover
+    color: black
+
+.new-folder
+    border: none
+    background: none
+    color: $purple-color
+    font-size: 15px
+    font-weight: 500
+    &:hover
+      color: #9b4eff
+
+.file-sort
+    border: none
+    background: none
+    color: $grey-color
+    font-size: 14px
+    &:hover
+      color: $darkgrey-color
+
+.filterTitle
+  font-size: 18px
+  font-weight: 500
+
+.containerBox
+  border: 1px solid grey
+  border-radius: 10px
+
+.backgrondBox
+  border: 0.5px solid $stroke-color
+  border-radius: 10px
+
+.tagBox
+  background-color: $lightpurple-color
+
+.purple-box
+  background-color: $lightpurple-color
+
+.red
+  color: #FF4040
+
+.top-margin
+  margin-top: 90px
+
+.text-stroke
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
+
+.form-control
+  border: none
+
+.mainbtn
+  background-color: $purple-color
+  border: none
+  border-radius: 15px
+  width: 150px
+  height: 50px
+  color: white
+  font-weight: 500
+
+.yearTextsub
+  color: $darkgrey-color
+
+.LoginLine
+  height: 1px
+  background-color: $stroke-color
+
+.stroke-default
+ height: 0.5px
+ background-color: $stroke-color
+
+.success
+  font-size: $title-text
+  font-weight: 700
+
+.purple-color
+  color: $purple-color
+
+.success-sm
+  font-size: 18px
+  color: $darkgrey-color
+
+.modal
+  padding-right: 0px !important
+
+.font14
+  font-size: 14px
+  color: red
+
+.box-shadow
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px
+  border-radius: 15px
+
+.bi
+  text-decoration: none
+  outline: none
+  background: none
+  border: none
+
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap')
+@import url('https://webfontworld.github.io/SCoreDream/SCoreDream.css')
+@import "../../node_modules/bootstrap/scss/bootstrap"
