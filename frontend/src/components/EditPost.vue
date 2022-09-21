@@ -34,8 +34,8 @@ export default {
     const store = useStore();
     const router = useRouter();
     const content = reactive({
-      title: store.state.posts.mainPosts.myWriteTitle,
-      content: store.state.posts.mainPosts.myWriteContent,
+      edittitle: store.state.posts.mainPosts.myWriteTitle,
+      editcontent: store.state.posts.mainPosts.myWriteContent,
     });
 
     const mainPosts = computed(() => {
@@ -55,8 +55,8 @@ export default {
       console.log(store.state.posts.id);
       store.dispatch("posts/changeMainPost", {
         id: store.state.posts.id,
-        myWriteTitle: content.title,
-        myWriteContent: content.content,
+        title: content.edittitle,
+        content: content.editcontent,
       });
       router.push({
         name: "Main",

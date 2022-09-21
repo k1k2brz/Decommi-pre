@@ -181,12 +181,12 @@ export default {
 
     const writeCompletedBtn = async () => {
       store.dispatch("posts/add", {
-        myWriteTitle: myWriteTitle.value,
-        myWriteContent: myWriteContent.value,
+        title: myWriteTitle.value,
+        content: myWriteContent.value,
         Comments: [],
         Images: [],
-        privacyCheck: diaryPrivacyCheck.value,
-        commentPermit: commentPrivacyCheck.value,
+        openYN: diaryPrivacyCheck.value,
+        replyYN: commentPrivacyCheck.value,
         id: Date.now(),
         createdAt: Date.now(),
       });

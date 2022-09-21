@@ -60,20 +60,22 @@ public class ApiMemberController {
     return new ResponseEntity<>(email, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/getlist", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<MemberDTO>> getList(
-      @RequestHeader("token") String token) {
-    List<MemberDTO> result = service.getList();
-    log.info(result);
-    return new ResponseEntity<>(result, HttpStatus.OK);
-  }
+  // @RequestMapping(value = "/getlist", method = RequestMethod.POST, consumes =
+  // MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  // public ResponseEntity<List<MemberDTO>> getList(
+  // @RequestHeader("token") String token) {
+  // List<MemberDTO> result = service.getList();
+  // log.info(result);
+  // return new ResponseEntity<>(result, HttpStatus.OK);
+  // }
 
-  @RequestMapping(value = "/get-page-list", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<PageResultDTO<MemberDTO, Member>> getPagingList(
-      @RequestBody PageRequestDTO dto,
-      @RequestHeader("token") String token) {
-    log.info("PageRequestDTO page: " + dto.getPage());
-    return new ResponseEntity<>(service.getPageList(dto), HttpStatus.OK);
-  }
+  // @RequestMapping(value = "/get-page-list", method = RequestMethod.POST,
+  // consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  // public ResponseEntity<PageResultDTO<MemberDTO, Member>> getPagingList(
+  // @RequestBody PageRequestDTO dto,
+  // @RequestHeader("token") String token) {
+  // log.info("PageRequestDTO page: " + dto.getPage());
+  // return new ResponseEntity<>(service.getPageList(dto), HttpStatus.OK);
+  // }
 
 }

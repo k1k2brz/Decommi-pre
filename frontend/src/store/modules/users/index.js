@@ -47,6 +47,7 @@ export default {
         q3: payload.q3,
       };
       console.log(body);
+      sessionStorage.setItem("token", JSON.stringify(payload.id));
       axios
         .post(url, body, { headers })
         .then((res) => {
@@ -69,7 +70,7 @@ export default {
       commit("setMe", payload);
     },
     logIn({ commit }, payload) {
-      const url = "/decommi/member/login";
+      const url = "./decommi/member/login";
       const headers = {
         "Content-Type": "application/json",
       };
@@ -78,6 +79,7 @@ export default {
         pw: payload.pw,
       };
       console.log(body);
+      sessionStorage.setItem("token", JSON.stringify(payload.id));
       axios
         .post(url, body, { headers })
         .then((res) => {
@@ -89,6 +91,7 @@ export default {
         });
     },
     logOut({ commit }) {
+      sessionStorage.removeItem('token')
       commit("setMe", null);
     },
     changeEmail({ commit }, payload) {

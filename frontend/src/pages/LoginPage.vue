@@ -97,6 +97,7 @@ export default {
     let info = reactive({
       id: "",
       pass: "",
+      token: 0,
     });
     // const loginEmail = reactive({});
     // const loginPass = reactive({});

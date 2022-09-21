@@ -55,9 +55,6 @@ export default {
       // 게시글 몇 번 인지
       const index = state.mainPosts.findIndex((v) => v.id === payload.id);
       console.log(index);
-      const index2 = state.mainPosts[index].Comments.includes((v) => v.id === payload.id);
-      console.log(state.mainPosts[index].Comments);
-      console.log(index2);
       // const index2 = state.mainPosts[index].Comments.findIndex(
       //   (v) => v.postId === payload.postId
       // );

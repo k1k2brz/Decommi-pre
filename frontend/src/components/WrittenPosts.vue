@@ -2,35 +2,19 @@
   <div class="card mb-4">
     <div class="card-body p-4">
       <div class="d-flex justify-content-between">
-        <h5 class="card-title">{{ post.myWriteTitle }}</h5>
+        <h5 class="card-title">{{ post.title }}</h5>
         <div class="d-flex flex-column">
-          <button
-            @click="reportContent"
-            class="btn-icon bi bi-three-dots d-flex justify-content-end"
-          ></button>
+          <button @click="reportContent" class="btn-icon bi bi-three-dots d-flex justify-content-end"></button>
           <div>
-            <div
-              v-if="reportToggle"
-              class="reportBtn-shadow report-location position-absolute"
-            >
+            <div v-if="reportToggle" class="reportBtn-shadow report-location position-absolute">
               <div>
                 <!-- 본인의 포스팅일시 (email을 받아서) v-if로 보이는거 다르게 -->
-                <button
-                  @click="onEditBtn"
-                  type="button"
-                  class="reportBtn"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                >
+                <button @click="onEditBtn" type="button" class="reportBtn" data-bs-toggle="modal"
+                  data-bs-target="#exampleModal">
                   수정하기
                 </button>
-                <button
-                  @click="onRemoveBtn"
-                  type="button"
-                  class="reportBtn"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                >
+                <button @click="onRemoveBtn" type="button" class="reportBtn" data-bs-toggle="modal"
+                  data-bs-target="#exampleModal">
                   삭제하기
                 </button>
               </div>
@@ -46,19 +30,17 @@
         <span class="ml-1 lastTime margin5">22시간 전</span>
       </div>
       <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
-      <p class="card-text mb-4">{{ post.myWriteContent }}</p>
+      <p class="card-text mb-4">{{ post.content }}</p>
       <div class="mb-2 d-flex justify-content-between flex-column">
         <div class="mb-3 d-flex gap-1">
           <button type="button" class="btn-tag-sm d-flex">LifeStyle</button>
           <button type="button" class="btn-tag-sm d-flex">일상</button>
           <button type="button" class="btn-tag-sm d-flex">디지털 사진</button>
         </div>
+        <!-- icon -->
         <div class="d-flex gap-3">
           <button @click="bookmarkBtn" class="btn-icon">
-            <div
-              v-if="bookmarkSave"
-              class="bi bi-bookmark-fill icon-purple"
-            ></div>
+            <div v-if="bookmarkSave" class="bi bi-bookmark-fill icon-purple"></div>
             <div v-else class="bi bi-bookmark"></div>
           </button>
           <button @click="bookmarkFav" class="btn-icon">
@@ -74,14 +56,8 @@
           </button>
         </div>
         <div>
-          <div
-            v-if="bookmarkSave"
-            class="d-flex container bmSave position-relative"
-          >
-            <div
-              class="d-flex flex-column box-shadow position-absolute zindex p-3 gap-2"
-              style="min-width: 250px"
-            >
+          <div v-if="bookmarkSave" class="d-flex container bmSave position-relative">
+            <div class="d-flex flex-column box-shadow position-absolute zindex p-3 gap-2" style="min-width: 250px">
               <div class="d-flex justify-content-between">
                 <div style="margin: auto; width: 100%">
                   <span class="bold">내 북마크에 저장</span>
@@ -98,13 +74,8 @@
             </div>
           </div>
         </div>
-        <div
-          v-if="bookmarkSaveCheck"
-          class="container bm-container d-flex position-absolute"
-        >
-          <div
-            class="position-relative bookmarks flex-wrap bg-white d-flex box-shadow p-3"
-          >
+        <div v-if="bookmarkSaveCheck" class="container bm-container d-flex position-absolute">
+          <div class="position-relative bookmarks flex-wrap bg-white d-flex box-shadow p-3">
             <span class="ml-3 d-flex">북마크가 저장되었습니다.</span>
             <button @click="bookmarkChecking" class="text-btn pr-3">
               저장된 북마크 확인하기
@@ -123,31 +94,22 @@
               </div>
               <div v-else>
                 <span>User</span>
-                <input
-                  type="text"
-                  v-model="comment.value"
-                  @keyup.enter="changeCommentFinal"
-                />
+                <input type="text" v-model="comment.value" @keyup.enter="changeCommentFinal" />
                 <button @click="changeCommentFinal" class="btn-regular">
                   수정완료
                 </button>
               </div>
               <div class="d-flex justify-content-end">
                 <span>2022.08.28</span>
-                <button
-                  v-if="cmtChangeBtn"
-                  @click="changeComment"
-                  class="text-btn"
-                >
+                <button v-if="cmtChangeBtn" @click="changeComment($event)" class="text-btn">
                   수정
                 </button>
-                <button v-else @click="changeComment" class="text-btn">
+                <button v-else @click="changeComment($event)" class="text-btn">
                   수정취소
                 </button>
-                <button
-                  @click="onRemoveComment"
-                  class="ml-2 bi bi-x-lg"
-                ></button>
+                <!-- 백엔드에서 들어오는 comment번호를 ()안에 넣는다. -->
+                <!-- comment Id가 필요 -->
+                <button @click="onRemoveComment" class="ml-2 bi bi-x-lg"></button>
               </div>
             </div>
           </div>
@@ -164,6 +126,7 @@ import { useStore } from "vuex";
 import ReportModal from "@/pages/mainpage/ReportModal.vue";
 import CommentWrite from "./CommentWrite.vue";
 import { computed } from "@vue/runtime-core";
+import { onBeforeMount } from "vue";
 
 export default {
   props: {
@@ -199,8 +162,8 @@ export default {
     const onEditBtn = () => {
       store.dispatch("posts/changeMainPost", {
         id: props.post.id,
-        myWriteTitle: props.post.myWriteTitle,
-        myWriteContent: props.post.myWriteContent,
+        title: props.post.myWriteTitle,
+        content: props.post.myWriteContent,
       });
       // 버튼 눌렀을 때 이 mainPosts 전체를 넘겨줘야하나?
       router.push({ name: "CkEditor" });
@@ -224,8 +187,24 @@ export default {
       }
     };
 
+    onBeforeMount(() => {
+      // 댓글 비공개 조사하기
+      // console.log(bmCmt.value)
+      // console.log(store.state.posts.mainPosts[0])
+      if (store.state.posts.mainPosts[0].replyYN == false) {
+        store.state.posts.mainPosts == false
+      }
+    })
+
+    // 좋아요
+    // false가 체크임
     const bookmarkFav = () => {
-      bmFav.value == true ? (bmFav.value = false) : (bmFav.value = true);
+      if (bmFav.value == true) {
+        bmFav.value = false;
+      } else if (bmFav.value == false) {
+        bmFav.value = true;
+        // 좋아요 누르면 데이터 보낼 것
+      }
     };
 
     const bookmarkCmt = () => {
@@ -256,7 +235,8 @@ export default {
       });
     };
 
-    const changeComment = () => {
+    const changeComment = (e) => {
+      console.log(e)
       if (onComment.value == true) {
         onComment.value = false;
         cmtChangeBtn.value = false;

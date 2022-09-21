@@ -167,8 +167,6 @@ export default {
       router.push({
         name: "Main",
       });
-
-    
       try {
         await store.dispatch("users/signUp", {
           // Entity와 맞출 것
@@ -179,6 +177,8 @@ export default {
           q2: info.q2,
           q3: info.q3,
         });
+        // answerError.value = false;
+        // store.state.me = true;
         idError.value = false;
         passError.value = false;
         repassError.value = false;
@@ -187,8 +187,6 @@ export default {
         q1Error.value = false;
         q2Error.value = false;
         q3Error.value = false;
-        // answerError.value = false;
-        // store.state.me = true;
       } catch (err) {
         console.log(err);
       }

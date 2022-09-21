@@ -61,7 +61,7 @@ export default {
     const tagSelectRouter = () => {
       store.dispatch("users/favTags", {
         id: store.state.users.me.id,
-        pass: store.state.users.me.pass,
+        pw: store.state.users.me.pw,
         email: store.state.users.me.email,
         favTags: tagSelection,
       });

@@ -170,9 +170,14 @@ export default defineComponent({
     });
 
     function loginCheck() {
-      if (localStorage.getItem("token") == null) {
+      // if (localStorage.getItem("token") == null) {
+      //   store.state.users.me = false;
+      // } else if (localStorage.getItem("token") != null) {
+      //   store.state.users.me = true;
+      // }
+      if (sessionStorage.getItem("token") == null) {
         store.state.users.me = false;
-      } else if (localStorage.getItem("token") != null) {
+      } else if (sessionStorage.getItem("token") != null) {
         store.state.users.me = true;
       }
     }

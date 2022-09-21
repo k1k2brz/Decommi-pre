@@ -6,6 +6,8 @@
 태그 수정 페이지 생성
 emailChange 에러먹음
 sns 댓글 Remove 게시글 index만 받아지는 현상
+특정 게시글의 댓글 비공개 하는 법 찾기
+sessionStorage 만료시간 만들기
 
 https://www.youtube.com/watch?v=YOZuSnzPq9g
 
