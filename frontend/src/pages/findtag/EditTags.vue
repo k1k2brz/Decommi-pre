@@ -8,10 +8,14 @@
   <div>삭제는 그냥 마이페이지에서 가능하게 하자</div>
   <div>제일 메인페이지 꾸밀 것</div>
   <div>Disabled해야 될 버튼들 보기</div>
+  <div
+    class="container container_default d-flex justify-content-center align-items-center p-0 m-0"
+  >
+    <MiniPost v-for="content in 4" :key="content" />
+  </div>
 </template>
 
 <script>
-export default {};
+import MiniPost from "@/components/MiniPost.vue";
+export default { components: { MiniPost } };
 </script>
-
-<style lang="sass" scoped></style>
