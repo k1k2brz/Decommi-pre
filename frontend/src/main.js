@@ -1,7 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import VueCookies from "vue-cookies";
-import globalMethods from "./globalMethods";
 import router from "./router";
 import store from "./store";
 import CKEditor from "@ckeditor/ckeditor5-vue";
@@ -17,10 +16,20 @@ import "bootstrap";
 //Bootstrap Icon https://icons.getbootstrap.com/
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+import { globalCookiesConfig } from "vue3-cookies";
+
+globalCookiesConfig({
+  expireTimes: "30d",
+  path: "/",
+  domain: "",
+  secure: true,
+  sameSite: "None",
+});
+
 // store를 추가함으로써 vuex state에 접근이 가능해진다.
 createApp(App)
   .use(VueCookies, { expireTimes: "30d", secure: true })
-  .use(globalMethods)
+  // .use(globalMethods)
   .use(store)
   .use(router)
   .use(CKEditor)

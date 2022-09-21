@@ -84,12 +84,14 @@ import { reactive } from "@vue/reactivity";
 import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
+import { useCookies } from "vue3-cookies";
 
 export default {
   setup() {
     const store = useStore();
     const router = useRouter();
     const route = useRoute();
+    const { cookies } = useCookies();
     const emailError = ref(false);
     const passError = ref(false);
     let info = reactive({
@@ -100,6 +102,8 @@ export default {
     // const loginPass = reactive({});
 
     const onSubmitForm = async () => {
+      // cookies
+      let myCookieValue = cookies.get("myCoookie");
       //trim으로 잘라서 하나도 없으면
       if (info.id.trim().length == 0) {
         emailError.value = true;
@@ -109,6 +113,8 @@ export default {
         passError.value = true;
         return;
       }
+      console.log(myCookieValue);
+      cookies.set("myCoookie", `${info.id}`);
       // localStorage.setItem("token", "logged");
       try {
         await store.dispatch("users/logIn", {
@@ -126,7 +132,16 @@ export default {
       }
     };
 
-    return { emailError, passError, info, onSubmitForm, router, route, store };
+    return {
+      emailError,
+      passError,
+      info,
+      onSubmitForm,
+      router,
+      route,
+      store,
+      cookies,
+    };
   },
   middleware: "anonymous",
 };

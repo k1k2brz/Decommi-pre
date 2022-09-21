@@ -80,6 +80,7 @@ const router = createRouter({
       path: "/mainpage",
       name: "Main",
       component: Mainpage,
+      // beforeEnter: requireAuth(),
     },
     {
       path: "/alarm",
@@ -96,7 +97,7 @@ const router = createRouter({
       name: "UserEditPass",
       component: Usereditpass,
     },
-{
+    {
       path: "/mypage",
       name: "MyPage",
       component: Mypage,
@@ -191,7 +192,7 @@ const router = createRouter({
       name: "MyDiary",
       component: Mydiary,
     },
-{
+    {
       path: "/postwrite",
       name: "CkEditor",
       component: CkEditor,
@@ -211,5 +212,12 @@ const router = createRouter({
 
 // 1 /home 2 /todos 3 /todos/create 4 /todos/:id
 
+// https://m.blog.naver.com/1ilsang/221338086140
+
+// function requireAuth(to, from, next) {
+//   const { $cookies } = router.app.config.globalProperties;
+//   console.log("_ga", $cookies.get("_ga"));
+//   next();
+// }
 
 export default router;
