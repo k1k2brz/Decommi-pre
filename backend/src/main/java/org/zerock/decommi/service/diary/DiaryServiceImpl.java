@@ -57,21 +57,20 @@ public class DiaryServiceImpl implements DiaryService {
         return result.getDino().toString();
     }
 
-    // @Override
-    // public DiaryDTO checkBeforeDiaryModify(Long dino, String id) {
-    // Optional<Diary> isit = repository.getDiaryByDinoAndId(dino, id);
-    // if (!isit.isPresent()) {
-    // return null;
-    // } else {
-    // DiaryDTO dto = entityToDTO(isit.get());
-    // List<String>tagString = tagRepository.getTagListByDino(dto.getDino())
-    // .stream().map(tagEntity -> tagEntity.getTagName())
-    // .collect(Collectors.toList());
-    // dto.setTags(tagString);
-    // return dto;
-    // }
-    // }
+    @Override
+    public DiaryDTO checkBeforeDiaryModify(Long dino, String id) {
+        Optional<Diary> isit = repository.getDiaryByDinoAndId(dino, id);
+        if (!isit.isPresent()) {
+            return null;
+        } else {
+            DiaryDTO dto = entityToDTO(isit.get());
+            List<Tag> tagList = tagRepository.getList(dto.getDino());
+            dto.setTags(tagList);
+            return dto;
+        }
+    }
 
+    @Transactional
     @Override
     public String modifyDiary(DiaryDTO dto, List<TagDTO> tagList) {
         Diary originalDiary = repository.findByDino(dto.getDino());
@@ -109,7 +108,7 @@ public class DiaryServiceImpl implements DiaryService {
         }
     }
 
-    // // 댓글 등록 //이해가 잘 가지 않음
+    // 댓글 등록 //이해가 잘 가지 않음
     // @Override
     // public Long registerReply(ReplyDTO dto) {
     // Optional<Member> result = memberRepository.findById(dto.getId());
@@ -135,7 +134,7 @@ public class DiaryServiceImpl implements DiaryService {
     // }
     // }
 
-    // // 댓글 수정
+    // 댓글 수정
     // @Override
     // public String modifyReply(ReplyDTO dto, String id) {
     // // TODO Auto-generated method stub
@@ -206,6 +205,6 @@ public class DiaryServiceImpl implements DiaryService {
     // }catch (Exception e){
     // e.printStackTrace();
     // }
-    // return repository.getListAndAuthorByAuthorOrDtitle(decode);
+    // return repository.getListByTitleOrContent(decode);
     // }
 }

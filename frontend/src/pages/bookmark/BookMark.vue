@@ -158,7 +158,6 @@ export default {
     const btnCancel = () => {
       if (showModal.value == true) {
         showModal.value = false;
-        console.log(showModal.value);
       }
     };
 
@@ -167,7 +166,6 @@ export default {
     };
 
     const onRemoveBookmark = (bmTag, index) => {
-      console.log(bmTag);
       bmTags.splice(index, 1);
     };
 

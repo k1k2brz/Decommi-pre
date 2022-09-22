@@ -104,7 +104,7 @@ export default {
 
     const onSubmitForm = async () => {
       // cookies
-      let myCookieValue = cookies.get("myCoookie");
+      // let myCookieValue = cookies.get("myCoookie");
       //trim으로 잘라서 하나도 없으면
       if (info.id.trim().length == 0) {
         emailError.value = true;
@@ -114,12 +114,10 @@ export default {
         passError.value = true;
         return;
       }
-      console.log(myCookieValue);
-      cookies.set("myCoookie", `${info.id}`);
-      // localStorage.setItem("token", "logged");
       try {
         await store.dispatch("users/logIn", {
-          id: info.id,
+          token: info.token,
+          email: info.id,
           pw: info.pass,
         });
         emailError.value = false;

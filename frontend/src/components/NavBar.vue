@@ -82,7 +82,7 @@
               <div class="pl-2 pr-2 pt-3 pb-3 d-flex flex-column gap-3">
                 <button @click="myPage" class="p-3 grey-bg d-flex flex-column">
                   <span>현재 로그인된 계정</span>
-                  <span class="mailId">{{ me.id }}</span>
+                  <span class="mailId">{{ me.email }}</span>
                 </button>
                 <div class="d-flex flex-column ml-2">
                   <a
@@ -128,6 +128,7 @@
 </template>
 
 <script>
+  // 검색기능 에어리뷰 참고하기
 import {
   computed,
   defineComponent,

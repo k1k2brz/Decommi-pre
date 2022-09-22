@@ -1,7 +1,7 @@
 <template>
   <div class="p-0 m-0">
-    <div class="d-flex gap-4 w-100">
-      <div class="backgrondBox p-4 w-50">
+    <div>
+      <div class="backgrondBox p-4">
         <div class="d-flex justify-content-between flex-column gap-4">
           <div class="d-flex flex-column gap-1">
             <h5 class="card-title">고도를 기다리며를 보고</h5>
@@ -21,7 +21,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    minipost: {
+      type: Object,
+      required: true,
+    },
+  },
+};
 </script>
 
 <style lang="sass" scoped>
@@ -37,4 +44,27 @@ export default {};
   text-decoration: none
   border: none
   background: none
+
+.card-title
+   max-width: 480px
+   text-overflow: ellipsis
+   overflow: hidden
+   word-break: break-word
+
+   display: -webkit-box
+   -webkit-line-clamp: 1 // 원하는 라인수
+   -webkit-box-orient: vertical
+
+.card-text
+   max-width: 500px
+   text-overflow: ellipsis
+   overflow: hidden
+   word-break: break-word
+    
+   display: -webkit-box
+   -webkit-line-clamp: 3 // 원하는 라인수
+   -webkit-box-orient: vertical
+
+.backgrondBox
+  max-width: 550
 </style>

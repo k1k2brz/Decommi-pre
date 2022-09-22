@@ -36,7 +36,7 @@
 import HashFilter from "@/components/HashFilter.vue";
 import RecommendTag from "@/components/RecommendTag.vue";
 import WrittenPosts from "@/components/WrittenPosts.vue";
-import PostWrite from "../../components/PostWrite.vue";
+import PostWrite from "@/components/PostWrite.vue";
 import { computed } from "@vue/runtime-core";
 import { useStore } from "vuex";
 // import axios from "@/axios";

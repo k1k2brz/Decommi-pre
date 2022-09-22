@@ -1,17 +1,18 @@
 import axios from "@/axios";
-// import { useCookies } from "vue3-cookies";
-
-// const { cookies } = useCookies();
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 
 export default {
   namespaced: true,
   state: {
     me: null,
     bookmark: [],
+    token: 0
   },
   mutations: {
     setMe(state, payload) {
       state.me = payload;
+      state.token = payload;
     },
     // saveStateToStorage(state) {
     //   cookies.set("testvue.login.memberId", state.memberId);
@@ -34,17 +35,20 @@ export default {
   },
   actions: {
     signUp({ commit }, payload) {
+      let myCookieValue = cookies.get("myCoookie");
       const url = "./decommi/member/signup";
       const headers = {
         "Content-Type": "application/json",
       };
       const body = {
-        id: payload.id,
+        email: payload.id,
         pw: payload.pw,
-        email: payload.email,
+        id: payload.email,
         q1: payload.q1,
         q2: payload.q2,
         q3: payload.q3,
+        likeTagList: payload.likeTagList,
+        dislikeTagList: payload.dislikeTagList,
       };
       console.log(body);
       sessionStorage.setItem("token", JSON.stringify(payload.id));
@@ -57,6 +61,8 @@ export default {
           // } else {
           //   alert('회원가입에 실패하였습니다.')
           // }
+          console.log(myCookieValue);
+          cookies.set("myCoookie", `${payload}`);
           commit("setMe", payload);
         })
         .catch((err) => {
@@ -75,15 +81,16 @@ export default {
         "Content-Type": "application/json",
       };
       const body = {
-        id: payload.id,
+        email: payload.email,
         pw: payload.pw,
       };
       console.log(body);
-      sessionStorage.setItem("token", JSON.stringify(payload.id));
       axios
         .post(url, body, { headers })
         .then((res) => {
           console.log(res.data);
+          sessionStorage.setItem("token", res.data.token);
+          sessionStorage.setItem("token", res.data.email);
           commit("setMe", payload);
         })
         .catch((err) => {

@@ -9,13 +9,22 @@
   <div>제일 메인페이지 꾸밀 것</div>
   <div>Disabled해야 될 버튼들 보기</div>
   <div
-    class="container container_default d-flex justify-content-center align-items-center p-0 m-0"
+    class="p-0 m-0"
   >
-    <MiniPost v-for="content in 4" :key="content" />
+  <div class="grid gap-3">
+    <!-- props로 보낸 데이터 받을 것 -->
+    <MiniPost v-for="content in 6" :key="content" />
+  </div>
   </div>
 </template>
 
 <script>
 import MiniPost from "@/components/MiniPost.vue";
-export default { components: { MiniPost } };
+export default {
+  
+  components: { MiniPost }
+  };
 </script>
+
+<style lang="sass" scoped>
+</style>

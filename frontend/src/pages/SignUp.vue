@@ -165,14 +165,14 @@ export default {
         return;
       }
       router.push({
-        name: "Main",
+        name: "SelectGoodTag",
       });
       try {
         await store.dispatch("users/signUp", {
           // Entity와 맞출 것
-          id: info.id,
+          email: info.id,
           pw: info.pass,
-          email: info.email,
+          id: info.email,
           q1: info.q1,
           q2: info.q2,
           q3: info.q3,

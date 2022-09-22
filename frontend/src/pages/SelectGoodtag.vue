@@ -63,7 +63,7 @@ export default {
         id: store.state.users.me.id,
         pw: store.state.users.me.pw,
         email: store.state.users.me.email,
-        favTags: tagSelection,
+        likeTagList: tagSelection,
       });
       router.push({
         name: "SelectDislikeTag",
