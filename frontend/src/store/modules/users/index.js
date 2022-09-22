@@ -1,17 +1,19 @@
 import axios from "@/axios";
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
+// import { useCookies } from "vue3-cookies";
+// const { cookies } = useCookies();
 
 export default {
   namespaced: true,
   state: {
     me: null,
     bookmark: [],
-    token: 0
+    token: 0,
   },
   mutations: {
     setMe(state, payload) {
       state.me = payload;
+    },
+    setToken(state, payload) {
       state.token = payload;
     },
     // saveStateToStorage(state) {
@@ -35,7 +37,7 @@ export default {
   },
   actions: {
     signUp({ commit }, payload) {
-      let myCookieValue = cookies.get("myCoookie");
+      // let myCookieValue = cookies.get("myCoookie");
       const url = "./decommi/member/signup";
       const headers = {
         "Content-Type": "application/json",
@@ -48,10 +50,10 @@ export default {
         q2: payload.q2,
         q3: payload.q3,
         likeTagList: payload.likeTagList,
-        dislikeTagList: payload.dislikeTagList,
+        // dislikeTagList: payload.dislikeTagList,
       };
       console.log(body);
-      sessionStorage.setItem("token", JSON.stringify(payload.id));
+      // sessionStorage.setItem("token", JSON.stringify(payload.id));
       axios
         .post(url, body, { headers })
         .then((res) => {
@@ -61,8 +63,8 @@ export default {
           // } else {
           //   alert('회원가입에 실패하였습니다.')
           // }
-          console.log(myCookieValue);
-          cookies.set("myCoookie", `${payload}`);
+          // console.log(myCookieValue);
+          // cookies.set("myCoookie", `${payload}`);
           commit("setMe", payload);
         })
         .catch((err) => {
@@ -89,16 +91,17 @@ export default {
         .post(url, body, { headers })
         .then((res) => {
           console.log(res.data);
-          sessionStorage.setItem("token", res.data.token);
-          sessionStorage.setItem("token", res.data.email);
+          // sessionStorage.setItem("token", res.data.token);
+          // sessionStorage.setItem("token", res.data.email);
           commit("setMe", payload);
+          commit("setToken", res.data.token);
         })
         .catch((err) => {
           console.error(err);
         });
     },
     logOut({ commit }) {
-      sessionStorage.removeItem('token')
+      sessionStorage.removeItem("token");
       commit("setMe", null);
     },
     changeEmail({ commit }, payload) {

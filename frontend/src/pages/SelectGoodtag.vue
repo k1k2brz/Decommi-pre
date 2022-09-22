@@ -66,7 +66,7 @@ export default {
         likeTagList: tagSelection,
       });
       router.push({
-        name: "SelectDislikeTag",
+        name: "Main",
       });
     };
 
