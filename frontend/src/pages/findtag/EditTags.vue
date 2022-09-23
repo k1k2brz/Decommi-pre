@@ -11,7 +11,7 @@
   <div
     class="p-0 m-0"
   >
-  <div class="grid gap-3">
+  <div class="MiniPostGrid gap-3">
     <!-- props로 보낸 데이터 받을 것 -->
     <MiniPost v-for="content in 6" :key="content" />
   </div>

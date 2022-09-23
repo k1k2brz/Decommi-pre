@@ -42,7 +42,7 @@
             </div>
           </div>
           <div class="d-flex align-items-center">
-            <button @click="emailBtn" class="btn-change">이메일 변경</button>
+            <button @click="emailBtn" class="btnChange">이메일 변경</button>
           </div>
         </div>
       </div>
@@ -65,10 +65,11 @@
             >
           </div>
           <div class="d-flex align-items-center mt-2">
-            <button @click="changeEditEmail" class="btn-change">
+            <button @click="changeEditEmail" :disabled="me.email == edit.email" :class="{ btnChange: me.email != edit.email,
+            btnChangeDisalbed: me.email == edit.email || edit.email.trim().length == 0 }">
               변경 확인
             </button>
-            <button @click="cancelBtn" class="btn-change">취소</button>
+            <button @click="cancelBtn" class="ml-1 btnChange">취소</button>
           </div>
         </div>
       </div>
@@ -115,7 +116,7 @@
             </ul>
           </div>
           <div class="d-flex align-items-center mb-3">
-            <button @click.prevent="passSubmit()" class="btn-change">
+            <button @click.prevent="passSubmit()" class="btnChange">
               비밀번호 변경
             </button>
           </div>
@@ -147,7 +148,7 @@
             <span class="text-sm ml-2 text-grey">(거부일:2022.01.01)</span>
           </div>
           <div class="d-flex align-items-center">
-            <button class="btn-change">수신 변경</button>
+            <button class="btnChange">수신 변경</button>
           </div>
         </div>
       </div>

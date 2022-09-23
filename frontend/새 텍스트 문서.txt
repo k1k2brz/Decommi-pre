@@ -1,14 +1,18 @@
 북마크 Enter누르면 넘어가게, 닫기 차례대로 해야함
 이미지 FormData가 안받아짐
 달력 클릭하면 날짜이동
-북마크 그냥 vuex로 옮길것
+북마크 그냥 vuex로 옮길것 (해야 할 것 같다)
 마이페이지 레이아웃 좀 맞추기
 태그 수정 페이지 생성
 emailChange 에러먹음
 sns 댓글 Remove 게시글 index만 받아지는 현상
 특정 게시글의 댓글 비공개 하는 법 찾기
-localStorage 만료시간 만들기, 토큰받기
-신고하기, 게시글공개 버튼 메뉴탭처럼 click close()이벤트 추가
+sessionStorage 만료시간 만들기
+게시글공개 버튼 메뉴탭처럼 click close()이벤트 추가
+신고Modal 레이아웃 (props로 보내야 할 듯)
+
+router 사용시 스크롤바 맨 위로 올리기
+https://intrepidgeeks.com/tutorial/when-using-vue-router-to-switch-pages-in-vue-the-scroll-bar-will-automatically-scroll-to-the-top-which-can-be-used-in-html-5-history-mode
 
 
 https://www.youtube.com/watch?v=YOZuSnzPq9g

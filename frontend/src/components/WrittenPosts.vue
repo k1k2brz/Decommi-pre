@@ -4,22 +4,19 @@
       <div class="d-flex justify-content-between">
         <h5 class="card-title">{{ post.title }}</h5>
         <div class="d-flex flex-column">
-          <button @click="reportContent" class="btn-icon bi bi-three-dots d-flex justify-content-end"></button>
+          <button @click.stop="dropdownToggle.reportToggle.value = !dropdownToggle.reportToggle.value" class="btn-icon bi bi-three-dots d-flex justify-content-end"></button>
           <div>
-            <div v-if="reportToggle" class="reportBtn-shadow report-location position-absolute">
-              <div>
+            <div v-if="dropdownToggle.reportToggle.value" @blur="close" class="reportBtn-shadow report-location position-absolute">
+              <div class="d-flex flex-column">
                 <!-- 본인의 포스팅일시 (email을 받아서) v-if로 보이는거 다르게 -->
-                <button @click="onEditBtn" type="button" class="reportBtn" data-bs-toggle="modal"
+                <button @click="onEditBtn" type="button" class="reportBtn reportBtnHover" data-bs-toggle="modal"
                   data-bs-target="#exampleModal">
                   수정하기
                 </button>
-                <button @click="onRemoveBtn" type="button" class="reportBtn" data-bs-toggle="modal"
+                <button @click="onRemoveBtn" type="button" class="reportBtn reportBtnHover" data-bs-toggle="modal"
                   data-bs-target="#exampleModal">
                   삭제하기
                 </button>
-              </div>
-              <div>
-                <ReportModal />
               </div>
             </div>
           </div>
@@ -47,8 +44,11 @@
             <div v-if="bmFav" class="bi bi-heart"></div>
             <div v-else class="bi bi-heart-fill icon-red"></div>
           </button>
-          <button class="btn-icon">
-            <div class="bi bi-share-fill"></div>
+          <button @click="onModal" class="btn-icon">
+            <i class="bi bi-megaphone">
+              <ReportModal />
+            </i>
+            <i class="bi bi-megaphone-fill"></i>
           </button>
           <button @click="bookmarkCmt" class="btn-icon">
             <div v-if="bmCmt" class="bi bi-chat-dots-fill icon-purple"></div>
@@ -85,7 +85,7 @@
         <div v-if="bmCmt">
           <hr />
           <CommentWrite :post-id="post.id" />
-          <div v-for="cmt in post.Comments" :key="cmt.id">
+          <div v-for="(cmt, idx) in post.Comments" :key="cmt.id + idx">
             <!-- 그리드로 변경 -->
             <div class="Maincomment mb-1 d-flex justify-content-between gap-2">
               <div v-if="onComment">
@@ -125,8 +125,7 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import ReportModal from "@/pages/mainpage/ReportModal.vue";
 import CommentWrite from "./CommentWrite.vue";
-import { computed } from "@vue/runtime-core";
-import { onBeforeMount } from "vue";
+import { onBeforeMount, onBeforeUnmount, computed, onMounted } from "vue";
 
 export default {
   props: {
@@ -139,7 +138,6 @@ export default {
     const router = useRouter();
     const store = useStore();
 
-    const reportToggle = ref(false);
     const bookmarkSave = ref(false);
     const bookmarkSaveCheck = ref(false);
     const bmFav = ref(true);
@@ -147,6 +145,22 @@ export default {
     const bmPlus = ref(false);
     const onComment = ref(true);
     const cmtChangeBtn = ref(true);
+
+    const dropdownToggle = {
+      reportToggle: ref(false),
+      close: () => {
+        dropdownToggle.reportToggle.value = false;
+      }
+    } 
+    
+    onBeforeUnmount(() => {
+      document.removeEventListener("click", dropdownToggle.close);
+    });
+
+    onMounted(() => {
+      document.addEventListener("click", dropdownToggle.close);
+    });
+    
     let comment = reactive({
       value: "",
     });
@@ -170,13 +184,7 @@ export default {
     };
 
     const reportContent = () => {
-      if (reportToggle.value == false) {
-        reportToggle.value = true;
-        store.state.reportToggle = true;
-      } else if (reportToggle.value == true) {
-        reportToggle.value = false;
-        store.state.reportToggle = false;
-      }
+      dropdownToggle.reportToggle.value = !dropdownToggle.reportToggle.value
     };
 
     const bookmarkBtn = () => {
@@ -259,7 +267,6 @@ export default {
     };
 
     return {
-      reportToggle,
       reportContent,
       bookmarkSave,
       bookmarkSaveCheck,
@@ -280,6 +287,8 @@ export default {
       onRemoveComment,
       comment,
       content,
+      close,
+      dropdownToggle
     };
   },
   components: { ReportModal, CommentWrite },

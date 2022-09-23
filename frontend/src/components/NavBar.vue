@@ -53,8 +53,6 @@
               >알림</router-link
             >
           </div>
-          <div class="dropdown" :class="{ isActive: dropdown.active.value }">
-            <div class="dropdown-trigger">
               <button
                 class="button nav-menu-circle d-flex justify-content-center align-items-center"
                 @click.stop="dropdown.active.value = !dropdown.active.value"
@@ -68,11 +66,6 @@
                   class="bi bi-caret-down-fill"
                 ></div>
               </button>
-            </div>
-            <div class="dropdown-menu" role="filter">
-              <div class="dropdown-content" @click.stop></div>
-            </div>
-          </div>
           <div
             v-if="dropdown.active.value"
             @blur="close"
@@ -153,10 +146,10 @@ export default defineComponent({
       },
     };
 
-    const navMenuBtn = () => {
-      dropdown.active.value = !dropdown.active.value;
-      dropdown.caret.value = !dropdown.caret.value;
-    };
+    // const navMenuBtn = () => {
+    //   dropdown.active.value = !dropdown.active.value;
+    //   dropdown.caret.value = !dropdown.caret.value;
+    // };
 
     function close() {
       store.state.nav.navToggle = false;
@@ -171,12 +164,7 @@ export default defineComponent({
     });
 
     function loginCheck() {
-      // if (localStorage.getItem("token") == null) {
-      //   store.state.users.me = false;
-      // } else if (localStorage.getItem("token") != null) {
-      //   store.state.users.me = true;
-      // }
-      if (sessionStorage.getItem("token") == null) {
+      if (sessionStorage.getItem("token") == 0) {
         store.state.users.me = false;
       } else if (sessionStorage.getItem("token") != null) {
         store.state.users.me = true;
@@ -229,7 +217,7 @@ export default defineComponent({
       onMounted,
       loginCheck,
       logoBtn,
-      navMenuBtn,
+      // navMenuBtn,
       onLogout,
       me,
       navToggle,

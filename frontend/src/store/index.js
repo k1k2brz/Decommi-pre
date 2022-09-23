@@ -7,8 +7,9 @@ import VuexPersistence from "vuex-persist";
 
 const vuexLocal = new VuexPersistence({
   storage: window.sessionStorage,
+  key: 'TOKEN',
   modules: ["users"],
-  reducer: (state) => ({ session: state.users.me, token: state.users.token }),
+  reducer: (state) => ({ users: state.users.me }),
 });
 
 export default createStore({

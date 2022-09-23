@@ -12,50 +12,52 @@
         >
           + 새 북마크 폴더
         </button>
-        <div v-if="showModal" class="modal fade" id="bookmarkModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">새 북마크 추가</h5>
-                <button
-                  @click="bmCancel"
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <form onsubmit="return false">
-                  <div class="mb-3">
-                    <label for="recipient-name" class="col-form-label"
-                      >폴더명</label
-                    >
-                    <input
-                      maxlength="20"
-                      v-model="bookmarkValue"
-                      type="text"
-                      class="form-control"
-                    />
-                  </div>
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button
-                  @click="bmCancel"
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  닫기
-                </button>
-                <button
-                  @click="addBookmark"
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-dismiss="modal"
-                >
-                  북마크 추가
-                </button>
+        <div class="d-flex align-items-center">
+          <div v-if="showModal" class="modal fade" id="bookmarkModal" >
+            <div class="modal-dialog d-flex align-items-center" style="height: 90vh">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">새 북마크 추가</h5>
+                  <button
+                    @click="bmCancel"
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form onsubmit="return false">
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label"
+                        >폴더명</label
+                      >
+                      <input
+                        maxlength="20"
+                        v-model="bookmarkValue"
+                        type="text"
+                        class="form-control"
+                      />
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    @click="bmCancel"
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    닫기
+                  </button>
+                  <button
+                    @click="addBookmark"
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                  >
+                    북마크 추가
+                  </button>
+                </div>
               </div>
             </div>
           </div>

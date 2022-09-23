@@ -8,13 +8,13 @@
         class="comment serviceSearch w-100"
         placeholder="댓글을 입력해주세요."
       />
-      <button @click="addComment" class="btn-regular">댓글입력</button>
+      <button @click="addComment(index.idx)" class="btn-regular">댓글입력</button>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
+import { ref, reactive } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { computed } from "@vue/runtime-core";
 
@@ -27,6 +27,10 @@ export default {
   },
 
   setup(props) {
+    let index = reactive({
+      idx: 0,
+    })
+    
     const store = useStore();
 
     const commentValue = ref("");
@@ -36,13 +40,16 @@ export default {
       return store.state.users.me;
     });
 
-    const addComment = () => {
+    const addComment = (comment) => {
       if (!commentValue.value == "") {
         store.dispatch("posts/addComment", {
           id: Date.now(),
           postId: props.postId,
           content: commentValue.value,
+          idx: comment
         });
+        console.log(index.idx)
+        index.idx += 1
         // comments.push(commentValue.value);
         commentValue.value = "";
       }
@@ -52,7 +59,7 @@ export default {
     //   comments.splice(index, 1);
     // };
 
-    return { commentValue, addComment, me };
+    return { commentValue, addComment, me, index };
   },
 };
 </script>

@@ -1,5 +1,5 @@
-<template>
-  <div class="d-flex justify-content-center align-items-center">
+<!-- <template>
+  <div class="justify-content-center align-items-center ">
     <button
       class="new-folder"
       data-bs-toggle="modal"
@@ -7,7 +7,8 @@
     >
       + 새 북마크 폴더
     </button>
-    <div v-if="showModal" class="modal fade" id="exampleModal">
+    <div class="position-relative">
+      <div v-if="showModal" class="modal fade position-absolute top-50 start-50 translate-middle" id="exampleModal" >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -51,6 +52,8 @@
         </div>
       </div>
     </div>
+    </div>
+   
   </div>
 </template>
 
@@ -65,8 +68,10 @@ export default {
     const addBookmark = () => {
       if (!bookmarkValue.value == "") {
         bmTags.push(bookmarkValue.value);
+        console.log(bookmarkValue.value)
         bookmarkValue.value = "";
-      }
+      } 
+        
     };
 
     const showModal = ref(true);
@@ -89,4 +94,7 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped></style>
+<style lang="sass" scoped>
+.vh100
+  height: 100%
+</style> -->

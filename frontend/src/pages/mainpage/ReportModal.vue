@@ -11,16 +11,6 @@
     </div> -->
   <!-- Button trigger modal -->
 
-  <button
-    @click="reportBtn"
-    type="button"
-    class="reportBtn"
-    data-bs-toggle="modal"
-    data-bs-target="#staticBackdrop"
-  >
-    신고하기
-  </button>
-
   <!-- Modal -->
   <div
     class="modal fade"
@@ -29,7 +19,7 @@
     data-bs-keyboard="false"
     tabindex="-1"
     aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
+    aria-hidden="false"
   >
     <div class="modal-dialog">
       <div class="modal-content">
@@ -89,6 +79,7 @@
 import { ref } from "vue";
 
 export default {
+  // props로 보내기
   setup() {
     const reportModal = ref(false);
 
@@ -107,11 +98,6 @@ export default {
 };
 </script>
 <style lang="sass" scoped>
-.report-box
-    box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px
-    width: 200px
-    height: 100%
-
 .position-absolute
     right: 100px
 

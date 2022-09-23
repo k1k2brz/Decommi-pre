@@ -59,10 +59,10 @@ export default {
     });
 
     const tagSelectRouter = () => {
-      store.dispatch("users/favTags", {
-        id: store.state.users.me.id,
-        pw: store.state.users.me.pw,
-        email: store.state.users.me.email,
+      store.dispatch("users/likeTagList", {
+        // id: store.state.users.me.id,
+        // pw: store.state.users.me.pw,
+        // email: store.state.users.me.email,
         likeTagList: tagSelection,
       });
       router.push({

@@ -7,20 +7,11 @@ export default {
   state: {
     me: null,
     bookmark: [],
-    token: 0,
   },
   mutations: {
     setMe(state, payload) {
       state.me = payload;
     },
-    setToken(state, payload) {
-      state.token = payload;
-    },
-    // saveStateToStorage(state) {
-    //   cookies.set("testvue.login.memberId", state.memberId);
-    //   cookies.set("testvue.login.accessToke", state.accessToken);
-    //   cookies.set("testvue.login.refreshToken", state.refreshToken);
-    // },
     changeEmail(state, payload) {
       state.me.email = payload.email;
     },
@@ -71,8 +62,26 @@ export default {
           console.error(err);
         });
     },
-    favTags({ commit }, payload) {
-      commit("setMe", payload);
+    likeTagList({ commit }, payload) {
+      const url = "./decommi/member/";
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const body = {
+        likeTagList: payload.likeTagList
+      };
+      console.log(body);
+      axios
+        .post(url, body, { headers })
+        .then((res) => {
+          console.log(res.data);
+          // payload는 프론트 값을 받아옴
+          // res.data 백엔드 값을 받아옴
+          commit("setMe", payload);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     dislikeTags({ commit }, payload) {
       commit("setMe", payload);
@@ -91,16 +100,16 @@ export default {
         .post(url, body, { headers })
         .then((res) => {
           console.log(res.data);
-          // sessionStorage.setItem("token", res.data.token);
-          // sessionStorage.setItem("token", res.data.email);
-          commit("setMe", payload);
-          commit("setToken", res.data.token);
+          // payload는 프론트 값을 받아옴
+          // res.data 백엔드 값을 받아옴
+          commit("setMe", res.data);
         })
         .catch((err) => {
           console.error(err);
         });
     },
     logOut({ commit }) {
+      localStorage.removeItem("token");
       sessionStorage.removeItem("token");
       commit("setMe", null);
     },
