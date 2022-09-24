@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.zerock.decommi.dto.DiaryDTO;
+import org.zerock.decommi.dto.FileDTO;
 import org.zerock.decommi.dto.ReplyDTO;
 import org.zerock.decommi.dto.TagDTO;
 import org.zerock.decommi.entity.diary.Diary;
+import org.zerock.decommi.entity.diary.File;
 import org.zerock.decommi.entity.diary.Reply;
 import org.zerock.decommi.entity.diary.Tag;
 import org.zerock.decommi.entity.member.Member;
@@ -20,10 +22,15 @@ public interface DiaryService {
 
     String modifyDiary(DiaryDTO dto, List<TagDTO> tagList);
 
-    String deleteDiary(DiaryDTO dto);
+    void deleteDiary(Long dino);
 
-    // List<Object[]> getDiaryList();
+    List<Object[]> getDiaryList();
+
+    // 검색조건 만족하는 다이어리 게시글 리스트
     // List<Object[]> getSearchDiaryList(String search);
+
+    // 좋아요태그포함된 다이어리 게시글 리스트
+    // List<Object[]> getLikeTagDiaryList();
 
     // // 댓글
     // Long registerReply(ReplyDTO dto);
@@ -40,6 +47,7 @@ public interface DiaryService {
     // 다이어리
     default Diary dtoToEntity(DiaryDTO dto) {
         Diary diary = Diary.builder()
+                .dino(dto.getDino())
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .openYN(dto.isOpenYN())
@@ -62,6 +70,17 @@ public interface DiaryService {
                 .build();
         return dto;
 
+    }
+
+    // 파일
+    default File fileDTOtoEntity(FileDTO dto, Long dino) {
+        File file = File.builder()
+                .uuid(dto.getUuid())
+                .fname(dto.getImgName())
+                .fpath(dto.getPath())
+                .dino(Diary.builder().dino(dino).build())
+                .build();
+        return file;
     }
 
     // 태그

@@ -1,4 +1,4 @@
-package org.zerock.decommi.entity;
+package org.zerock.decommi.entity.member;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +11,6 @@ import javax.persistence.Table;
 
 import org.zerock.decommi.entity.common.BaseEntity;
 import org.zerock.decommi.entity.diary.Diary;
-import org.zerock.decommi.entity.member.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

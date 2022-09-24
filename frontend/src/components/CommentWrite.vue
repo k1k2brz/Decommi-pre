@@ -8,7 +8,9 @@
         class="comment serviceSearch w-100"
         placeholder="댓글을 입력해주세요."
       />
-      <button @click="addComment(index.idx)" class="btn-regular">댓글입력</button>
+      <button @click="addComment(index.idx)" class="btn-regular">
+        댓글입력
+      </button>
     </div>
   </div>
 </template>
@@ -17,6 +19,7 @@
 import { ref, reactive } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { computed } from "@vue/runtime-core";
+import axios from "axios";
 
 export default {
   props: {
@@ -29,8 +32,8 @@ export default {
   setup(props) {
     let index = reactive({
       idx: 0,
-    })
-    
+    });
+
     const store = useStore();
 
     const commentValue = ref("");
@@ -40,17 +43,43 @@ export default {
       return store.state.users.me;
     });
 
+    const newDate = ref(Date.now());
+
     const addComment = (comment) => {
       if (!commentValue.value == "") {
         store.dispatch("posts/addComment", {
-          id: Date.now(),
+          id: newDate,
           postId: props.postId,
-          content: commentValue.value,
-          idx: comment
+          replyContent: commentValue.value,
+          idx: comment,
         });
-        console.log(index.idx)
-        index.idx += 1
+
+        // console.log(newDate);
+        index.idx += 1;
         // comments.push(commentValue.value);
+
+        try {
+          const url = "./api/diary/write";
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: store.state.users.me.token,
+            mid: store.state.users.me.mid,
+          };
+          const body = {
+            replyContent: commentValue.value,
+          };
+          console.log(body);
+          axios
+            .post(url, body, { headers })
+            .then((res) => {
+              console.log(res.data);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        } catch (err) {
+          console.log(err);
+        }
         commentValue.value = "";
       }
     };

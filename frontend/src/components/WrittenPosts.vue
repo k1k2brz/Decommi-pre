@@ -4,17 +4,37 @@
       <div class="d-flex justify-content-between">
         <h5 class="card-title">{{ post.title }}</h5>
         <div class="d-flex flex-column">
-          <button @click.stop="dropdownToggle.reportToggle.value = !dropdownToggle.reportToggle.value" class="btn-icon bi bi-three-dots d-flex justify-content-end"></button>
+          <button
+            @click.stop="
+              dropdownToggle.reportToggle.value =
+                !dropdownToggle.reportToggle.value
+            "
+            class="btn-icon bi bi-three-dots d-flex justify-content-end"
+          ></button>
           <div>
-            <div v-if="dropdownToggle.reportToggle.value" @blur="close" class="reportBtn-shadow report-location position-absolute">
+            <div
+              v-if="dropdownToggle.reportToggle.value"
+              @blur="close"
+              class="reportBtn-shadow report-location position-absolute"
+            >
               <div class="d-flex flex-column">
                 <!-- 본인의 포스팅일시 (email을 받아서) v-if로 보이는거 다르게 -->
-                <button @click="onEditBtn" type="button" class="reportBtn reportBtnHover" data-bs-toggle="modal"
-                  data-bs-target="#exampleModal">
+                <button
+                  @click="onEditBtn"
+                  type="button"
+                  class="reportBtn reportBtnHover"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                >
                   수정하기
                 </button>
-                <button @click="onRemoveBtn" type="button" class="reportBtn reportBtnHover" data-bs-toggle="modal"
-                  data-bs-target="#exampleModal">
+                <button
+                  @click="onRemoveBtn"
+                  type="button"
+                  class="reportBtn reportBtnHover"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                >
                   삭제하기
                 </button>
               </div>
@@ -37,7 +57,10 @@
         <!-- icon -->
         <div class="d-flex gap-3">
           <button @click="bookmarkBtn" class="btn-icon">
-            <div v-if="bookmarkSave" class="bi bi-bookmark-fill icon-purple"></div>
+            <div
+              v-if="bookmarkSave"
+              class="bi bi-bookmark-fill icon-purple"
+            ></div>
             <div v-else class="bi bi-bookmark"></div>
           </button>
           <button @click="bookmarkFav" class="btn-icon">
@@ -56,8 +79,14 @@
           </button>
         </div>
         <div>
-          <div v-if="bookmarkSave" class="d-flex container bmSave position-relative">
-            <div class="d-flex flex-column box-shadow position-absolute zindex p-3 gap-2" style="min-width: 250px">
+          <div
+            v-if="bookmarkSave"
+            class="d-flex container bmSave position-relative"
+          >
+            <div
+              class="d-flex flex-column box-shadow position-absolute zindex p-3 gap-2"
+              style="min-width: 250px"
+            >
               <div class="d-flex justify-content-between">
                 <div style="margin: auto; width: 100%">
                   <span class="bold">내 북마크에 저장</span>
@@ -74,8 +103,13 @@
             </div>
           </div>
         </div>
-        <div v-if="bookmarkSaveCheck" class="container bm-container d-flex position-absolute">
-          <div class="position-relative bookmarks flex-wrap bg-white d-flex box-shadow p-3">
+        <div
+          v-if="bookmarkSaveCheck"
+          class="container bm-container d-flex position-absolute"
+        >
+          <div
+            class="position-relative bookmarks flex-wrap bg-white d-flex box-shadow p-3"
+          >
             <span class="ml-3 d-flex">북마크가 저장되었습니다.</span>
             <button @click="bookmarkChecking" class="text-btn pr-3">
               저장된 북마크 확인하기
@@ -90,18 +124,26 @@
             <div class="Maincomment mb-1 d-flex justify-content-between gap-2">
               <div v-if="onComment">
                 <span>User</span>
-                <span class="ml-3">{{ cmt.content }}</span>
+                <span class="ml-3">{{ cmt.replyContent }}</span>
               </div>
               <div v-else>
                 <span>User</span>
-                <input type="text" v-model="comment.value" @keyup.enter="changeCommentFinal" />
+                <input
+                  type="text"
+                  v-model="comment.value"
+                  @keyup.enter="changeCommentFinal"
+                />
                 <button @click="changeCommentFinal" class="btn-regular">
                   수정완료
                 </button>
               </div>
               <div class="d-flex justify-content-end">
                 <span>2022.08.28</span>
-                <button v-if="cmtChangeBtn" @click="changeComment($event)" class="text-btn">
+                <button
+                  v-if="cmtChangeBtn"
+                  @click="changeComment($event)"
+                  class="text-btn"
+                >
                   수정
                 </button>
                 <button v-else @click="changeComment($event)" class="text-btn">
@@ -109,7 +151,10 @@
                 </button>
                 <!-- 백엔드에서 들어오는 comment번호를 ()안에 넣는다. -->
                 <!-- comment Id가 필요 -->
-                <button @click="onRemoveComment" class="ml-2 bi bi-x-lg"></button>
+                <button
+                  @click="onRemoveComment"
+                  class="ml-2 bi bi-x-lg"
+                ></button>
               </div>
             </div>
           </div>
@@ -126,6 +171,7 @@ import { useStore } from "vuex";
 import ReportModal from "@/pages/mainpage/ReportModal.vue";
 import CommentWrite from "./CommentWrite.vue";
 import { onBeforeMount, onBeforeUnmount, computed, onMounted } from "vue";
+import axios from "axios";
 
 export default {
   props: {
@@ -150,9 +196,9 @@ export default {
       reportToggle: ref(false),
       close: () => {
         dropdownToggle.reportToggle.value = false;
-      }
-    } 
-    
+      },
+    };
+
     onBeforeUnmount(() => {
       document.removeEventListener("click", dropdownToggle.close);
     });
@@ -160,7 +206,7 @@ export default {
     onMounted(() => {
       document.addEventListener("click", dropdownToggle.close);
     });
-    
+
     let comment = reactive({
       value: "",
     });
@@ -172,6 +218,28 @@ export default {
       store.dispatch("posts/remove", {
         id: props.post.id,
       });
+      // try {
+      //   const url = "./api/diary/write";
+      //   const headers = {
+      //     "Content-Type": "application/json",
+      //     Authorization: store.state.users.me.token,
+      //     mid: store.state.users.me.mid,
+      //   };
+      //   const body = {
+      //     writer: store.state.users.me.email,
+      //   };
+      //   console.log(body);
+      //   axios
+      //     .post(url, body, { headers })
+      //     .then((res) => {
+      //       console.log(res.data);
+      //     })
+      //     .catch((err) => {
+      //       console.error(err);
+      //     });
+      // } catch (err) {
+      //   console.log(err);
+      // }
     };
     const onEditBtn = () => {
       store.dispatch("posts/changeMainPost", {
@@ -179,12 +247,37 @@ export default {
         title: props.post.myWriteTitle,
         content: props.post.myWriteContent,
       });
+      try {
+        const url = "./api/diary/write";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          title: props.post.myWriteTitle,
+          content: props.post.myWriteContent,
+          writer: store.state.users.me.email,
+        };
+        console.log(body);
+        axios
+          .post(url, body, { headers })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+
       // 버튼 눌렀을 때 이 mainPosts 전체를 넘겨줘야하나?
       router.push({ name: "CkEditor" });
     };
 
     const reportContent = () => {
-      dropdownToggle.reportToggle.value = !dropdownToggle.reportToggle.value
+      dropdownToggle.reportToggle.value = !dropdownToggle.reportToggle.value;
     };
 
     const bookmarkBtn = () => {
@@ -200,9 +293,9 @@ export default {
       // console.log(bmCmt.value)
       // console.log(store.state.posts.mainPosts[0])
       if (store.state.posts.mainPosts[0].replyYN == false) {
-        store.state.posts.mainPosts == false
+        store.state.posts.mainPosts == false;
       }
-    })
+    });
 
     // 좋아요
     // false가 체크임
@@ -244,7 +337,7 @@ export default {
     };
 
     const changeComment = (e) => {
-      console.log(e)
+      console.log(e);
       if (onComment.value == true) {
         onComment.value = false;
         cmtChangeBtn.value = false;
@@ -258,6 +351,7 @@ export default {
       store.dispatch("posts/removeComment", {
         id: props.post.id,
       });
+      console.log(props.post.id);
     };
 
     const changeCommentFinal = () => {
@@ -288,7 +382,7 @@ export default {
       comment,
       content,
       close,
-      dropdownToggle
+      dropdownToggle,
     };
   },
   components: { ReportModal, CommentWrite },

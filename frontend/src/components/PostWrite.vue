@@ -105,6 +105,8 @@
 import { ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import { computed } from "@vue/runtime-core";
 
 export default {
   setup() {
@@ -124,6 +126,10 @@ export default {
     const imgInput = ref(null);
     const gifInput = ref(null);
     const privacyPermit = ref(true);
+
+    const me = computed(() => {
+      return store.state.users.me;
+    });
 
     // intersection observe로 무한 스크롤링
 
@@ -194,6 +200,28 @@ export default {
         name: "Main",
       });
       try {
+        const url = "./api/diary/write";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          title: myWriteTitle.value,
+          content: myWriteContent.value,
+          openYN: diaryPrivacyCheck.value,
+          replyYN: commentPrivacyCheck.value,
+          writer: store.state.users.me.email,
+        };
+        console.log(body);
+        axios
+          .post(url, body, { headers })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
         myWriteTitle.value = "";
         myWriteContent.value = "";
       } catch (err) {
@@ -249,6 +277,7 @@ export default {
       getTimeFromJavaDate,
       today,
       privacyPermit,
+      me,
     };
   },
 };

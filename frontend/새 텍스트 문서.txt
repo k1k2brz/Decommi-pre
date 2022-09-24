@@ -10,6 +10,9 @@ sns 댓글 Remove 게시글 index만 받아지는 현상
 sessionStorage 만료시간 만들기
 게시글공개 버튼 메뉴탭처럼 click close()이벤트 추가
 신고Modal 레이아웃 (props로 보내야 할 듯)
+회원가입 완료되면 로그아웃 되고 로그인창으로 보내야한다.
+CK에디터 vue3으로 바꾸기
+메인 글쓰기 태그입력창 추가 해야함
 
 router 사용시 스크롤바 맨 위로 올리기
 https://intrepidgeeks.com/tutorial/when-using-vue-router-to-switch-pages-in-vue-the-scroll-bar-will-automatically-scroll-to-the-top-which-can-be-used-in-html-5-history-mode

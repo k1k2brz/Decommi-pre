@@ -13,8 +13,11 @@
           + 새 북마크 폴더
         </button>
         <div class="d-flex align-items-center">
-          <div v-if="showModal" class="modal fade" id="bookmarkModal" >
-            <div class="modal-dialog d-flex align-items-center" style="height: 90vh">
+          <div v-if="showModal" class="modal fade" id="bookmarkModal">
+            <div
+              class="modal-dialog d-flex align-items-center"
+              style="height: 90vh"
+            >
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">새 북마크 추가</h5>
@@ -126,7 +129,9 @@
 
 <script>
 import { useRouter } from "vue-router";
-import { reactive, ref, watchEffect } from "vue";
+import { computed, reactive, ref, watchEffect } from "vue";
+import { useStore } from "vuex";
+import axios from "axios";
 // import Modal from "@/pages/bookmark/BmModal.vue";
 
 export default {
@@ -134,11 +139,16 @@ export default {
     // Modal,
   },
   setup() {
+    const store = useStore();
     const router = useRouter();
     const bmExist = ref(false);
     const bookmarkValue = ref("");
     let bmTags = reactive([]);
     const showModal = ref(true);
+
+    const me = computed(() => {
+      return store.state.users.me;
+    });
 
     // 북마크에 들어왔을 때 북마크가 존재하면 화면 바뀜
     watchEffect(() => {
@@ -153,6 +163,30 @@ export default {
     const addBookmark = () => {
       if (!bookmarkValue.value == "") {
         bmTags.push(bookmarkValue.value);
+
+        try {
+          const url = "./api/diary/write";
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: store.state.users.me.token,
+            mid: store.state.users.me.mid,
+          };
+          const body = {
+            bfolderName: bookmarkValue.value,
+            // writer: store.state.users.me.email,
+          };
+          console.log(body);
+          axios
+            .post(url, body, { headers })
+            .then((res) => {
+              console.log(res.data);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        } catch (err) {
+          console.log(err);
+        }
         bookmarkValue.value = "";
       }
     };
@@ -187,6 +221,7 @@ export default {
       onRemoveBookmark,
       bmCancel,
       onClickFolder,
+      me,
     };
   },
 };

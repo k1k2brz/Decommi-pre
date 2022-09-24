@@ -5,21 +5,47 @@
     </div>
   </div>
   <div>
-    <input type="text" placeholder="제목" class="form-control my-3 rounded-0 title" v-model="title" id="title" />
-    <ckeditor @ready="onReady" :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
-    <input type="text" v-model="tag" @keyup.space="makingTag" @keyup.enter="makingTag" placeholder="태그"
-      class="form-control my-3 rounded-0 hashtag" />
+    <input
+      type="text"
+      placeholder="제목"
+      class="form-control my-3 rounded-0 title"
+      v-model="title"
+      id="title"
+    />
+    <ckeditor
+      @ready="onReady"
+      :editor="editor"
+      v-model="editorData"
+      :config="editorConfig"
+    ></ckeditor>
+    <input
+      type="text"
+      v-model="tag"
+      @keyup.space="makingTag"
+      @keyup.enter="makingTag"
+      placeholder="태그"
+      class="form-control my-3 rounded-0 hashtag"
+    />
     <div class="hashtags d-flex g-4 overflow-auto">
-      <div class="tag d-flex justify-content-center align-items-center" v-for="(item, i) in taghistory" :key="item">
+      <div
+        class="btn-tag-sm tag d-flex justify-content-center align-items-center"
+        v-for="(item, i) in taghistory"
+        :key="item"
+      >
         <span class="m-1">#{{ item }}</span>
-        <button class="delbtn d-flex justify-content-center align-items-center px-1">
+        <button class="d-flex justify-content-center align-items-center px-1">
           <span v-on:click="deleteTag(i)">x</span>
         </button>
       </div>
     </div>
     <div class="tagwarning" ref="warning"></div>
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom"
-      aria-controls="offcanvasBottom">
+    <button
+      class="btn btn-primary"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasBottom"
+      aria-controls="offcanvasBottom"
+    >
       수정하기
     </button>
   </div>
@@ -39,7 +65,7 @@ export default {
     tag: "",
     taghistory: [],
     editor: ClassicEditor,
-    editorData: "<p>Content of the editor.</p>",
+    editorData: "",
     editorConfig: {
       // The configuration of the editor.
       height: "500px",
@@ -74,6 +100,10 @@ export default {
     deleteTag: function deltag(i) {
       this.taghistory.splice(i, 1);
     },
+
+    mounted() {
+      console.log(this.$store.state.posts.mainPosts);
+    },
   },
 
   // const removeTag = (index) => {
@@ -86,5 +116,5 @@ export default {
 <style lang="sass" scoprd>
 .ck-editor__editable_inline
   max-height: 50vh
-  height: 50vh  
+  height: 50vh
 </style>
