@@ -44,7 +44,7 @@
       </div>
       <div class="small-text mb-4">
         <span class="days">2022.08.01</span>
-        <span class="ml-1 lastTime margin5">22시간 전</span>
+        <span class="ml-1 lastTime margin5">{{ writeinfo.regdate }}</span>
       </div>
       <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
       <p class="card-text mb-4">{{ post.content }}</p>
@@ -495,7 +495,35 @@ export default {
       bookmarkSave.value = true;
     };
 
+    function getTimeFromJavaDate(s) {
+      const cont = new Date(s);
+      let date = new Date();
+      let calculated = (new Date(date.getTime()) - cont) / 1000; //초 계산
+      if (calculated < 60) {
+        return "방금 전";
+      } else if (calculated < 60 * 60) {
+        return `${Math.round(calculated / 60)}분 전`;
+      } else if (calculated < 60 * 60 * 24) {
+        return `${Math.round(calculated / (60 * 60))}시간 전`;
+      } else if (calculated < 60 * 60 * 24 * 7) {
+        return `${Math.round(calculated / (60 * 60 * 24))}일 전`;
+      } else if (calculated < 60 * 60 * 24 * 7 * 5) {
+        return `${Math.round(calculated / (60 * 60 * 24 * 7))}주 전`;
+      } else if (calculated > 31536000) {
+        return `${Math.round(calculated / 31536000)}년 전`;
+      }
+    }
+    const writeinfo = reactive({
+      regDate: null,
+    });
+
+    // 컨트롤러 작성해 달라고 할 것
+    axios.get(`./api/diary/write`).then((res) => {
+      writeinfo.regDate = getTimeFromJavaDate(res.data.writeinfo.regDate);
+    });
+
     return {
+      writeinfo,
       reportContent,
       bookmarkSave,
       bookmarkSaveCheck,
@@ -528,6 +556,7 @@ export default {
       addBookmark,
       sendBookmark,
       sendBookmarkInput,
+      getTimeFromJavaDate,
     };
   },
   components: { ReportModal, CommentWrite },
