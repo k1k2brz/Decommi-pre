@@ -53,19 +53,19 @@
               >알림</router-link
             >
           </div>
-              <button
-                class="button nav-menu-circle d-flex justify-content-center align-items-center"
-                @click.stop="dropdown.active.value = !dropdown.active.value"
-              >
-                <div
-                  v-if="dropdown.active.value == false"
-                  class="bi bi-caret-left-fill"
-                ></div>
-                <div
-                  v-if="dropdown.active.value == true"
-                  class="bi bi-caret-down-fill"
-                ></div>
-              </button>
+          <button
+            class="button nav-menu-circle d-flex justify-content-center align-items-center"
+            @click.stop="dropdown.active.value = !dropdown.active.value"
+          >
+            <div
+              v-if="dropdown.active.value == false"
+              class="bi bi-caret-left-fill"
+            ></div>
+            <div
+              v-if="dropdown.active.value == true"
+              class="bi bi-caret-down-fill"
+            ></div>
+          </button>
           <div
             v-if="dropdown.active.value"
             @blur="close"
@@ -121,7 +121,7 @@
 </template>
 
 <script>
-  // 검색기능 에어리뷰 참고하기
+// 검색기능 에어리뷰 참고하기
 import {
   computed,
   defineComponent,
@@ -164,9 +164,9 @@ export default defineComponent({
     });
 
     function loginCheck() {
-      if (sessionStorage.getItem("token") == 0) {
+      if (localStorage.getItem("token") == 0) {
         store.state.users.me = false;
-      } else if (sessionStorage.getItem("token") != null) {
+      } else if (localStorage.getItem("token") != null) {
         store.state.users.me = true;
       }
     }
@@ -194,10 +194,10 @@ export default defineComponent({
 
     const onLogout = () => {
       store.dispatch("users/logOut");
+      store.state.users.me == false;
       router.push({
         name: "Home",
       });
-      store.state.users.me == false;
       store.state.nav.navToggle = false;
       store.state.nav.navMenuicon = true;
     };

@@ -68,7 +68,7 @@ export default {
         "Content-Type": "application/json",
       };
       const body = {
-        likeTagList: payload.likeTagList
+        likeTagList: payload.likeTagList,
       };
       console.log(body);
       axios
@@ -109,8 +109,10 @@ export default {
         });
     },
     logOut({ commit }) {
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
+      localStorage.removeItem("vuex");
+      localStorage.removeItem("TOKEN");
+      // localStorage.removeItem("token");
+      // sessionStorage.removeItem("token");
       commit("setMe", null);
     },
     changeEmail({ commit }, payload) {

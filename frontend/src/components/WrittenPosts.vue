@@ -68,15 +68,14 @@
             <div v-else class="bi bi-heart-fill icon-red"></div>
           </button>
           <button @click="onModal" class="btn-icon">
-            <i class="bi bi-megaphone">
-              <ReportModal />
-            </i>
-            <i class="bi bi-megaphone-fill"></i>
+            <div v-if="bmReport" class="bi bi-megaphone-fill icon-purple"></div>
+            <div v-else class="bi bi-megaphone"></div>
           </button>
           <button @click="bookmarkCmt" class="btn-icon">
             <div v-if="bmCmt" class="bi bi-chat-dots-fill icon-purple"></div>
             <div v-else class="bi bi-chat-dots"></div>
           </button>
+          <ReportModal />
         </div>
         <div>
           <div
@@ -103,6 +102,32 @@
             </div>
           </div>
         </div>
+        <div>
+          <div v-if="addBookmark" class="container report position-relative">
+            <div
+              class="d-flex flex-column box-shadow position-absolute zindex p-3 gap-2"
+            >
+              <div class="d-flex justify-content-between">
+                <div>
+                  <!-- style="margin: auto" -->
+                  <span class="bold">북마크를 추가해주세요</span>
+                </div>
+              </div>
+              <div class="stroke-default"></div>
+              <div class="gap-2 mt-1 d-flex flex-column justify-content-center">
+                <input
+                  v-model="sendBookmarkInput"
+                  maxlength="20"
+                  type="text"
+                  class="form-control"
+                />
+                <button @click="sendBookmark" class="btn-regular">
+                  북마크 생성
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           v-if="bookmarkSaveCheck"
           class="container bm-container d-flex position-absolute"
@@ -114,6 +139,70 @@
             <button @click="bookmarkChecking" class="text-btn pr-3">
               저장된 북마크 확인하기
             </button>
+          </div>
+        </div>
+        <div>
+          <div v-if="!report" class="container position-relative">
+            <div
+              class="d-flex flex-column box-shadow position-absolute report zindex p-3 gap-2"
+            >
+              <div class="d-flex justify-content-between">
+                <div>
+                  <!-- style="margin: auto" -->
+                  <span class="bold">신고하기</span>
+                </div>
+              </div>
+              <div class="stroke-default"></div>
+              <div class="gap-2 mt-1 d-flex flex-column justify-content-center">
+                <span> 이 다이어리의 어떤 점이 문제인가요? </span>
+                <select v-model="selectReport" class="mt-2">
+                  <option disabled value="pso">Please select one</option>
+                  <option :value="{ report: '스팸이거나 의심스럽습니다.' }">
+                    스팸이거나 의심스럽습니다.
+                  </option>
+                  <option
+                    :value="{
+                      report: '민감한 내용또는 사진을 보여주고 있습니다.',
+                    }"
+                  >
+                    민감한 내용또는 사진을 보여주고 있습니다.
+                  </option>
+                  <option
+                    :value="{ report: '가학적이거나 유해한 내용입니다.' }"
+                  >
+                    가학적이거나 유해한 내용입니다.
+                  </option>
+                  <option :value="{ report: '사실을 오도하고 있습니다.' }">
+                    사실을 오도하고 있습니다.
+                  </option>
+                  <option
+                    :value="{
+                      report: '자해 또는 자살 의도를 표현하고 있습니다.',
+                    }"
+                  >
+                    자해 또는 자살 의도를 표현하고 있습니다.
+                  </option>
+                  <option :value="{ report: '기타 의견.' }">기타 의견.</option>
+                </select>
+                <textarea
+                  v-model="textareaReport"
+                  class="textarea mt-2"
+                  cols="35"
+                  rows="10"
+                ></textarea>
+              </div>
+              <button @click="sendReport" class="btn-regular">신고하기</button>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="sendReportCheck"
+          class="container bm-container d-flex position-absolute"
+        >
+          <div
+            class="position-relative bookmarks flex-wrap bg-white d-flex box-shadow p-3"
+          >
+            <span class="ml-3 mr-3 d-flex">신고가 완료되었습니다.</span>
           </div>
         </div>
         <div v-if="bmCmt">
@@ -188,9 +277,16 @@ export default {
     const bookmarkSaveCheck = ref(false);
     const bmFav = ref(true);
     const bmCmt = ref(false);
-    const bmPlus = ref(false);
+    // const bmPlus = ref(false);
+    const bmReport = ref(false);
     const onComment = ref(true);
     const cmtChangeBtn = ref(true);
+    const report = ref(true);
+    const sendReportCheck = ref(false);
+    const selectReport = ref("");
+    const textareaReport = ref("");
+    const addBookmark = ref(false);
+    const sendBookmarkInput = ref("");
 
     const dropdownToggle = {
       reportToggle: ref(false),
@@ -241,7 +337,7 @@ export default {
       //   console.log(err);
       // }
     };
-    const onEditBtn = () => {
+    const onEditBtn = async () => {
       store.dispatch("posts/changeMainPost", {
         id: props.post.id,
         title: props.post.myWriteTitle,
@@ -260,10 +356,11 @@ export default {
           writer: store.state.users.me.email,
         };
         console.log(body);
-        axios
+        await axios
           .post(url, body, { headers })
           .then((res) => {
             console.log(res.data);
+            console.log(store.state.posts.mainPosts);
           })
           .catch((err) => {
             console.error(err);
@@ -283,6 +380,8 @@ export default {
     const bookmarkBtn = () => {
       if (bookmarkSave.value == false) {
         bookmarkSave.value = true;
+        bmReport.value = false;
+        report.value = true;
       } else if (bookmarkSave.value == true) {
         bookmarkSave.value = false;
       }
@@ -309,12 +408,15 @@ export default {
     };
 
     const bookmarkCmt = () => {
+      const index = store.state.posts.mainPosts.findIndex((v) => v.id);
+      console.log(index);
       bmCmt.value == true ? (bmCmt.value = false) : (bmCmt.value = true);
     };
 
     const bookmarkPlus = () => {
-      bmPlus.value == false ? (bmPlus.value = true) : (bmPlus.value = false);
-      console.log(bmPlus.value);
+      // 북마크 모달창
+      addBookmark.value = true;
+      bookmarkSave.value = false;
     };
 
     const bookmarkSaveBtn = () => {
@@ -347,6 +449,32 @@ export default {
       }
     };
 
+    const onModal = () => {
+      if (bmReport.value == false) {
+        bmReport.value = true;
+        report.value = false;
+        bookmarkSave.value = false;
+      } else if (bmReport.value == true) {
+        bmReport.value = false;
+        report.value = true;
+      }
+    };
+
+    const sendReport = () => {
+      console.log(textareaReport.value);
+      console.log(selectReport.value.report);
+      textareaReport.value = "";
+      selectReport.value = "pso";
+      bmReport.value = false;
+      report.value = true;
+      sendReportCheck.value = true;
+      setTimeout(() => {
+        // 마우스가 올라가 있으면 사라지지 않게 이벤트 추가
+        // Fade 애니메이션 줄 것
+        sendReportCheck.value = false;
+      }, 5000);
+    };
+
     const onRemoveComment = () => {
       store.dispatch("posts/removeComment", {
         id: props.post.id,
@@ -358,6 +486,13 @@ export default {
       store.dispatch("posts/changeComment", {
         content: comment.value,
       });
+    };
+
+    const sendBookmark = () => {
+      console.log(sendBookmarkInput.value);
+      sendBookmarkInput.value = "";
+      addBookmark.value = false;
+      bookmarkSave.value = true;
     };
 
     return {
@@ -383,6 +518,16 @@ export default {
       content,
       close,
       dropdownToggle,
+      bmReport,
+      onModal,
+      report,
+      sendReport,
+      selectReport,
+      textareaReport,
+      sendReportCheck,
+      addBookmark,
+      sendBookmark,
+      sendBookmarkInput,
     };
   },
   components: { ReportModal, CommentWrite },
@@ -429,6 +574,10 @@ export default {
   z-index: 10
   background-color: white
 
+.textarea
+  border: 1px solid #D8D8D8
+  resize: none
+
 .text-btn-big
   padding: 0
   color: #AE6FFF
@@ -441,4 +590,7 @@ export default {
 
 .card-text
   white-space: pre-line
+
+.report
+  top: 10px
 </style>

@@ -9,12 +9,33 @@
     />
     <textarea
       v-if="clickTA"
+      spellcheck="false"
       v-model="myWriteContent"
       @input="autoResize"
       class="myWriteContent form-control"
       placeholder="오늘의 다이어리를 작성해 보세요!"
       id="floatingTextarea"
     />
+    <div v-if="clickTA">
+      <div class="flex-wrap gap-2 d-flex">
+        <div class="tag" v-for="(tag, index) in tags" :key="'tag' + index">
+          <span class="btn-tag-sm d-flex align-items-center">
+            <button @click="removeTag(index)" class="bi bi-x-lg mr-1"></button>
+            {{ tag }}
+          </span>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center align-items-center">
+        <input
+          maxlength="12"
+          v-model="tagValue"
+          @keyup.enter="addTag"
+          type="text"
+          class="tagTextbox form-control mr-1 mb-4 mt-4"
+          placeholder="태그 추가하기"
+        />
+      </div>
+    </div>
     <button
       v-if="privacyPermit"
       @click="publicPrivacy"
@@ -102,7 +123,7 @@
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
+import { reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import axios from "axios";
@@ -126,6 +147,21 @@ export default {
     const imgInput = ref(null);
     const gifInput = ref(null);
     const privacyPermit = ref(true);
+    const tagValue = ref("");
+    let tags = reactive([]);
+
+    const addTag = () => {
+      let result = tagValue.value.trim().replace(/ /, "");
+      if (!result == "") {
+        tags.push(result);
+        tagValue.value = "";
+      }
+      tagValue.value = "";
+    };
+
+    const removeTag = (index) => {
+      tags.splice(index, 1);
+    };
 
     const me = computed(() => {
       return store.state.users.me;
@@ -214,7 +250,7 @@ export default {
           writer: store.state.users.me.email,
         };
         console.log(body);
-        axios
+        await axios
           .post(url, body, { headers })
           .then((res) => {
             console.log(res.data);
@@ -224,6 +260,10 @@ export default {
           });
         myWriteTitle.value = "";
         myWriteContent.value = "";
+        tagValue.value = "";
+        privacyPermit.value = true;
+        pp.value = false;
+        tags.length = 0;
       } catch (err) {
         console.log(err);
       }
@@ -278,6 +318,10 @@ export default {
       today,
       privacyPermit,
       me,
+      tagValue,
+      tags,
+      addTag,
+      removeTag,
     };
   },
 };
@@ -286,6 +330,11 @@ export default {
 <style lang="sass" scoped>
 .myWriteContent
   overflow: visible
+  border: none
+  text-decoration: none
+  &:hover
+    text-decoration: none
+    border: none
 
 a
   text-decoration: none

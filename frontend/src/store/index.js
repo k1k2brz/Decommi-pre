@@ -6,8 +6,8 @@ import VuexPersistence from "vuex-persist";
 // import users from "./modules/users";
 
 const vuexLocal = new VuexPersistence({
-  storage: window.sessionStorage,
-  key: 'TOKEN',
+  storage: window.localStorage,
+  key: "TOKEN",
   modules: ["users"],
   reducer: (state) => ({ users: state.users.me }),
 });

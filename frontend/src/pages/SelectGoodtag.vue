@@ -65,8 +65,14 @@ export default {
         // email: store.state.users.me.email,
         likeTagList: tagSelection,
       });
+      console.log(store.state.users.me);
+      localStorage.removeItem("vuex");
+      localStorage.removeItem("TOKEN");
+      // sessionStorage.removeItem("token");
+      store.state.users.me = null;
+      console.log(store.state.users.me);
       router.push({
-        name: "Main",
+        name: "Home",
       });
     };
 
