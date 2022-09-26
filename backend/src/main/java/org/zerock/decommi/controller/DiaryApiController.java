@@ -121,7 +121,6 @@ public class DiaryApiController {
 
     @RequestMapping(value = "/heart", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> HeartDiary(@RequestBody HeartDTO dto) {
-        log.info(dto + "kmlkmlkmlkmlkmlkmkll");
         return new ResponseEntity<>(diaryService.addHeart(dto), HttpStatus.OK);
     }
 

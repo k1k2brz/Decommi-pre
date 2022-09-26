@@ -33,6 +33,7 @@ import Mydiary from "../pages/mypage/MyDiary.vue";
 import CkEditor from "../pages/CkEditor.vue";
 import EditTag from "../pages/findtag/EditTags.vue";
 import UserBookmark from "../pages/bookmark/UserBookmark.vue";
+import Read from "../components/WrittenPostPage.vue";
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -81,6 +82,11 @@ const router = createRouter({
       name: "Main",
       component: Mainpage,
       // beforeEnter: requireAuth(),
+    },
+    {
+      path: "/read",
+      name: "Read",
+      component: Read,
     },
     {
       path: "/alarm",

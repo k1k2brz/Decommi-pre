@@ -15,19 +15,16 @@ import org.zerock.decommi.service.diary.HeartService;
 import org.zerock.decommi.vo.Mid;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
 @RestController
 @RequestMapping("/api/")
 @RequiredArgsConstructor
-@Log4j2
 public class HeartController {
     private final HeartService service;
 
     @RequestMapping(value = "/heart", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HashMap<String, Object>> register(@RequestBody Mid mid) {
         HashMap<String, Object> result = service.getListDino(mid.getMid());
-        log.info(result);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

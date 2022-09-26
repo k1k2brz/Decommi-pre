@@ -149,7 +149,7 @@ export default {
     const privacyPermit = ref(true);
     const tagValue = ref("");
     let tags = reactive([]);
-    const file = ref('')
+    const file = ref("");
 
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
@@ -172,7 +172,7 @@ export default {
 
     const handleFileUpload = (e) => {
       // image는 Json이 아니라 FormData로 보낸다.
-      console.log(e.target.files[0])
+      console.log(e.target.files[0]);
       const imageFormData = new FormData();
       [].forEach.call(e.target.files, (f) => {
         imageFormData.append("image", f); // { image: [file1, file2] }
@@ -276,25 +276,6 @@ export default {
       e.target.style.height = `${e.target.scrollHeight}px`;
     };
 
-    function getTimeFromJavaDate(s) {
-      const cont = new Date(s);
-      let date = new Date();
-      let calculated = (new Date(date.getTime()) - cont) / 1000; //초 계산
-      if (calculated < 60) {
-        return "방금 전";
-      } else if (calculated < 60 * 60) {
-        return `${Math.round(calculated / 60)}분 전`;
-      } else if (calculated < 60 * 60 * 24) {
-        return `${Math.round(calculated / (60 * 60))}시간 전`;
-      } else if (calculated < 60 * 60 * 24 * 7) {
-        return `${Math.round(calculated / (60 * 60 * 24))}일 전`;
-      } else if (calculated < 60 * 60 * 24 * 7 * 5) {
-        return `${Math.round(calculated / (60 * 60 * 24 * 7))}주 전`;
-      } else if (calculated > 31536000) {
-        return `${Math.round(calculated / 31536000)}년 전`;
-      }
-    }
-
     return {
       autoResize,
       pp,
@@ -315,9 +296,8 @@ export default {
       imgInput,
       handleFileUpload,
       handleGifUpload,
-      gifInput,
-      getTimeFromJavaDate,
       today,
+      gifInput,
       privacyPermit,
       me,
       tagValue,

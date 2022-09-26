@@ -1,140 +1,218 @@
 <template>
-  <div class="card mb-4">
-    <div class="card-body p-4">
-      <div class="d-flex justify-content-between">
-        <h5 @click="dinoTest" type="button" class="card-title">{{ post.title }}</h5>
-        <div class="d-flex flex-column">
-          <button @click.stop="
-            dropdownToggle.reportToggle.value =
-              !dropdownToggle.reportToggle.value
-          " class="btn-icon bi bi-three-dots d-flex justify-content-end"></button>
-          <div>
-            <div v-if="dropdownToggle.reportToggle.value" @blur="close"
-              class="reportBtn-shadow report-location position-absolute">
-              <div class="d-flex flex-column">
-                <!-- 본인의 포스팅일시 (email을 받아서) v-if로 보이는거 다르게 -->
-                <button @click="onEditBtn" type="button" class="reportBtn reportBtnHover" data-bs-toggle="modal"
-                  data-bs-target="#exampleModal">
-                  수정하기
-                </button>
-                <button @click="onRemoveBtn" type="button" class="reportBtn reportBtnHover" data-bs-toggle="modal"
-                  data-bs-target="#exampleModal">
-                  삭제하기
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="small-text mb-4">
-        <span class="days">2022.08.01</span>
-        <span class="ml-1 lastTime margin5">{{ diaryPost.regdate }}</span>
-      </div>
-      <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
-      <p class="card-text mb-4">{{ post.content }}</p>
-      <div class="mb-2 d-flex justify-content-between flex-column">
-        <div class="mb-3 d-flex gap-1">
-          <button type="button" class="btn-tag-sm d-flex">LifeStyle</button>
-          <button type="button" class="btn-tag-sm d-flex">일상</button>
-          <button type="button" class="btn-tag-sm d-flex">디지털 사진</button>
-        </div>
-        <!-- icon -->
-        <div class="d-flex gap-3">
-          <button @click="bookmarkBtn" class="btn-icon">
-            <div v-if="bookmarkSave" class="bi bi-bookmark-fill icon-purple"></div>
-            <div v-else class="bi bi-bookmark"></div>
-          </button>
-          <button @click="bookmarkFav" class="btn-icon">
-            <div v-if="bmFav" class="bi bi-heart-fill icon-red"></div>
-            <div v-else class="bi bi-heart"></div>
-          </button>
-          <button @click="onModal" class="btn-icon">
-            <div v-if="bmReport" class="bi bi-megaphone-fill icon-purple"></div>
-            <div v-else class="bi bi-megaphone"></div>
-          </button>
-          <button @click="bookmarkCmt" class="btn-icon">
-            <div v-if="bmCmt" class="bi bi-chat-dots-fill icon-purple"></div>
-            <div v-else class="bi bi-chat-dots"></div>
-          </button>
-          <ReportModal />
-        </div>
-        <div v-if="bookmarkSave">
-          <WrittenPostsBookmark />
-        </div>
-        <div>
-          <div v-if="!report" class="container position-relative">
-            <div class="d-flex flex-column box-shadow position-absolute report zindex p-3 gap-2">
-              <div class="d-flex justify-content-between">
-                <div>
-                  <!-- style="margin: auto" -->
-                  <span class="bold">신고하기</span>
+  <div>
+    <div
+      v-for="(post, idx) in state.mainPosts"
+      :key="'post' + idx"
+      class="card mb-4"
+    >
+      <div class="card-body mt-3 mb-3 ml-4 mr-4 p-4">
+        <div class="d-flex justify-content-between">
+          <h5 @click="dinoTest(post.dino)" type="button" class="card-title">
+            {{ post.title }}
+          </h5>
+          <div class="d-flex flex-column">
+            <button
+              @click.stop="
+                dropdownToggle.reportToggle.value =
+                  !dropdownToggle.reportToggle.value
+              "
+              class="btn-icon bi bi-three-dots d-flex justify-content-end"
+            ></button>
+            <div>
+              <div
+                v-if="dropdownToggle.reportToggle.value"
+                @blur="close"
+                class="reportBtn-shadow report-location position-absolute"
+              >
+                <div class="d-flex flex-column">
+                  <!-- 본인의 포스팅일시 (email을 받아서) v-if로 보이는거 다르게 -->
+                  <button
+                    @click="onEditBtn"
+                    type="button"
+                    class="reportBtn reportBtnHover"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                  >
+                    수정하기
+                  </button>
+                  <button
+                    @click="onRemoveBtn"
+                    type="button"
+                    class="reportBtn reportBtnHover"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                  >
+                    삭제하기
+                  </button>
                 </div>
               </div>
-              <div class="stroke-default"></div>
-              <div class="gap-2 mt-1 d-flex flex-column justify-content-center">
-                <span> 이 다이어리의 어떤 점이 문제인가요? </span>
-                <select v-model="selectReport" class="mt-2">
-                  <option disabled value="pso">Please select one</option>
-                  <option :value="{ report: '스팸이거나 의심스럽습니다.' }">
-                    스팸이거나 의심스럽습니다.
-                  </option>
-                  <option :value="{
-                    report: '민감한 내용또는 사진을 보여주고 있습니다.',
-                  }">
-                    민감한 내용또는 사진을 보여주고 있습니다.
-                  </option>
-                  <option :value="{ report: '가학적이거나 유해한 내용입니다.' }">
-                    가학적이거나 유해한 내용입니다.
-                  </option>
-                  <option :value="{ report: '사실을 오도하고 있습니다.' }">
-                    사실을 오도하고 있습니다.
-                  </option>
-                  <option :value="{
-                    report: '자해 또는 자살 의도를 표현하고 있습니다.',
-                  }">
-                    자해 또는 자살 의도를 표현하고 있습니다.
-                  </option>
-                  <option :value="{ report: '기타 의견.' }">기타 의견.</option>
-                </select>
-                <textarea v-model="textareaReport" class="textarea mt-2" cols="35" rows="10"></textarea>
-              </div>
-              <button @click="sendReport" class="btn-regular">신고하기</button>
             </div>
           </div>
         </div>
-        <div v-if="sendReportCheck" class="container bm-container d-flex position-absolute">
-          <div class="position-relative bookmarks flex-wrap bg-white d-flex box-shadow p-3">
-            <span class="ml-3 mr-3 d-flex">신고가 완료되었습니다.</span>
-          </div>
+        <div class="small-text mb-4">
+          <span class="days">{{ post.regDate.split("-")[0] }}.</span>
+          <span class="days">{{ post.regDate.split("-")[1] }}.</span>
+          <span class="days">{{
+            post.regDate.split("-")[2].split("T")[0]
+          }}</span>
+          <span class="ml-1 lastTime margin5">{{
+            getTimeFromJavaDate(post.regDate)
+          }}</span>
         </div>
-        <div v-if="bmCmt">
-          <hr />
-          <CommentWrite :post-id="post.id" />
-          <div v-for="(cmt, idx) in post.Comments" :key="cmt.id + idx">
-            <!-- 그리드로 변경 -->
-            <div class="Maincomment mb-1 d-flex justify-content-between gap-2">
-              <div v-if="onComment">
-                <span>User</span>
-                <span class="ml-3">{{ cmt.replyContent }}</span>
-              </div>
-              <div v-else>
-                <span>User</span>
-                <input type="text" v-model="comment.value" @keyup.enter="changeCommentFinal" />
-                <button @click="changeCommentFinal" class="btn-regular">
-                  수정완료
+        <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
+        <p class="card-text mb-4">{{ post.content }}</p>
+        <div class="mb-2 d-flex justify-content-between flex-column">
+          <div class="mb-3 d-flex gap-1">
+            <button type="button" class="btn-tag-sm d-flex">LifeStyle</button>
+            <button type="button" class="btn-tag-sm d-flex">일상</button>
+            <button type="button" class="btn-tag-sm d-flex">디지털 사진</button>
+          </div>
+          <!-- icon -->
+          <div class="d-flex gap-3">
+            <button @click="bookmarkBtn" class="btn-icon">
+              <div
+                v-if="bookmarkSave"
+                class="bi bi-bookmark-fill icon-purple"
+              ></div>
+              <div v-else class="bi bi-bookmark"></div>
+            </button>
+            <button @click="bookmarkFav" class="btn-icon">
+              <div v-if="bmFav" class="bi bi-heart-fill icon-red"></div>
+              <div v-else class="bi bi-heart"></div>
+            </button>
+            <button @click="onModal" class="btn-icon">
+              <div
+                v-if="bmReport"
+                class="bi bi-megaphone-fill icon-purple"
+              ></div>
+              <div v-else class="bi bi-megaphone"></div>
+            </button>
+            <button @click="bookmarkCmt" class="btn-icon">
+              <div v-if="bmCmt" class="bi bi-chat-dots-fill icon-purple"></div>
+              <div v-else class="bi bi-chat-dots"></div>
+            </button>
+            <ReportModal />
+          </div>
+          <div v-if="bookmarkSave">
+            <WrittenPostsBookmark />
+          </div>
+          <!-- 컴포넌트화 시킬 것 -->
+          <div>
+            <div v-if="!report" class="container position-relative">
+              <div
+                class="d-flex flex-column box-shadow position-absolute report zindex p-3 gap-2"
+              >
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <!-- style="margin: auto" -->
+                    <span class="bold">신고하기</span>
+                  </div>
+                </div>
+                <div class="stroke-default"></div>
+                <div
+                  class="gap-2 mt-1 d-flex flex-column justify-content-center"
+                >
+                  <span> 이 다이어리의 어떤 점이 문제인가요? </span>
+                  <select v-model="selectReport" class="mt-2">
+                    <option disabled value="pso">Please select one</option>
+                    <option :value="{ report: '스팸이거나 의심스럽습니다.' }">
+                      스팸이거나 의심스럽습니다.
+                    </option>
+                    <option
+                      :value="{
+                        report: '민감한 내용또는 사진을 보여주고 있습니다.',
+                      }"
+                    >
+                      민감한 내용또는 사진을 보여주고 있습니다.
+                    </option>
+                    <option
+                      :value="{ report: '가학적이거나 유해한 내용입니다.' }"
+                    >
+                      가학적이거나 유해한 내용입니다.
+                    </option>
+                    <option :value="{ report: '사실을 오도하고 있습니다.' }">
+                      사실을 오도하고 있습니다.
+                    </option>
+                    <option
+                      :value="{
+                        report: '자해 또는 자살 의도를 표현하고 있습니다.',
+                      }"
+                    >
+                      자해 또는 자살 의도를 표현하고 있습니다.
+                    </option>
+                    <option :value="{ report: '기타 의견.' }">
+                      기타 의견.
+                    </option>
+                  </select>
+                  <textarea
+                    v-model="textareaReport"
+                    class="textarea mt-2"
+                    cols="35"
+                    rows="10"
+                  ></textarea>
+                </div>
+                <button @click="sendReport" class="btn-regular">
+                  신고하기
                 </button>
               </div>
-              <div class="d-flex justify-content-end">
-                <span>2022.08.28</span>
-                <button v-if="cmtChangeBtn" @click="changeComment($event)" class="text-btn">
-                  수정
-                </button>
-                <button v-else @click="changeComment($event)" class="text-btn">
-                  수정취소
-                </button>
-                <!-- 백엔드에서 들어오는 comment번호를 ()안에 넣는다. -->
-                <!-- comment Id가 필요 -->
-                <button @click="onRemoveComment" class="ml-2 bi bi-x-lg"></button>
+            </div>
+          </div>
+          <div
+            v-if="sendReportCheck"
+            class="container bm-container d-flex position-absolute"
+          >
+            <div
+              class="position-relative bookmarks flex-wrap bg-white d-flex box-shadow p-3"
+            >
+              <span class="ml-3 mr-3 d-flex">신고가 완료되었습니다.</span>
+            </div>
+          </div>
+          <div v-if="bmCmt">
+            <hr />
+            <CommentWrite :post-id="post.id" />
+            <div v-for="(cmt, idx) in post.Comments" :key="cmt.id + idx">
+              <!-- 그리드로 변경 -->
+              <div
+                class="Maincomment mb-1 d-flex justify-content-between gap-2"
+              >
+                <div v-if="onComment">
+                  <span>User</span>
+                  <span class="ml-3">{{ cmt.replyContent }}</span>
+                </div>
+                <div v-else>
+                  <span>User</span>
+                  <input
+                    type="text"
+                    v-model="comment.value"
+                    @keyup.enter="changeCommentFinal"
+                  />
+                  <button @click="changeCommentFinal" class="btn-regular">
+                    수정완료
+                  </button>
+                </div>
+                <div class="d-flex justify-content-end">
+                  <span>2022.08.28</span>
+                  <button
+                    v-if="cmtChangeBtn"
+                    @click="changeComment($event)"
+                    class="text-btn"
+                  >
+                    수정
+                  </button>
+                  <button
+                    v-else
+                    @click="changeComment($event)"
+                    class="text-btn"
+                  >
+                    수정취소
+                  </button>
+                  <!-- 백엔드에서 들어오는 comment번호를 ()안에 넣는다. -->
+                  <!-- comment Id가 필요 -->
+                  <button
+                    @click="onRemoveComment"
+                    class="ml-2 bi bi-x-lg"
+                  ></button>
+                </div>
               </div>
             </div>
           </div>
@@ -176,9 +254,18 @@ export default {
     const selectReport = ref("");
     const textareaReport = ref("");
 
+    // const state = reactive({
+    //   dino: '',
+    //   title: '',
+    //   content: '',
+    //   openYN: false,
+    //   replyYN: false,
+    //   writer: '',
+    // })
+
     const bookmarkSave = computed(() => {
-      return store.state.posts.bookmarkSave
-    })
+      return store.state.posts.bookmarkSave;
+    });
 
     const dropdownToggle = {
       reportToggle: ref(false),
@@ -303,7 +390,7 @@ export default {
             mid: store.state.users.me.mid,
           };
           const body = {
-            hid: bmFav.value
+            hid: bmFav.value,
           };
           console.log(body);
           await axios
@@ -395,38 +482,22 @@ export default {
         return `${Math.round(calculated / 31536000)}년 전`;
       }
     }
-    const diaryPost = reactive({
-      dino: null,
-      title: null,
-      content: null,
-      Comments: [],
-      Images: [],
-      openYN: null,
-      replyYN: null,
-      modDate: null,
-      regDate: null,
+    const state = reactive({
+      mainPosts: [],
     });
 
-
-    // let params = new URLSearchParams(window.location.search).get("diaryPost");
     // 컨트롤러 작성해 달라고 할 것
 
-    axios.get(`./api/diary/read`).then((res) => {
-      console.log(res);
-      diaryPost.regDate = getTimeFromJavaDate(res.data.diaryPost.regDate);
-      diaryPost.dino = res.data.diaryPost.dino;
-      diaryPost.title = res.data.diaryPost.title;
-      diaryPost.content = res.data.diaryPost.content;
-      diaryPost.openYN = res.data.diaryPost.openYN;
-      diaryPost.replyYN = res.data.diaryPost.replyYN;
-      diaryPost.modDate = res.data.diaryPost.modDate;
+    axios.post(`./diary/list`).then((res) => {
+      state.mainPosts = res.data;
     });
-    const dinoTest = () => {
-      console.log(diaryPost.dino)
-    }
+
+    const dinoTest = (dino) => {
+      router.push(`/read?id=${dino}`);
+    };
+
     return {
-      dinoTest,
-      diaryPost,
+      state,
       reportContent,
       bookmarkSave,
       bmFav,
@@ -453,6 +524,7 @@ export default {
       textareaReport,
       sendReportCheck,
       getTimeFromJavaDate,
+      dinoTest,
     };
   },
   components: { ReportModal, CommentWrite, WrittenPostsBookmark },

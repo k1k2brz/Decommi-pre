@@ -11,12 +11,13 @@ export default {
     // 쓸데 없는 요청 안보내기
     hasMorePost: true,
     reportToggle: true,
-    diaryId: null,
+    dino: "",
+    regDate: "",
     bookmarkSave: false,
   },
   mutations: {
     setDiaryId(state, num) {
-      state.diaryId = num
+      state.dino = num;
     },
     addMainPost(state, payload) {
       // 게시글 맨 앞에 추가
