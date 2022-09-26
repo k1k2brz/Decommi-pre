@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,12 +27,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.decommi.dto.BookmarkDTO;
 import org.zerock.decommi.dto.DiaryDTO;
+import org.zerock.decommi.dto.HeartDTO;
 import org.zerock.decommi.dto.PageRequestDTO;
+import org.zerock.decommi.dto.ReportDTO;
 import org.zerock.decommi.dto.TagDTO;
 import org.zerock.decommi.dto.UploadResultDTO;
 import org.zerock.decommi.entity.diary.Tag;
 import org.zerock.decommi.service.diary.DiaryService;
+import org.zerock.decommi.service.member.MemberService;
+import org.zerock.decommi.vo.DiaryPost;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -49,12 +55,21 @@ public class DiaryApiController {
 
     @RequestMapping(value = "/write", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody DiaryDTO dto) {
-        log.info(dto);
-        List<TagDTO> tagList = dto.getTags();
-        log.info("tagList +++++++" + tagList);
-        String result = diaryService.registerDiary(dto, tagList);
-        log.info("result+++++++" + result);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        List<String> tagList = dto.getTags();
+        log.info("dto : " + dto);
+        return new ResponseEntity<>(diaryService.registerDiary(dto, tagList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/modify/check", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DiaryDTO> CheckBeforeDiaryModify(@RequestBody DiaryPost vo) {
+        DiaryDTO diaryPost = diaryService.checkBeforeDiaryModify(vo.getDino(), vo.getWriter());
+        return new ResponseEntity<>(diaryPost, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/modify/register", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> articleModify(@RequestBody DiaryDTO dto) {
+        String diaryPost = diaryService.modifyDiary(dto, dto.getTags());
+        return new ResponseEntity<>(diaryPost, HttpStatus.OK);
     }
 
     @PostMapping("/write/uploadAjax")
@@ -102,6 +117,22 @@ public class DiaryApiController {
             uploadPathFolder.mkdirs();
         }
         return folderPath;
+    }
+
+    @RequestMapping(value = "/heart", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> HeartDiary(@RequestBody HeartDTO dto) {
+        log.info(dto + "kmlkmlkmlkmlkmlkmkll");
+        return new ResponseEntity<>(diaryService.addHeart(dto), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> bookmarDiary(@RequestBody BookmarkDTO dto) {
+        return new ResponseEntity<>(diaryService.addBookmark(dto), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/report", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> reportingDiary(@RequestBody ReportDTO dto) {
+        return new ResponseEntity<>(diaryService.addDiaryReport(dto), HttpStatus.OK);
     }
 
 }

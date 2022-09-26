@@ -1,55 +1,37 @@
 <template>
-  <div
-    class="container container_default d-flex justify-content-center align-items-center p-0 m-0"
-  >
+  <div class="container container_default d-flex justify-content-center align-items-center p-0 m-0">
     <div class="q-pa-md">
       <div class="backgrondBox p-5">
-        <form ref="form" @submit.prevent="onSubmitForm">
+        <form ref="form" @submit.prevent>
           <div class="d-flex justify-content-center">
             <h1 class="home-title mb-4">SIGN-UP</h1>
           </div>
           <div class="mb-3">
-            <input
-              type="text"
-              v-model="info.id"
-              class="form-control"
-              placeholder="아이디를 입력해주세요."
-              aria-describedby="emailHelp"
-            />
-            <div v-show="idError" class="font14 mt-1 ml-2">
-              Email이 올바르지 않습니다.
-            </div>
+            <input type="text" v-model="info.id" class="form-control" placeholder="아이디를 입력해주세요."
+              aria-describedby="emailHelp" />
+              <div v-show="idError" class="font14 mt-1 ml-2">
+                Email이 올바르지 않습니다.
+              </div>
+              <div v-show="info.idDuplicate" class="font14 mt-1 ml-2">
+                이미 존재하는 Email입니다.
+              </div>
+              <button class="btn btn-outline-primary w-100 mt-3" @click.stop="check()">중복 확인</button>
           </div>
           <div class="mb-3">
-            <input
-              type="password"
-              v-model="info.pass"
-              class="form-control"
-              placeholder="비밀번호를 입력해주세요."
-            />
+            <input type="password" v-model="info.pass" class="form-control" placeholder="비밀번호를 입력해주세요." />
             <div v-show="passError" class="font14 mt-1 ml-2">
               비밀번호를 입력해주세요.
             </div>
           </div>
           <div class="mb-3">
-            <input
-              type="password"
-              v-model="info.repass"
-              class="form-control"
-              placeholder="비밀번호를 다시 입력해주세요."
-            />
+            <input type="password" v-model="info.repass" class="form-control" placeholder="비밀번호를 다시 입력해주세요." />
             <div v-show="repassError" class="font14 mt-1 ml-2">
               비밀번호가 일치하지 않습니다.
             </div>
           </div>
           <div class="mb-3">
-            <input
-              type="email"
-              v-model="info.email"
-              class="form-control"
-              placeholder="이메일을 입력해주세요."
-              aria-describedby="emailHelp"
-            />
+            <input type="email" v-model="info.email" class="form-control" placeholder="이메일을 입력해주세요."
+              aria-describedby="emailHelp" />
             <div v-show="emailError" class="font14 mt-1 ml-2">
               Email을 입력해주세요.
             </div>
@@ -84,51 +66,30 @@
           </div> -->
 
           <div class="mb-3">
-            <input
-              type="text"
-              v-model="info.q1"
-              class="form-control"
-              placeholder="인상 깊게 읽은 책 이름은??"
-            />
+            <input type="text" v-model="info.q1" class="form-control" placeholder="인상 깊게 읽은 책 이름은??" />
             <div v-show="q1Error" class="font14 mt-1 ml-2">
               답변이 올바르지 않습니다.
             </div>
           </div>
           <div class="mb-3">
-            <input
-              type="text"
-              v-model="info.q2"
-              class="form-control"
-              placeholder="나의 보물 1호는?"
-              aria-describedby="emailHelp"
-            />
+            <input type="text" v-model="info.q2" class="form-control" placeholder="나의 보물 1호는?"
+              aria-describedby="emailHelp" />
             <div v-show="q2Error" class="font14 mt-1 ml-2">
               답변이 올바르지 않습니다.
             </div>
           </div>
           <div class="mb-3">
-            <input
-              type="text"
-              v-model="info.q3"
-              class="form-control"
-              placeholder="기억에 남는 추억의 장소는?"
-              aria-describedby="emailHelp"
-            />
+            <input type="text" v-model="info.q3" class="form-control" placeholder="기억에 남는 추억의 장소는?"
+              aria-describedby="emailHelp" />
             <div v-show="q3Error" class="font14 mt-1 ml-2">
               답변이 올바르지 않습니다.
             </div>
           </div>
-          <div
-            class="d-flex justify-content-center align-items-center flex-column"
-          >
-            <button type="submit" class="btn btn-primary">회원가입</button>
+          <div class="d-flex justify-content-center align-items-center flex-column">
+            <button type="submit" class="btn btn-primary" @click="onSubmitForm">회원가입</button>
             <div class="d-flex">
               <span> 계정이 있으신가요? </span>
-              <router-link
-                class="nav-link purple-color ml-1"
-                :to="{ name: 'Login' }"
-                >로그인</router-link
-              >
+              <router-link class="nav-link purple-color ml-1" :to="{ name: 'Login' }">로그인</router-link>
             </div>
           </div>
           <div class="d-flex justify-content-center align-items-center">
@@ -152,6 +113,7 @@ import { reactive } from "@vue/reactivity";
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import axios from "@/axios";
 
 export default {
   setup() {
@@ -176,11 +138,44 @@ export default {
       q1: "",
       q2: "",
       q3: "",
+      idDuplicate: false,
+      emailCheck: false,
     });
 
-    const onSubmitForm = async () => {
-      if (info.id === "") {
+    // 이메일인증
+    const check = async () => {
+      if (info.id === '') {
         idError.value = true;
+        info.idDuplicate = false;
+        return;
+      } else if ( !(info.id.includes("@") && info.id.includes("."))) {
+        idError.value = true;
+        info.idDuplicate = false;
+        return;
+      }
+      const url = '/decommi/member/emailCheck'
+      const headers = {
+        "Content-Type": "application/json",
+      }
+      const body = { email: info.id };
+      await axios.post(url, body, { headers }).then(function (res) {
+        console.log(res.data.result)
+        if (res.data.result != 0) {
+          info.idDuplicate = true;
+          idError.value = false;
+          info.emailCheck = false;
+        } else {
+          alert('사용 가능한 이메일입니다.');
+          info.idDuplicate = false;
+          info.emailCheck = true;
+        }
+      })
+    }
+
+    // 회원가입
+    const onSubmitForm = async () => {
+      if (info.emailCheck == false) {
+        info.idDuplicate = true;
         return;
       } else if (info.pass === "") {
         passError.value = true;
@@ -246,6 +241,7 @@ export default {
       q1Error,
       q2Error,
       q3Error,
+      check
     };
   },
   // 회원가입 하지 않은 사람만 접근

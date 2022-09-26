@@ -46,10 +46,10 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
     log.info("msgBody:: " + msgBody);
     JSONParser parser = new JSONParser();
     JSONObject jsonObject = new JSONObject();
-    log.info("jsonObject"+jsonObject);
+    log.info("jsonObject" + jsonObject);
     try {
       jsonObject = (JSONObject) parser.parse(msgBody);
-      log.info("jsonObject"+jsonObject);
+      log.info("jsonObject" + jsonObject);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -99,6 +99,7 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         .attr(dto.getAttr())
         .token(token)
         .build();
+    log.info(sessionDTO);
     return sessionDTO;
   }
 }

@@ -40,7 +40,7 @@ public class DecommiAuthMemberDTO extends User implements OAuth2User {
 
   // 실제로 사용하는 Auth DTO
   public DecommiAuthMemberDTO(
-      String username, String password, Long mid, boolean auth,
+      String username, String password, String id, Long mid, boolean auth,
       Collection<? extends GrantedAuthority> authorities) {
     super(username, password, authorities);
     this.mid = mid;

@@ -9,12 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HeartDTO {
-    private Long hid;
+public class ReportDTO {
+    private Long reid;
+    private String reportContent;
     private Long dino;
     private Long mid;
-
-    // private boolean isHeart;
-    // private Long dino; // Diary 엔티티의 PK dino
-    // private String email; // Member 엔티티의 PK email
 }

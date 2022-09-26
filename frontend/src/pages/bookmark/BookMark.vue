@@ -165,14 +165,14 @@ export default {
         bmTags.push(bookmarkValue.value);
 
         try {
-          const url = "./api/diary/write";
+          const url = "./api/diary/save";
           const headers = {
             "Content-Type": "application/json",
             Authorization: store.state.users.me.token,
             mid: store.state.users.me.mid,
           };
           const body = {
-            bfolderName: bookmarkValue.value,
+            // bfolderName: bookmarkValue.value,
             // writer: store.state.users.me.email,
           };
           console.log(body);

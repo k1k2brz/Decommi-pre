@@ -17,22 +17,32 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.zerock.decommi.dto.BookmarkDTO;
 import org.zerock.decommi.dto.DiaryDTO;
 import org.zerock.decommi.dto.FileDTO;
+import org.zerock.decommi.dto.HeartDTO;
 import org.zerock.decommi.dto.PageRequestDTO;
 import org.zerock.decommi.dto.PageResultDTO;
 import org.zerock.decommi.dto.ReplyDTO;
+import org.zerock.decommi.dto.ReportDTO;
 import org.zerock.decommi.dto.TagDTO;
 import org.zerock.decommi.entity.diary.Diary;
 import org.zerock.decommi.entity.diary.File;
+import org.zerock.decommi.entity.diary.Heart;
 import org.zerock.decommi.entity.diary.Reply;
+import org.zerock.decommi.entity.diary.Report;
 import org.zerock.decommi.entity.diary.Tag;
+import org.zerock.decommi.entity.member.Bookmark;
 import org.zerock.decommi.entity.member.Member;
+import org.zerock.decommi.repository.diary.BookmarkRepository;
 import org.zerock.decommi.repository.diary.DiaryRepository;
 import org.zerock.decommi.repository.diary.FileRepository;
+import org.zerock.decommi.repository.diary.HeartRepository;
 import org.zerock.decommi.repository.diary.ReplyRepository;
+import org.zerock.decommi.repository.diary.ReportRepository;
 import org.zerock.decommi.repository.diary.TagRepository;
 import org.zerock.decommi.repository.member.MemberRepository;
+import org.zerock.decommi.vo.DiaryPostList;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -46,12 +56,14 @@ public class DiaryServiceImpl implements DiaryService {
     private final TagRepository tagRepository;
     private final ReplyRepository replyRepository;
     private final FileRepository fileRepository;
+    private final HeartRepository heartRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final ReportRepository reportRepository;
 
     @Override
-    public String registerDiary(DiaryDTO dto, List<TagDTO> tagList) {
+    public String registerDiary(DiaryDTO dto, List<String> tagList) {
         Diary result = dtoToEntity(dto);
         repository.save(result); // 여기서 dino 생성됨
-        log.info(result); // 이거 추가
 
         List<FileDTO> fileList = dto.getFileDTOList();
         fileList.forEach(new Consumer<FileDTO>() {
@@ -61,7 +73,7 @@ public class DiaryServiceImpl implements DiaryService {
                 fileRepository.save(file);
             }
         });
-        for (TagDTO i : tagList) {
+        for (String i : tagList) {
             Tag tagResult = tagDTOtoEntity(i);
             tagResult.updateDiary(result);
             tagRepository.save(tagResult);
@@ -76,7 +88,10 @@ public class DiaryServiceImpl implements DiaryService {
             return null;
         } else {
             DiaryDTO dto = entityToDTO(isit.get());
-            List<TagDTO> tagList = tagRepository.getList(dto.getDino());
+            List<String> tagList = tagRepository.getList(dto.getDino())
+                    .stream()
+                    .map(tentity -> tentity.getTagName())
+                    .collect(Collectors.toList());
             dto.setTags(tagList);
             return dto;
         }
@@ -84,7 +99,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Transactional
     @Override
-    public String modifyDiary(DiaryDTO dto, List<TagDTO> tagList) {
+    public String modifyDiary(DiaryDTO dto, List<String> tagList) {
         Diary originalDiary = repository.findByDino(dto.getDino());
         DiaryDTO getByDino = entityToDTO(originalDiary);
 
@@ -108,8 +123,9 @@ public class DiaryServiceImpl implements DiaryService {
         });
 
         // 태그가 있을때만 TagDTO를 Tag로
-        if (tagList != null && tagList.size() > 0) {
-            for (TagDTO i : tagList) {
+        for (String i : tagList) {
+            Optional<Tag> tagTemp = tagRepository.findByDinoAndTagName(modifiedDiary, i);
+            if (!tagTemp.isPresent()) {
                 Tag tagResult = tagDTOtoEntity(i);
                 tagResult.updateDiary(modifiedDiary);
                 tagRepository.save(tagResult);
@@ -122,6 +138,71 @@ public class DiaryServiceImpl implements DiaryService {
     public void deleteDiary(Long dino) {
         repository.deleteById(dino);
         repository.deleteFileByDino(dino);
+
+    }
+
+    @Transactional
+    @Override
+    public DiaryDTO getDiaryPostByDino(Long dino) {
+        Diary result = repository.getByDino(dino);
+        DiaryDTO dto = entityToDTO(result);
+        List<String> tagString = tagRepository.getList(result.getDino())
+                .stream()
+                .map(tentity -> tentity.getTagName())
+                .collect(Collectors.toList());
+        dto.setTags(tagString);
+        return dto;
+    }
+
+    @Override
+    public List<DiaryPostList> getDiaryPostList() {
+        Sort sort = sortByDino();
+        List<DiaryPostList> result = repository.getList(sort).get().stream().map(v -> {
+            return new DiaryPostList(v);
+        }).collect(Collectors.toList());
+        return result;
+    }
+
+    // 하트
+    @Override
+    public String addHeart(HeartDTO dto) {
+        Optional<Heart> checkHeart = heartRepository.checkHeartLogByMemberIdAndDiaryId(dto.getMid(), dto.getDino());
+        Heart entity = heartDTOtoEntity(dto);
+        if (checkHeart.isPresent()) {
+            heartRepository.delete(checkHeart.get());
+            return "좋아요 취소";
+        } else {
+            heartRepository.save(entity);
+            return "좋아요";
+        }
+    }
+
+    // 북마크
+    @Override
+    public String addBookmark(BookmarkDTO dto) {
+        Optional<Bookmark> checkBookmark = bookmarkRepository.checkBookmarkLogByMemberIdAndDiary(dto.getMid(),
+                dto.getDino());
+        Bookmark entity = bookmarkDTOtoEntity(dto);
+        if (checkBookmark.isPresent()) {
+            bookmarkRepository.delete(checkBookmark.get());
+            return "북마크 취소";
+        } else {
+            bookmarkRepository.save(entity);
+            return "북마크 추가";
+        }
+
+    }
+
+    // 신고
+    @Override
+    public String addDiaryReport(ReportDTO dto) {
+        Optional<Report> checkReport = reportRepository.checkReportLogByMemberIdAndDiaryId(dto.getMid(), dto.getDino());
+        if (checkReport.isPresent()) {
+            return "이미 신고한 글입니다";
+        } else {
+            reportRepository.save(reportDTOtoEntity(dto));
+            return "신고가 완료되었습니다";
+        }
 
     }
 
@@ -209,11 +290,6 @@ public class DiaryServiceImpl implements DiaryService {
     // return null;
     // }
 
-    @Override
-    public List<Object[]> getDiaryList() {
-        return repository.getListAndAuthor();
-    }
-
     // @Transactional
     // @Override
     // public List<Object[]> getSearchDiaryList(String search) {
@@ -225,4 +301,8 @@ public class DiaryServiceImpl implements DiaryService {
     // }
     // return repository.getListByTitleOrContent(decode);
     // }
+
+    private Sort sortByDino() {
+        return Sort.by(Sort.Direction.DESC, "dino");
+    }
 }

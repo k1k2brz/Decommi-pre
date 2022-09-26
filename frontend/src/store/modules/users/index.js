@@ -100,6 +100,7 @@ export default {
         .post(url, body, { headers })
         .then((res) => {
           console.log(res.data);
+          console.log(res.data.id);
           // payload는 프론트 값을 받아옴
           // res.data 백엔드 값을 받아옴
           commit("setMe", res.data);

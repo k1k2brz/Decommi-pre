@@ -149,6 +149,7 @@ export default {
     const privacyPermit = ref(true);
     const tagValue = ref("");
     let tags = reactive([]);
+    const file = ref('')
 
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
@@ -171,6 +172,7 @@ export default {
 
     const handleFileUpload = (e) => {
       // image는 Json이 아니라 FormData로 보낸다.
+      console.log(e.target.files[0])
       const imageFormData = new FormData();
       [].forEach.call(e.target.files, (f) => {
         imageFormData.append("image", f); // { image: [file1, file2] }
@@ -322,6 +324,7 @@ export default {
       tags,
       addTag,
       removeTag,
+      file,
     };
   },
 };

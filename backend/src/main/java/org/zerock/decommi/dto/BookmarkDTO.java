@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookmarkDTO {
-    private Long bookmarkId;
-    private String bfolderName;
-    private boolean isBookmark;
+    private Long bid;
+    // private String bfolderName;
+    // private boolean isBookmark;
 
-    private String useremail;
-    private Long diarynum;
+    private Long dino;
+    private Long mid;
 }

@@ -4,27 +4,36 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.zerock.decommi.dto.BookmarkDTO;
 import org.zerock.decommi.dto.DiaryDTO;
 import org.zerock.decommi.dto.FileDTO;
+import org.zerock.decommi.dto.HeartDTO;
 import org.zerock.decommi.dto.ReplyDTO;
+import org.zerock.decommi.dto.ReportDTO;
 import org.zerock.decommi.dto.TagDTO;
 import org.zerock.decommi.entity.diary.Diary;
 import org.zerock.decommi.entity.diary.File;
+import org.zerock.decommi.entity.diary.Heart;
 import org.zerock.decommi.entity.diary.Reply;
+import org.zerock.decommi.entity.diary.Report;
 import org.zerock.decommi.entity.diary.Tag;
+import org.zerock.decommi.entity.member.Bookmark;
 import org.zerock.decommi.entity.member.Member;
+import org.zerock.decommi.vo.DiaryPostList;
 
 public interface DiaryService {
     // 다이어리
-    String registerDiary(DiaryDTO dto, List<TagDTO> tagList);
+    String registerDiary(DiaryDTO dto, List<String> tagList);
 
     DiaryDTO checkBeforeDiaryModify(Long dino, String id);
 
-    String modifyDiary(DiaryDTO dto, List<TagDTO> tagList);
+    String modifyDiary(DiaryDTO dto, List<String> tagList);
 
     void deleteDiary(Long dino);
 
-    List<Object[]> getDiaryList();
+    DiaryDTO getDiaryPostByDino(Long dino);
+
+    List<DiaryPostList> getDiaryPostList();
 
     // 검색조건 만족하는 다이어리 게시글 리스트
     // List<Object[]> getSearchDiaryList(String search);
@@ -41,8 +50,13 @@ public interface DiaryService {
     // pageable, String id);
 
     // 북마크
+    String addBookmark(BookmarkDTO dto);
+
     // 하트
+    String addHeart(HeartDTO dto);
+
     // 신고
+    String addDiaryReport(ReportDTO dto);
 
     // 다이어리
     default Diary dtoToEntity(DiaryDTO dto) {
@@ -84,12 +98,9 @@ public interface DiaryService {
     }
 
     // 태그
-    default Tag tagDTOtoEntity(TagDTO dto) {
+    default Tag tagDTOtoEntity(String tagList) {
         Tag tag = Tag.builder()
-                .tagName(dto.getTagName())
-                .tagGroup(dto.getTagGroup())
-                .isSubTag(dto.isSubTag())
-                .dino(dto.getDino())
+                .tagName(tagList)
                 .build();
         return tag;
     }
@@ -99,8 +110,6 @@ public interface DiaryService {
         TagDTO dto = TagDTO.builder()
                 .tagId(tagList.getTagId())
                 .tagName(tagList.getTagName())
-                .tagGroup(tagList.getTagGroup())
-                .isSubTag(tagList.isSubTag())
                 .dino(tagList.getDino())
                 .build();
         return dto;
@@ -137,4 +146,64 @@ public interface DiaryService {
         return dto;
     }
 
+    // 하트
+    default Heart heartDTOtoEntity(HeartDTO dto) {
+        Heart entity = Heart.builder()
+                .hid(dto.getHid())
+                .dino(dto.getDino())
+                .mid(dto.getMid())
+                .build();
+        return entity;
+    }
+
+    // 하트
+    default HeartDTO heartEntityToDTO(Heart entity) {
+        HeartDTO dto = HeartDTO.builder()
+                .hid(entity.getHid())
+                .dino(entity.getDino())
+                .mid(entity.getMid())
+                .build();
+        return dto;
+    }
+
+    // 북마크
+    default Bookmark bookmarkDTOtoEntity(BookmarkDTO dto) {
+        Bookmark entity = Bookmark.builder()
+                .dino(dto.getDino())
+                .bid(dto.getBid())
+                .mid(dto.getMid())
+                .build();
+        return entity;
+    }
+
+    // 북마크
+    default BookmarkDTO bookmarkEntityToDto(Bookmark entity) {
+        BookmarkDTO dto = BookmarkDTO.builder()
+                .dino(entity.getDino())
+                .bid(entity.getBid())
+                .mid(entity.getMid())
+                .build();
+        return dto;
+
+    }
+
+    // 신고
+    default Report reportDTOtoEntity(ReportDTO dto) {
+        Report entity = Report.builder().reid(dto.getReid())
+                .dino(Diary.builder().dino(dto.getDino()).build())
+                .mid(Member.builder().mid(dto.getMid()).build())
+                .reportContent(dto.getReportContent())
+                .build();
+        return entity;
+    }
+
+    // 신고
+    default ReportDTO reportEntitytoDTO(Report entity) {
+        ReportDTO dto = ReportDTO.builder().reid(entity.getReid())
+                .dino(entity.getDino().getDino())
+                .mid(entity.getMid().getMid())
+                .reportContent(entity.getReportContent())
+                .build();
+        return dto;
+    }
 }

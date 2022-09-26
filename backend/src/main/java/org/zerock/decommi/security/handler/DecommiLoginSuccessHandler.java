@@ -33,12 +33,12 @@ public class DecommiLoginSuccessHandler implements AuthenticationSuccessHandler 
       Authentication authentication) throws IOException, ServletException {
     log.info("onAuthenticationSuccess");
     DecommiAuthMemberDTO dto = (DecommiAuthMemberDTO) authentication.getPrincipal();
-    boolean fromSocial = dto.isFromSocial();
+    boolean fromSocial = dto.isAuth();
     log.info("isFromSocial : " + fromSocial);
     boolean passResult = encoder.matches("1", dto.getPassword());
     log.info("fromSocial && passResult: " + (fromSocial && passResult));
     if (fromSocial && passResult) {
-      redirectStrategy.sendRedirect(request, response, "/member/modify?from=social");
+      redirectStrategy.sendRedirect(request, response, "로그인 구현후 수정");
       return;
     }
     List<String> roleNames = new ArrayList<>();
