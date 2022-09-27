@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div
-      v-for="post in state.mainPosts"
-      :key="post"
-      class="card mb-4"
-    >
+    <div v-for="post in state.mainPosts" :key="post" class="card mb-4">
       <div class="card-body mt-3 mb-3 ml-4 mr-4 p-4">
         <div class="d-flex justify-content-between">
           <h5 @click="dinoTest(post.dino)" type="button" class="card-title">
@@ -29,77 +25,13 @@
             <button type="button" class="btn-tag-sm d-flex">태그 들어감</button>
           </div>
           <!-- icon -->
-          <div class="d-flex justify-content-start gap-3">
+          <div class="d-flex justify-content-start">
             <WrittenPostsBookmark />
-            <button @click="bookmarkFav(post.dino)" class="btn-icon">
-              <div v-if="bmFav" class="bi bi-heart-fill icon-red"></div>
-              <div v-else class="bi bi-heart"></div>
-            </button>
-            <button @click="onModal" class="btn-icon">
-              <div
-                v-if="bmReport"
-                class="bi bi-megaphone-fill icon-purple"
-              ></div>
-              <div v-else class="bi bi-megaphone"></div>
-            </button>
-            <button @click="bookmarkCmt" class="btn-icon">
-              <div v-if="bmCmt" class="bi bi-chat-dots-fill icon-purple"></div>
-              <div v-else class="bi bi-chat-dots"></div>
-            </button>
+            <WrittenPostsHeart />
+            <ReportModal />
+            <WrittenPostsComment />
           </div>
-          <!-- 컴포넌트화 시킬 것 -->
-          <div>
-            <ReportModal class="zindex" />
-          </div>
-          <div v-if="bmCmt">
-            <hr />
-            <CommentWrite :post-id="post.id" />
-            <div v-for="(cmt, idx) in post.Comments" :key="cmt.id + idx">
-              <!-- 그리드로 변경 -->
-              <div
-                class="Maincomment mb-1 d-flex justify-content-between gap-2"
-              >
-                <div v-if="onComment">
-                  <span>User</span>
-                  <span class="ml-3">{{ cmt.replyContent }}</span>
-                </div>
-                <div v-else>
-                  <span>User</span>
-                  <input
-                    type="text"
-                    v-model="comment.value"
-                    @keyup.enter="changeCommentFinal"
-                  />
-                  <button @click="changeCommentFinal" class="btn-regular">
-                    수정완료
-                  </button>
-                </div>
-                <div class="d-flex justify-content-end">
-                  <span>2022.08.28</span>
-                  <button
-                    v-if="cmtChangeBtn"
-                    @click="changeComment($event)"
-                    class="text-btn"
-                  >
-                    수정
-                  </button>
-                  <button
-                    v-else
-                    @click="changeComment($event)"
-                    class="text-btn"
-                  >
-                    수정취소
-                  </button>
-                  <!-- 백엔드에서 들어오는 comment번호를 ()안에 넣는다. -->
-                  <!-- comment Id가 필요 -->
-                  <button
-                    @click="onRemoveComment"
-                    class="ml-2 bi bi-x-lg"
-                  ></button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <WrittenComments />
         </div>
       </div>
     </div>
@@ -110,12 +42,14 @@
 import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import CommentWrite from "./CommentWrite.vue";
-import { onBeforeMount, computed } from "vue";
+import { computed } from "vue";
 import axios from "axios";
-import ReportModal from "./ReportModal.vue"
+import ReportModal from "./ReportModal.vue";
 import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
 import PostMenu from "./PostMenu.vue";
+import WrittenPostsHeart from "./WrittenPostsHeart.vue";
+import WrittenPostsComment from "./WrittenPostsComment.vue";
+import WrittenComments from "./WrittenComments.vue";
 
 export default {
   props: {
@@ -131,9 +65,6 @@ export default {
     const bmFav = ref(false);
     const bmCmt = ref(false);
     // const bmPlus = ref(false);
-    const bmReport = ref(false);
-    const onComment = ref(true);
-    const cmtChangeBtn = ref(true);
     const CheckCmt = ref(false);
 
     const bookmarkSave = computed(() => {
@@ -210,90 +141,6 @@ export default {
       router.push({ name: "CkEditor" });
     };
 
-    onBeforeMount(() => {
-      // 댓글 비공개 조사하기
-      // console.log(bmCmt.value)
-      // console.log(store.state.posts.mainPosts[0])
-      if (store.state.posts.mainPosts[0].replyYN == false) {
-        store.state.posts.mainPosts == false;
-      }
-    });
-
-    // 좋아요
-    // false가 체크임
-    const bookmarkFav = async (dino) => {
-      if (bmFav.value == true) {
-        bmFav.value = false;
-      } else if (bmFav.value == false) {
-        bmFav.value = true;
-        try {
-          const url = "./api/diary/heart";
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: store.state.users.me.token,
-            mid: store.state.users.me.mid,
-          };
-          const body = {
-            hid: bmFav.value,
-            dino: dino
-          };
-          console.log(body);
-          await axios
-            .post(url, body, { headers })
-            .then((res) => {
-              console.log(res.data);
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        } catch (err) {
-          console.log(err);
-        }
-        // 좋아요 누르면 데이터 보낼 것
-      }
-    };
-
-    const bookmarkCmt = () => {
-      const index = store.state.posts.mainPosts.findIndex((v) => v.id);
-      console.log(index);
-      bmCmt.value == true ? (bmCmt.value = false) : (bmCmt.value = true);
-    };
-
-    const changeComment = (e) => {
-      console.log(e);
-      if (onComment.value == true) {
-        onComment.value = false;
-        cmtChangeBtn.value = false;
-      } else if (onComment.value == false) {
-        onComment.value = true;
-        cmtChangeBtn.value = true;
-      }
-    };
-
-    const onModal = () => {
-      if (bmReport.value == false) {
-        bmReport.value = true;
-        // report.value = false;
-        store.state.posts.bookmarkSave = false;
-      } else if (bmReport.value == true) {
-        bmReport.value = false;
-        // report.value = true;
-      }
-    };
-
-    const onRemoveComment = () => {
-      store.dispatch("posts/removeComment", {
-        id: props.post.id,
-      });
-      console.log(props.post.id);
-    };
-
-    const changeCommentFinal = () => {
-      store.dispatch("posts/changeComment", {
-        content: comment.value,
-      });
-    };
-
     function getTimeFromJavaDate(s) {
       const cont = new Date(s);
       let date = new Date();
@@ -314,13 +161,13 @@ export default {
     }
     const state = reactive({
       mainPosts: [],
-      dino: '',
+      dino: "",
     });
 
     // 컨트롤러 작성해 달라고 할 것
 
     axios.post("./diary/list").then((res) => {
-      console.log(res.data)
+      console.log(res.data);
       state.mainPosts = res.data;
     });
 
@@ -333,27 +180,25 @@ export default {
       bookmarkSave,
       bmFav,
       bmCmt,
-      bookmarkFav,
-      bookmarkCmt,
+
       onRemoveBtn,
       onEditBtn,
-      onComment,
-      changeComment,
-      cmtChangeBtn,
-      changeCommentFinal,
-      onRemoveComment,
       comment,
       content,
       close,
-      bmReport,
-      onModal,
-      // report,
       getTimeFromJavaDate,
       dinoTest,
       CheckCmt,
     };
   },
-  components: { ReportModal, CommentWrite, WrittenPostsBookmark, PostMenu },
+  components: {
+    ReportModal,
+    WrittenPostsBookmark,
+    PostMenu,
+    WrittenPostsHeart,
+    WrittenPostsComment,
+    WrittenComments,
+  },
 };
 </script>
 
@@ -362,24 +207,9 @@ export default {
   z-index: 10
   background-color: white
 
-.icon-purple
-  color: #AE6FFF
-
-.icon-red
-  color: #FF4040
-
 .bookmarkBtn
   border: none
   background: none
-
-.report-location
-  right: 30px
-  z-index: 10
-  background-color: white
-
-.textarea
-  border: 1px solid #D8D8D8
-  resize: none
 
 .card-text
   white-space: pre-line

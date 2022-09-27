@@ -11,6 +11,8 @@ CK에디터 vue3으로 바꾸기
 날짜 ~시간 전 으로 뜨게 하기 (get으로 받아지게 나한테 보내는 컨트롤러 작성해달라고 하기)
 회원가입,로그인에 ref걸고 focus걸기
 
+comments에 bmCmt??인가 이거 vuex에 넣고 store에서 false true 가져올 것
+
 컴포넌트 분리 하나씩 다 하고 Axios를 밖에서 v-for돌려준 뒤
 dino를 하나씩 받아 주소창에 넣어줄 것
 dino를 받아올 수 있게 하기. (일부 됨)

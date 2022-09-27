@@ -45,17 +45,15 @@ export default {
 
     const newDate = ref(Date.now());
 
-    const addComment = (comment) => {
+    const addComment = () => {
       if (!commentValue.value == "") {
         store.dispatch("posts/addComment", {
           id: newDate,
           postId: props.postId,
           replyContent: commentValue.value,
-          idx: comment,
         });
 
         // console.log(newDate);
-        index.idx += 1;
         // comments.push(commentValue.value);
 
         try {

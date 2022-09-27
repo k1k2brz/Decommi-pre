@@ -251,7 +251,7 @@ export default {
           openYN: diaryPrivacyCheck.value,
           replyYN: commentPrivacyCheck.value,
           writer: store.state.users.me.id,
-          tagList: tags
+          tagList: tags,
         };
         console.log(body);
         await axios
