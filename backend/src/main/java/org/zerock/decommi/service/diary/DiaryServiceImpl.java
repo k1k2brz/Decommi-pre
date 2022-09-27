@@ -63,7 +63,6 @@ public class DiaryServiceImpl implements DiaryService {
     @Override
     public String registerDiary(DiaryDTO dto, List<String> tagList) {
         Diary result = dtoToEntity(dto);
-        repository.save(result); // 여기서 dino 생성됨
 
         List<FileDTO> fileList = dto.getFileDTOList();
         fileList.forEach(new Consumer<FileDTO>() {
@@ -78,6 +77,8 @@ public class DiaryServiceImpl implements DiaryService {
             tagResult.updateDiary(result);
             tagRepository.save(tagResult);
         }
+        dto.setTagList(tagList);
+        repository.save(result); // 여기서 dino 생성됨
         return result.getDino().toString();
     }
 
@@ -92,7 +93,7 @@ public class DiaryServiceImpl implements DiaryService {
                     .stream()
                     .map(tentity -> tentity.getTagName())
                     .collect(Collectors.toList());
-            dto.setTags(tagList);
+            dto.setTagList(tagList);
             return dto;
         }
     }
@@ -103,7 +104,7 @@ public class DiaryServiceImpl implements DiaryService {
         Diary originalDiary = repository.findByDino(dto.getDino());
         DiaryDTO getByDino = entityToDTO(originalDiary);
 
-        originalDiary.getTags().forEach(tag -> {
+        originalDiary.getTagList().forEach(tag -> {
             tagRepository.deleteById(tag.getTagId());
         });
         getByDino.setTitle(dto.getTitle());
@@ -150,7 +151,7 @@ public class DiaryServiceImpl implements DiaryService {
                 .stream()
                 .map(tentity -> tentity.getTagName())
                 .collect(Collectors.toList());
-        dto.setTags(tagString);
+        dto.setTagList(tagString);
         return dto;
     }
 

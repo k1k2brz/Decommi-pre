@@ -5,7 +5,7 @@ import axios from "@/axios";
 export default {
   namespaced: true,
   state: {
-    me: null,
+    me: '',
     bookmark: [],
   },
   mutations: {

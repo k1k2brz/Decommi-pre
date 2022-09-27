@@ -14,6 +14,7 @@ export default {
     dino: "",
     regDate: "",
     bookmarkSave: false,
+    report: true,
   },
   mutations: {
     setDiaryId(state, num) {

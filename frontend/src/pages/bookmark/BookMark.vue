@@ -160,7 +160,7 @@ export default {
     });
 
     // VUEX로 옮기기 - 그냥 옮기자
-    const addBookmark = () => {
+    const addBookmark = async () => {
       if (!bookmarkValue.value == "") {
         bmTags.push(bookmarkValue.value);
 
@@ -176,7 +176,7 @@ export default {
             // writer: store.state.users.me.email,
           };
           console.log(body);
-          axios
+          await axios
             .post(url, body, { headers })
             .then((res) => {
               console.log(res.data);

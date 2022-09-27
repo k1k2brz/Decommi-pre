@@ -1,8 +1,8 @@
 <template>
   <div>
     <div
-      v-for="(post, idx) in state.mainPosts"
-      :key="'post' + idx"
+      v-for="post in state.mainPosts"
+      :key="post"
       class="card mb-4"
     >
       <div class="card-body mt-3 mb-3 ml-4 mr-4 p-4">
@@ -10,44 +10,7 @@
           <h5 @click="dinoTest(post.dino)" type="button" class="card-title">
             {{ post.title }}
           </h5>
-          <div class="d-flex flex-column">
-            <button
-              @click.stop="
-                dropdownToggle.reportToggle.value =
-                  !dropdownToggle.reportToggle.value
-              "
-              class="btn-icon bi bi-three-dots d-flex justify-content-end"
-            ></button>
-            <div>
-              <div
-                v-if="dropdownToggle.reportToggle.value"
-                @blur="close"
-                class="reportBtn-shadow report-location position-absolute"
-              >
-                <div class="d-flex flex-column">
-                  <!-- 본인의 포스팅일시 (email을 받아서) v-if로 보이는거 다르게 -->
-                  <button
-                    @click="onEditBtn"
-                    type="button"
-                    class="reportBtn reportBtnHover"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                  >
-                    수정하기
-                  </button>
-                  <button
-                    @click="onRemoveBtn"
-                    type="button"
-                    class="reportBtn reportBtnHover"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                  >
-                    삭제하기
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PostMenu :onEditBtn="onEditBtn" :onRemoveBtn="onRemoveBtn" />
         </div>
         <div class="small-text mb-4">
           <span class="days">{{ post.regDate.split("-")[0] }}.</span>
@@ -63,20 +26,12 @@
         <p class="card-text mb-4">{{ post.content }}</p>
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
-            <button type="button" class="btn-tag-sm d-flex">LifeStyle</button>
-            <button type="button" class="btn-tag-sm d-flex">일상</button>
-            <button type="button" class="btn-tag-sm d-flex">디지털 사진</button>
+            <button type="button" class="btn-tag-sm d-flex">태그 들어감</button>
           </div>
           <!-- icon -->
-          <div class="d-flex gap-3">
-            <button @click="bookmarkBtn" class="btn-icon">
-              <div
-                v-if="bookmarkSave"
-                class="bi bi-bookmark-fill icon-purple"
-              ></div>
-              <div v-else class="bi bi-bookmark"></div>
-            </button>
-            <button @click="bookmarkFav" class="btn-icon">
+          <div class="d-flex justify-content-start gap-3">
+            <WrittenPostsBookmark />
+            <button @click="bookmarkFav(post.dino)" class="btn-icon">
               <div v-if="bmFav" class="bi bi-heart-fill icon-red"></div>
               <div v-else class="bi bi-heart"></div>
             </button>
@@ -91,81 +46,10 @@
               <div v-if="bmCmt" class="bi bi-chat-dots-fill icon-purple"></div>
               <div v-else class="bi bi-chat-dots"></div>
             </button>
-            <ReportModal />
-          </div>
-          <div v-if="bookmarkSave">
-            <WrittenPostsBookmark />
           </div>
           <!-- 컴포넌트화 시킬 것 -->
           <div>
-            <div v-if="!report" class="container position-relative">
-              <div
-                class="d-flex flex-column box-shadow position-absolute report zindex p-3 gap-2"
-              >
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <!-- style="margin: auto" -->
-                    <span class="bold">신고하기</span>
-                  </div>
-                </div>
-                <div class="stroke-default"></div>
-                <div
-                  class="gap-2 mt-1 d-flex flex-column justify-content-center"
-                >
-                  <span> 이 다이어리의 어떤 점이 문제인가요? </span>
-                  <select v-model="selectReport" class="mt-2">
-                    <option disabled value="pso">Please select one</option>
-                    <option :value="{ report: '스팸이거나 의심스럽습니다.' }">
-                      스팸이거나 의심스럽습니다.
-                    </option>
-                    <option
-                      :value="{
-                        report: '민감한 내용또는 사진을 보여주고 있습니다.',
-                      }"
-                    >
-                      민감한 내용또는 사진을 보여주고 있습니다.
-                    </option>
-                    <option
-                      :value="{ report: '가학적이거나 유해한 내용입니다.' }"
-                    >
-                      가학적이거나 유해한 내용입니다.
-                    </option>
-                    <option :value="{ report: '사실을 오도하고 있습니다.' }">
-                      사실을 오도하고 있습니다.
-                    </option>
-                    <option
-                      :value="{
-                        report: '자해 또는 자살 의도를 표현하고 있습니다.',
-                      }"
-                    >
-                      자해 또는 자살 의도를 표현하고 있습니다.
-                    </option>
-                    <option :value="{ report: '기타 의견.' }">
-                      기타 의견.
-                    </option>
-                  </select>
-                  <textarea
-                    v-model="textareaReport"
-                    class="textarea mt-2"
-                    cols="35"
-                    rows="10"
-                  ></textarea>
-                </div>
-                <button @click="sendReport" class="btn-regular">
-                  신고하기
-                </button>
-              </div>
-            </div>
-          </div>
-          <div
-            v-if="sendReportCheck"
-            class="container bm-container d-flex position-absolute"
-          >
-            <div
-              class="position-relative bookmarks flex-wrap bg-white d-flex box-shadow p-3"
-            >
-              <span class="ml-3 mr-3 d-flex">신고가 완료되었습니다.</span>
-            </div>
+            <ReportModal class="zindex" />
           </div>
           <div v-if="bmCmt">
             <hr />
@@ -226,11 +110,12 @@
 import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import ReportModal from "@/pages/mainpage/ReportModal.vue";
 import CommentWrite from "./CommentWrite.vue";
-import { onBeforeMount, onBeforeUnmount, computed, onMounted } from "vue";
+import { onBeforeMount, computed } from "vue";
 import axios from "axios";
+import ReportModal from "./ReportModal.vue"
 import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
+import PostMenu from "./PostMenu.vue";
 
 export default {
   props: {
@@ -249,37 +134,10 @@ export default {
     const bmReport = ref(false);
     const onComment = ref(true);
     const cmtChangeBtn = ref(true);
-    const report = ref(true);
-    const sendReportCheck = ref(false);
-    const selectReport = ref("");
-    const textareaReport = ref("");
-
-    // const state = reactive({
-    //   dino: '',
-    //   title: '',
-    //   content: '',
-    //   openYN: false,
-    //   replyYN: false,
-    //   writer: '',
-    // })
+    const CheckCmt = ref(false);
 
     const bookmarkSave = computed(() => {
       return store.state.posts.bookmarkSave;
-    });
-
-    const dropdownToggle = {
-      reportToggle: ref(false),
-      close: () => {
-        dropdownToggle.reportToggle.value = false;
-      },
-    };
-
-    onBeforeUnmount(() => {
-      document.removeEventListener("click", dropdownToggle.close);
-    });
-
-    onMounted(() => {
-      document.addEventListener("click", dropdownToggle.close);
     });
 
     let comment = reactive({
@@ -332,7 +190,7 @@ export default {
         const body = {
           title: props.post.myWriteTitle,
           content: props.post.myWriteContent,
-          writer: store.state.users.me.email,
+          writer: store.state.users.me.id,
         };
         console.log(body);
         await axios
@@ -352,20 +210,6 @@ export default {
       router.push({ name: "CkEditor" });
     };
 
-    const reportContent = () => {
-      dropdownToggle.reportToggle.value = !dropdownToggle.reportToggle.value;
-    };
-
-    const bookmarkBtn = () => {
-      if (store.state.posts.bookmarkSave == false) {
-        store.state.posts.bookmarkSave = true;
-        bmReport.value = false;
-        report.value = true;
-      } else if (store.state.posts.bookmarkSave == true) {
-        store.state.posts.bookmarkSave = false;
-      }
-    };
-
     onBeforeMount(() => {
       // 댓글 비공개 조사하기
       // console.log(bmCmt.value)
@@ -377,7 +221,7 @@ export default {
 
     // 좋아요
     // false가 체크임
-    const bookmarkFav = async () => {
+    const bookmarkFav = async (dino) => {
       if (bmFav.value == true) {
         bmFav.value = false;
       } else if (bmFav.value == false) {
@@ -391,6 +235,7 @@ export default {
           };
           const body = {
             hid: bmFav.value,
+            dino: dino
           };
           console.log(body);
           await axios
@@ -428,27 +273,12 @@ export default {
     const onModal = () => {
       if (bmReport.value == false) {
         bmReport.value = true;
-        report.value = false;
+        // report.value = false;
         store.state.posts.bookmarkSave = false;
       } else if (bmReport.value == true) {
         bmReport.value = false;
-        report.value = true;
+        // report.value = true;
       }
-    };
-
-    const sendReport = () => {
-      console.log(textareaReport.value);
-      console.log(selectReport.value.report);
-      textareaReport.value = "";
-      selectReport.value = "pso";
-      bmReport.value = false;
-      report.value = true;
-      sendReportCheck.value = true;
-      setTimeout(() => {
-        // 마우스가 올라가 있으면 사라지지 않게 이벤트 추가
-        // Fade 애니메이션 줄 것
-        sendReportCheck.value = false;
-      }, 5000);
     };
 
     const onRemoveComment = () => {
@@ -484,11 +314,13 @@ export default {
     }
     const state = reactive({
       mainPosts: [],
+      dino: '',
     });
 
     // 컨트롤러 작성해 달라고 할 것
 
-    axios.post(`./diary/list`).then((res) => {
+    axios.post("./diary/list").then((res) => {
+      console.log(res.data)
       state.mainPosts = res.data;
     });
 
@@ -498,11 +330,9 @@ export default {
 
     return {
       state,
-      reportContent,
       bookmarkSave,
       bmFav,
       bmCmt,
-      bookmarkBtn,
       bookmarkFav,
       bookmarkCmt,
       onRemoveBtn,
@@ -515,26 +345,19 @@ export default {
       comment,
       content,
       close,
-      dropdownToggle,
       bmReport,
       onModal,
-      report,
-      sendReport,
-      selectReport,
-      textareaReport,
-      sendReportCheck,
+      // report,
       getTimeFromJavaDate,
       dinoTest,
+      CheckCmt,
     };
   },
-  components: { ReportModal, CommentWrite, WrittenPostsBookmark },
+  components: { ReportModal, CommentWrite, WrittenPostsBookmark, PostMenu },
 };
 </script>
 
 <style lang="sass" scoped>
-.bg-white
-  background-color: white
-
 .zindex
   z-index: 10
   background-color: white

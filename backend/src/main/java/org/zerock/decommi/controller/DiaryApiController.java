@@ -55,8 +55,9 @@ public class DiaryApiController {
 
     @RequestMapping(value = "/write", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody DiaryDTO dto) {
-        List<String> tagList = dto.getTags();
+        List<String> tagList = dto.getTagList();
         log.info("dto : " + dto);
+        log.info("tl : " + tagList);
         return new ResponseEntity<>(diaryService.registerDiary(dto, tagList), HttpStatus.OK);
     }
 
@@ -68,7 +69,7 @@ public class DiaryApiController {
 
     @RequestMapping(value = "/modify/register", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> articleModify(@RequestBody DiaryDTO dto) {
-        String diaryPost = diaryService.modifyDiary(dto, dto.getTags());
+        String diaryPost = diaryService.modifyDiary(dto, dto.getTagList());
         return new ResponseEntity<>(diaryPost, HttpStatus.OK);
     }
 

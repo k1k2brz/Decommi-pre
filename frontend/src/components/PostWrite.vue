@@ -229,6 +229,7 @@ export default {
         content: myWriteContent.value,
         Comments: [],
         Images: [],
+        tagList: [],
         openYN: diaryPrivacyCheck.value,
         replyYN: commentPrivacyCheck.value,
         id: Date.now(),
@@ -249,7 +250,8 @@ export default {
           content: myWriteContent.value,
           openYN: diaryPrivacyCheck.value,
           replyYN: commentPrivacyCheck.value,
-          writer: store.state.users.me.email,
+          writer: store.state.users.me.id,
+          tagList: tags
         };
         console.log(body);
         await axios

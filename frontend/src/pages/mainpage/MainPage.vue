@@ -20,7 +20,7 @@
             </div>
           </div>
         </div>
-        <WrittenPosts v-for="post in mainPosts" :key="post.id" :post="post" />
+        <WrittenPosts />
       </div>
       <div class="w-30 search-tag-line d-flex justify-content-between ml-3">
         <div class="d-flex flex-column w-100">

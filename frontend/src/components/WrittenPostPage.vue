@@ -1,8 +1,25 @@
 <template>
-  <h1>주소창 확인</h1>
-  <h1>dasdasdasdas</h1>
-  <h1>dasdasdasdas</h1>
-  <h1>dasdasdasdas</h1>
+  <div class="top-margin">
+    <div class="mb-4">
+      <span class="home-title">게시글</span>
+    </div>
+    </div>
+  <div>
+    <div
+      class="card mb-4"
+    >
+      <div class="card-body mt-3 mb-3 ml-4 mr-4 p-4">
+        <div class="d-flex justify-content-between">
+          <h5 type="button" class="card-title">
+            {{ state.title }}
+          </h5>
+          <div class="d-flex flex-column">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{state.title}}
 </template>
 
 <script>
@@ -15,6 +32,8 @@ export default {
   setup() {
     // const store = useStore();
     // const router = useRouter();
+
+    // 여기 CSS 수정하기
 
     const state = reactive({
       dino: "",
@@ -39,16 +58,34 @@ export default {
     //   alert("잘못된 접근입니다");
     //   router.push("/");
     // }
+    function getTimeFromJavaDate(s) {
+      const cont = new Date(s);
+      let date = new Date();
+      let calculated = (new Date(date.getTime()) - cont) / 1000; //초 계산
+      if (calculated < 60) {
+        return "방금 전";
+      } else if (calculated < 60 * 60) {
+        return `${Math.round(calculated / 60)}분 전`;
+      } else if (calculated < 60 * 60 * 24) {
+        return `${Math.round(calculated / (60 * 60))}시간 전`;
+      } else if (calculated < 60 * 60 * 24 * 7) {
+        return `${Math.round(calculated / (60 * 60 * 24))}일 전`;
+      } else if (calculated < 60 * 60 * 24 * 7 * 5) {
+        return `${Math.round(calculated / (60 * 60 * 24 * 7))}주 전`;
+      } else if (calculated > 31536000) {
+        return `${Math.round(calculated / 31536000)}년 전`;
+      }
+    }
 
     axios.get(`./diary/read/${dino}`).then((res) => {
-      console.log(res);
-      // state.regDate = getTimeFromJavaDate(res.data.state.regDate);
-      // state.dino = res.data.state.dino;
-      // state.title = res.data.state.title;
-      // state.content = res.data.state.content;
-      // state.openYN = res.data.state.openYN;
-      // state.replyYN = res.data.state.replyYN;
-      // state.modDate = res.data.state.modDate;
+      console.log(res.data.diaryPost);
+      state.regDate = getTimeFromJavaDate(res.data.diaryPost.regDate);
+      state.dino = res.data.diaryPost.dino;
+      state.title = res.data.diaryPost.title;
+      state.content = res.data.diaryPost.content;
+      state.openYN = res.data.diaryPost.openYN;
+      state.replyYN = res.data.diaryPost.replyYN;
+      state.modDate = res.data.diaryPost.modDate;
     });
 
     return { state };

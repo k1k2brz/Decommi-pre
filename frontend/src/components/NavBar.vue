@@ -10,7 +10,7 @@
       <a href="#" @click="logoBtn" class="navbar-brand"><b>DeCommi</b></a>
       <ul class="navbar-nav">
         <li
-          v-if="!store.state.users.me"
+          v-if="!me"
           class="nav-item active d-flex align-items-center flex-wrap"
         >
           <router-link class="nav-link mr-3" :to="{ name: 'Login' }"
