@@ -11,12 +11,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.decommi.dto.BookmarkDTO;
 import org.zerock.decommi.dto.DiaryDTO;
 import org.zerock.decommi.dto.FileDTO;
@@ -25,10 +24,12 @@ import org.zerock.decommi.dto.PageRequestDTO;
 import org.zerock.decommi.dto.PageResultDTO;
 import org.zerock.decommi.dto.ReplyDTO;
 import org.zerock.decommi.dto.ReportDTO;
+// import org.zerock.decommi.dto.SearchResultDTO;
 import org.zerock.decommi.dto.TagDTO;
 import org.zerock.decommi.entity.diary.Diary;
 import org.zerock.decommi.entity.diary.File;
 import org.zerock.decommi.entity.diary.Heart;
+import org.zerock.decommi.entity.diary.QDiary;
 import org.zerock.decommi.entity.diary.Reply;
 import org.zerock.decommi.entity.diary.Report;
 import org.zerock.decommi.entity.diary.Tag;
@@ -43,6 +44,10 @@ import org.zerock.decommi.repository.diary.ReportRepository;
 import org.zerock.decommi.repository.diary.TagRepository;
 import org.zerock.decommi.repository.member.MemberRepository;
 import org.zerock.decommi.vo.DiaryPostList;
+import org.zerock.decommi.vo.SearchCondition;
+
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -61,9 +66,9 @@ public class DiaryServiceImpl implements DiaryService {
     private final ReportRepository reportRepository;
 
     @Override
-    public String registerDiary(DiaryDTO dto, List<String> tagList) {
+    public String registerDiary(DiaryDTO dto) {
         Diary result = dtoToEntity(dto);
-
+        repository.save(result); // 여기서 dino 생성됨
         List<FileDTO> fileList = dto.getFileDTOList();
         fileList.forEach(new Consumer<FileDTO>() {
             @Override
@@ -72,13 +77,22 @@ public class DiaryServiceImpl implements DiaryService {
                 fileRepository.save(file);
             }
         });
-        for (String i : tagList) {
-            Tag tagResult = tagDTOtoEntity(i);
-            tagResult.updateDiary(result);
-            tagRepository.save(tagResult);
-        }
-        dto.setTagList(tagList);
-        repository.save(result); // 여기서 dino 생성됨
+        log.info("result.getDino() : " + result.getDino());
+        List<String> tagList = dto.getTagList();
+        tagList.forEach(new Consumer<String>() {
+            @Override
+            public void accept(String dto) {
+                Tag tag = tagDTOtoEntity(dto);
+                tag.updateDiary(result);
+                tagRepository.save(tag);
+            }
+        });
+        // for (String i : tagList) {
+        // Tag tagResult = tagDTOtoEntity(i);
+        // tagResult.updateDiary(result);
+        // tagRepository.save(tagResult);
+        // }
+
         return result.getDino().toString();
     }
 
@@ -89,7 +103,7 @@ public class DiaryServiceImpl implements DiaryService {
             return null;
         } else {
             DiaryDTO dto = entityToDTO(isit.get());
-            List<String> tagList = tagRepository.getList(dto.getDino())
+            List<String> tagList = tagRepository.getList(Diary.builder().dino(dto.getDino()).build())
                     .stream()
                     .map(tentity -> tentity.getTagName())
                     .collect(Collectors.toList());
@@ -142,18 +156,20 @@ public class DiaryServiceImpl implements DiaryService {
 
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public DiaryDTO getDiaryPostByDino(Long dino) {
         Diary result = repository.getByDino(dino);
         DiaryDTO dto = entityToDTO(result);
-        List<String> tagString = tagRepository.getList(result.getDino())
+        List<String> tagString = tagRepository.getList(Diary.builder().dino(result.getDino()).build())
                 .stream()
                 .map(tentity -> tentity.getTagName())
                 .collect(Collectors.toList());
         dto.setTagList(tagString);
         return dto;
     }
+
+    @Transactional(readOnly = true)
 
     @Override
     public List<DiaryPostList> getDiaryPostList() {
@@ -164,45 +180,69 @@ public class DiaryServiceImpl implements DiaryService {
         return result;
     }
 
+    // @Override
+    // public SearchResultDTO<DiaryPostList, Diary> getDiaryPostList(SearchCondition
+    // searchCondition) {
+    // Sort sort = sortByDino();
+    // BooleanBuilder booleanBuilder = getSearch(searchCondition);
+    // return new SearchResultDTO<>(result, fn);
+    // }
+
+    // private BooleanBuilder getSearch(SearchCondition searchCondition){
+    // String keyword = searchCondition.getKeyword();
+    // List<String>tagList = searchCondition.getTagList();
+
+    // BooleanBuilder booleanBuilder = new BooleanBuilder(); //쿼리를 질의하기 위한 객체
+    // QDiary qDiary = QDiary.diary; //관련된 쿼리 객체
+    // BooleanExpression expression = qDiary.dino.gt(0L); //게시글번호가 0 이상인것만 검색
+    // booleanBuilder.and(expression);
+    // BooleanBuilder conditionBuilder = new BooleanBuilder();
+    // if(tagList == null){
+    // conditionBuilder.or(qDiary.title.contains(keyword));
+    // }
+    // return booleanBuilder;
+
+    // }
+
     // 하트
     @Override
-    public String addHeart(HeartDTO dto) {
+    public Boolean addHeart(HeartDTO dto) {
         Optional<Heart> checkHeart = heartRepository.checkHeartLogByMemberIdAndDiaryId(dto.getMid(), dto.getDino());
         Heart entity = heartDTOtoEntity(dto);
         if (checkHeart.isPresent()) {
             heartRepository.delete(checkHeart.get());
-            return "좋아요 취소";
+            return false;
         } else {
             heartRepository.save(entity);
-            return "좋아요";
+            return true;
         }
     }
 
     // 북마크
     @Override
-    public String addBookmark(BookmarkDTO dto) {
+    public Boolean addBookmark(BookmarkDTO dto) {
         Optional<Bookmark> checkBookmark = bookmarkRepository.checkBookmarkLogByMemberIdAndDiary(dto.getMid(),
                 dto.getDino());
         Bookmark entity = bookmarkDTOtoEntity(dto);
         if (checkBookmark.isPresent()) {
             bookmarkRepository.delete(checkBookmark.get());
-            return "북마크 취소";
+            return false;
         } else {
             bookmarkRepository.save(entity);
-            return "북마크 추가";
+            return true;
         }
 
     }
 
     // 신고
     @Override
-    public String addDiaryReport(ReportDTO dto) {
+    public Boolean addDiaryReport(ReportDTO dto) {
         Optional<Report> checkReport = reportRepository.checkReportLogByMemberIdAndDiaryId(dto.getMid(), dto.getDino());
         if (checkReport.isPresent()) {
-            return "이미 신고한 글입니다";
+            return false;
         } else {
             reportRepository.save(reportDTOtoEntity(dto));
-            return "신고가 완료되었습니다";
+            return true;
         }
 
     }

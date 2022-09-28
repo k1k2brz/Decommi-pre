@@ -20,7 +20,7 @@
             </div>
           </div>
         </div>
-        <WrittenPosts />
+        <WrittenPosts v-for="(post, index) in state.mainPosts" :key="post + index" :post="post" />
       </div>
       <div class="w-30 search-tag-line d-flex justify-content-between ml-3">
         <div class="d-flex flex-column w-100">
@@ -39,29 +39,41 @@ import WrittenPosts from "@/components/WrittenPosts.vue";
 import PostWrite from "@/components/PostWrite.vue";
 import { computed } from "@vue/runtime-core";
 import { useStore } from "vuex";
+import { reactive } from "@vue/reactivity";
+import axios from "@/axios";
 // import axios from "@/axios";
 
 export default {
   // 화면 실행전 미리 데이터를 준비하는 것
   // observer intersection
-  fetch({ store }) {
-    store.dispatch("posts/loadPosts");
-  },
+  // fetch({ store }) {
+  //   store.dispatch("posts/loadPosts");
+  // },
   setup() {
     const store = useStore();
+
+    const state = reactive({
+      mainPosts: [],
+    });
 
     const me = computed(() => {
       return store.state.users.me;
     });
-
-    const mainPosts = computed(() => {
-      return store.state.posts.mainPosts;
+    
+    axios.post("./decommi/diary/list").then((res) => {
+      state.mainPosts.length = 0
+      console.log(res.data);
+      state.mainPosts = res.data;
     });
+
+    // const mainPosts = computed(() => {
+    //   return store.state.posts.mainPosts;
+    // });
 
     const handleScrolledToBottom = () => {
       console.log("k");
     };
-    return { handleScrolledToBottom, me, mainPosts };
+    return { handleScrolledToBottom, me, state };
   },
 
   components: { HashFilter, RecommendTag, WrittenPosts, PostWrite },

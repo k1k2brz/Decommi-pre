@@ -257,7 +257,7 @@ export default {
         await axios
           .post(url, body, { headers })
           .then((res) => {
-            console.log(res.data);
+            console.log(res);
           })
           .catch((err) => {
             console.error(err);

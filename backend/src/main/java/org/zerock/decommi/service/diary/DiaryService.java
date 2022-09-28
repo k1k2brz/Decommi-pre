@@ -24,7 +24,7 @@ import org.zerock.decommi.vo.DiaryPostList;
 
 public interface DiaryService {
     // 다이어리
-    String registerDiary(DiaryDTO dto, List<String> tagList);
+    String registerDiary(DiaryDTO dto);
 
     DiaryDTO checkBeforeDiaryModify(Long dino, String id);
 
@@ -56,13 +56,13 @@ public interface DiaryService {
     // pageable, String id);
 
     // 북마크
-    String addBookmark(BookmarkDTO dto);
+    Boolean addBookmark(BookmarkDTO dto);
 
     // 하트
-    String addHeart(HeartDTO dto);
+    Boolean addHeart(HeartDTO dto);
 
     // 신고
-    String addDiaryReport(ReportDTO dto);
+    Boolean addDiaryReport(ReportDTO dto);
 
     // 다이어리
     default Diary dtoToEntity(DiaryDTO dto) {
@@ -198,6 +198,7 @@ public interface DiaryService {
         Report entity = Report.builder().reid(dto.getReid())
                 .dino(Diary.builder().dino(dto.getDino()).build())
                 .mid(Member.builder().mid(dto.getMid()).build())
+                .title(dto.getTitle())
                 .reportContent(dto.getReportContent())
                 .build();
         return entity;
@@ -208,6 +209,7 @@ public interface DiaryService {
         ReportDTO dto = ReportDTO.builder().reid(entity.getReid())
                 .dino(entity.getDino().getDino())
                 .mid(entity.getMid().getMid())
+                .title(entity.getTitle())
                 .reportContent(entity.getReportContent())
                 .build();
         return dto;

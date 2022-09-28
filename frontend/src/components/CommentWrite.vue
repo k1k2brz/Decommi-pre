@@ -1,18 +1,5 @@
 <template>
-  <div>
-    <div class="mb-3 d-flex justify-content-center gap-2">
-      <input
-        v-model="commentValue"
-        @keyup.enter="addComment"
-        type="text"
-        class="comment serviceSearch w-100"
-        placeholder="댓글을 입력해주세요."
-      />
-      <button @click="addComment(index.idx)" class="btn-regular">
-        댓글입력
-      </button>
-    </div>
-  </div>
+  
 </template>
 
 <script>
@@ -22,14 +9,14 @@ import { computed } from "@vue/runtime-core";
 import axios from "axios";
 
 export default {
-  props: {
-    postId: {
-      type: String,
-      required: true,
-    },
-  },
+  // props: {
+  //   postId: {
+  //     type: String,
+  //     required: true,
+  //   },
+  // },
 
-  setup(props) {
+  setup() {
     let index = reactive({
       idx: 0,
     });
@@ -49,7 +36,7 @@ export default {
       if (!commentValue.value == "") {
         store.dispatch("posts/addComment", {
           id: newDate,
-          postId: props.postId,
+          // postId: props.postId,
           replyContent: commentValue.value,
         });
 

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 import org.zerock.decommi.entity.diary.Diary;
 import org.zerock.decommi.entity.member.Member;
@@ -52,6 +53,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
       + "left join Report rp on rp.dino = d "
       + "where d.openYN = 1L "
       + "group by d.dino ")
+
   Optional<List<getDiaryPostList>> getList(Sort sort);
 
   // 댓글카운트, 하트카운트, 북마크카운트, 신고카운트 추가해야됨

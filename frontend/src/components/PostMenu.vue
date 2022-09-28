@@ -44,11 +44,9 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 export default {
   props: {
     onEditBtn: {
-      type: Object,
       required: true,
     },
     onRemoveBtn: {
-      type: Object,
       required: true,
     },
   },

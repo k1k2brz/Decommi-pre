@@ -6,11 +6,15 @@ import lombok.Data;
 
 @Data
 public class SearchCondition {
-  String search;
-  String tag;
-
-  public SearchCondition(String search, String tag) {
-    this.search = search;
-    this.tag = tag;
+  String title;
+  String keyword;
+  boolean tagOption;
+  List<String> tagList;
+  
+  public SearchCondition(String title,String keyword, boolean tagOptipon, List<String>tagList){
+    this.keyword = keyword;
+    this.tagOption = tagOptipon;
+    this.tagList = tagList;
+    this.title = title;
   }
 }
