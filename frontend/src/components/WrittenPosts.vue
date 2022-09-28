@@ -12,17 +12,24 @@
           <span class="days">{{ post.regDate.split("-")[0] }}.</span>
           <span class="days">{{ post.regDate.split("-")[1] }}.</span>
           <span class="days">{{
-          post.regDate.split("-")[2].split("T")[0]
+            post.regDate.split("-")[2].split("T")[0]
           }}</span>
           <span class="ml-1 lastTime margin5">{{
-          getTimeFromJavaDate(post.regDate)
+            getTimeFromJavaDate(post.regDate)
           }}</span>
         </div>
         <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
         <p class="card-text mb-4">{{ post.content }}</p>
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
-            <button type="button" class="btn-tag-sm d-flex" v-for="tag in state.tagList"  :key="tag">{{tag}}</button>
+            <button
+              type="button"
+              class="btn-tag-sm d-flex"
+              v-for="tag in state.tagList"
+              :key="tag"
+            >
+              {{ tag }}
+            </button>
           </div>
           <!-- icon -->
           <div class="d-flex justify-content-start">
@@ -71,19 +78,17 @@ export default {
       value: "",
     });
 
-
     // //**
-    //  * axios로 dino 로 favorite와 save 의상태값을 받아와야한다있다(bmFav, isSave) 
+    //  * axios로 dino 로 favorite와 save 의상태값을 받아와야한다있다(bmFav, isSave)
     //  * >> 있는지 체크를해서 있다 >  true >> 색칠
     //  * 없다 >> false
-    //  * 
-    //  * 
+    //  *
+    //  *
     //  * 눌렀을떄
     //  * 체크를 다시보내서 있다(isFav, isSave) >> 그러면 백엔드에서 있다 >> 그러면 지운다
     //  * 체크를 해서 없다 >> 백엔드에서 없으니 >> 그 sql테이블에 넣는다
-    //  * 
-    //  */ >> 
-
+    //  *
+    //  */ >>
 
     const onRemoveBtn = () => {
       store.dispatch("posts/remove", {
@@ -113,39 +118,45 @@ export default {
       // }
     };
     const onEditBtn = async () => {
-      store.dispatch("posts/changeMainPost", {
-        // id: props.post.id,
-        title: props.post.myWriteTitle,
-        content: props.post.myWriteContent,
-      });
-      // try {
-      //   const url = "./api/diary/write";
-      //   const headers = {
-      //     "Content-Type": "application/json",
-      //     Authorization: store.state.users.me.token,
-      //     mid: store.state.users.me.mid,
-      //   };
-      //   const body = {
-      //     title: props.post.myWriteTitle,
-      //     content: props.post.myWriteContent,
-      //     writer: store.state.users.me.id,
-      //   };
-      //   console.log(body);
-      //   await axios
-      //     .post(url, body, { headers })
-      //     .then((res) => {
-      //       console.log(res.data);
-      //     })
-      //     .catch((err) => {
-      //       console.error(err);
-      //     });
-      // } catch (err) {
-      //   console.log(err);
-      // }
-
-      // 버튼 눌렀을 때 이 mainPosts 전체를 넘겨줘야하나?
-      router.push({ name: "CkEditor" });
+      // store.dispatch("posts/changeMainPost", {
+      // id: props.post.id,
+      // });
+      try {
+        const url = "./api/diary/modify/check";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          dino: state.dino,
+          writer: store.state.users.me.email,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            // 일치되지않으면 if문 써서
+            // 만약 일치되지않으면(null이면)
+            // alert 띄우고 수정할 권한이 없습니다 하고
+            // router.push로 /home 이런식으로
+            // reactive로 빼기
+            // 누구나 수정 불가능하도록 고유번호 지정
+            router.push(`/editPost?edit=${res.data.dino}`);
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
     };
+
+    // state 에 리액트로 대충
+    // showmodal = false 이렇게 한다음에
+
+    // 엑시오스에서 일치하는게 있으면 showmodal띄우게 처음부터 설정하는것도 좋을것같아
 
     function getTimeFromJavaDate(s) {
       const cont = new Date(s);
@@ -165,21 +176,21 @@ export default {
         return `${Math.round(calculated / 31536000)}년 전`;
       }
     }
-    
+
     const state = reactive({
       dino: props.post.dino,
-      tagList: []
+      tagList: [],
     });
     // 컨트롤러 작성해 달라고 할 것
 
     axios.get(`./diary/read/${state.dino}`).then((res) => {
-      console.log(res.data.diaryPost);
+      // console.log(res.data.diaryPost);
       // state.regDate = getTimeFromJavaDate(res.data.diaryPost.regDate);
       state.dino = res.data.diaryPost.dino;
       for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
-        state.tagList.push( res.data.diaryPost.tagList[i]);
-      } 
-      
+        state.tagList.push(res.data.diaryPost.tagList[i]);
+      }
+
       // state.tagList = res.data.diaryPost.tagList;
       // state.title = res.data.diaryPost.title;
       // state.content = res.data.diaryPost.content;

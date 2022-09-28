@@ -224,20 +224,20 @@ export default {
     // time: today.getMonth(),
 
     const writeCompletedBtn = async () => {
-      store.dispatch("posts/add", {
-        title: myWriteTitle.value,
-        content: myWriteContent.value,
-        Comments: [],
-        Images: [],
-        tagList: [],
-        openYN: diaryPrivacyCheck.value,
-        replyYN: commentPrivacyCheck.value,
-        id: Date.now(),
-        createdAt: Date.now(),
-      });
-      router.push({
-        name: "Main",
-      });
+      // store.dispatch("posts/add", {
+      //   title: myWriteTitle.value,
+      //   content: myWriteContent.value,
+      //   Comments: [],
+      //   Images: [],
+      //   tagList: [],
+      //   openYN: diaryPrivacyCheck.value,
+      //   replyYN: commentPrivacyCheck.value,
+      //   id: Date.now(),
+      //   createdAt: Date.now(),
+      // });
+      // router.push({
+      //   name: "Main",
+      // });
       try {
         const url = "./api/diary/write";
         const headers = {
@@ -268,6 +268,7 @@ export default {
         privacyPermit.value = true;
         pp.value = false;
         tags.length = 0;
+        router.go(0);
       } catch (err) {
         console.log(err);
       }

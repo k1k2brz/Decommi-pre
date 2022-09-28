@@ -38,6 +38,7 @@ import org.zerock.decommi.entity.diary.Tag;
 import org.zerock.decommi.service.diary.DiaryService;
 import org.zerock.decommi.service.member.MemberService;
 import org.zerock.decommi.vo.DiaryPost;
+import org.zerock.decommi.vo.DiaryPostTwo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -57,20 +58,22 @@ public class DiaryApiController {
     public ResponseEntity<String> register(@RequestBody DiaryDTO dto) {
         List<String> tagList = dto.getTagList();
         log.info("controller dto.getTagList() : " + dto.getTagList());
-        log.info("controller tagList : "+ tagList);
+        log.info("controller tagList : " + tagList);
         log.info("dto : " + dto);
         return new ResponseEntity<>(diaryService.registerDiary(dto), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/modify/check", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DiaryDTO> CheckBeforeDiaryModify(@RequestBody DiaryPost vo) {
+    public ResponseEntity<DiaryDTO> CheckBeforeDiaryModify(@RequestBody DiaryPostTwo vo) {
         DiaryDTO diaryPost = diaryService.checkBeforeDiaryModify(vo.getDino(), vo.getWriter());
         return new ResponseEntity<>(diaryPost, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/modify/register", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> articleModify(@RequestBody DiaryDTO dto) {
+        log.info("dddddddddddddddoooooooooooo" + dto);
         String diaryPost = diaryService.modifyDiary(dto, dto.getTagList());
+        log.info("dddddddddddddddoooooooooooo" + diaryPost);
         return new ResponseEntity<>(diaryPost, HttpStatus.OK);
     }
 

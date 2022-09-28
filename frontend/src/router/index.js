@@ -30,7 +30,7 @@ import Statisticsmanagement from "../pages/managerpage/StatisticsManagement.vue"
 import Usermanagement from "../pages/managerpage/UserManagement.vue";
 import Editpost from "../components/EditPost.vue";
 import Mydiary from "../pages/mypage/MyDiary.vue";
-import CkEditor from "../pages/CkEditor.vue";
+import DiaryWriteEdit from "../pages/mainpage/DiaryWriteEdit.vue";
 import EditTag from "../pages/findtag/EditTags.vue";
 import UserBookmark from "../pages/bookmark/UserBookmark.vue";
 import Read from "../components/WrittenPostPage.vue";
@@ -200,8 +200,8 @@ const router = createRouter({
     },
     {
       path: "/postwrite",
-      name: "CkEditor",
-      component: CkEditor,
+      name: "DiaryWriteEdit",
+      component: DiaryWriteEdit,
     },
     {
       path: "/edittags",
