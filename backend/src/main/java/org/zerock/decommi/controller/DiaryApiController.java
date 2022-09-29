@@ -10,8 +10,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,9 +25,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.decommi.dto.BookmarkDTO;
 import org.zerock.decommi.dto.DiaryDTO;
@@ -75,6 +79,21 @@ public class DiaryApiController {
         String diaryPost = diaryService.modifyDiary(dto, dto.getTagList());
         log.info("dddddddddddddddoooooooooooo" + diaryPost);
         return new ResponseEntity<>(diaryPost, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @PostMapping("/write/image")
+    public Map<String, Object> uploadImage(@RequestParam Map<String, Object> paramMap, MultipartRequest request)
+            throws Exception {
+        MultipartFile uploadFile = request.getFile("upload");
+        String uploadDir = "c:\\testingimage\\"; // windows 일경우 이 경로 사용
+        // String uploadDir = "/Users/hyunseokbyun/Documents/Imagefiles/";
+        String uploadId = UUID.randomUUID().toString() + "."
+                + FilenameUtils.getExtension(uploadFile.getOriginalFilename());
+        uploadFile.transferTo(new File(uploadDir + uploadId));
+        paramMap.put("url", "./diary/image/" + uploadId);
+        log.info("ckckckkkkkkkkkkkkkkkkkkkk" + paramMap);
+        return paramMap;
     }
 
     @PostMapping("/write/uploadAjax")

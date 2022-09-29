@@ -1,21 +1,10 @@
 <template>
   <div>
-    <input
-      v-model="myWriteTitle"
-      @click="clickTextarea"
-      type="text"
-      class="myWriteTitle none form-control"
-      placeholder="제목을 입력하세요."
-    />
-    <textarea
-      v-if="clickTA"
-      spellcheck="false"
-      v-model="myWriteContent"
-      @input="autoResize"
-      class="myWriteContent form-control"
-      placeholder="오늘의 다이어리를 작성해 보세요!"
-      id="floatingTextarea"
-    />
+    <input v-model="myWriteTitle" @click="clickTextarea" type="text" class="myWriteTitle none form-control"
+      placeholder="제목을 입력하세요." />
+    <textarea v-if="clickTA" spellcheck="false" v-model="myWriteContent" @input="autoResize"
+      class="myWriteContent form-control" placeholder="오늘의 다이어리를 작성해 보세요!" id="floatingTextarea" />
+      <ckeditor @ready="onReady" :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
     <div v-if="clickTA">
       <div class="flex-wrap gap-2 d-flex">
         <div class="tag" v-for="(tag, index) in tags" :key="'tag' + index">
@@ -26,30 +15,18 @@
         </div>
       </div>
       <div class="d-flex justify-content-center align-items-center">
-        <input
-          maxlength="12"
-          v-model="tagValue"
-          @keyup.enter="addTag"
-          type="text"
-          class="tagTextbox form-control mr-1 mb-4 mt-4"
-          placeholder="태그 추가하기"
-        />
+        <input maxlength="12" v-model="tagValue" @keyup.enter="addTag" type="text"
+          class="tagTextbox form-control mr-1 mb-4 mt-4" placeholder="태그 추가하기" />
       </div>
     </div>
-    <button
-      v-if="privacyPermit"
-      @click="publicPrivacy"
-      class="purple-color mb-3"
-    >
+    <button v-if="privacyPermit" @click="publicPrivacy" class="purple-color mb-3">
       모든 사람이 다이어리를 읽을 수 있습니다.
     </button>
     <button v-else @click="publicPrivacy" class="purple-color mb-3">
       나만이 다이어리를 읽을 수 있습니다.
     </button>
     <div v-if="pp" class="d-flex position-absolute">
-      <div
-        class="bg-white d-flex flex-column box-shadow p-4 position-relative gap-1"
-      >
+      <div class="bg-white d-flex flex-column box-shadow p-4 position-relative gap-1">
         <div>
           <button @click="diaryPP" class="privacy-public">
             내 다이어리 공개
@@ -57,11 +34,7 @@
           <i v-if="diaryPrivacyCheck" class="bi bi-check-lg"></i>
         </div>
         <div>
-          <button
-            :disabled="commentDisable"
-            @click="commentPP"
-            class="privacy-public"
-          >
+          <button :disabled="commentDisable" @click="commentPP" class="privacy-public">
             내 다이어리에 댓글 허용
           </button>
           <i v-if="commentPrivacyCheck" class="bi bi-check-lg"></i>
@@ -76,47 +49,23 @@
     <div class="d-flex gap-1">
       <div class="form-group centerz">
         <div class="filebox">
-          <label
-            for="ex_file"
-            ref="selectedFile"
-            class="bi bi-file-image"
-          ></label>
-          <input
-            ref="imgInput"
-            v-on:change="handleFileUpload"
-            type="file"
-            id="ex_file"
-            multiple
-          />
+          <input ref="imgInput" @change="handleFileUpload($event)" type="file" id="ex_file" multiple />
+          <label for="ex_file" ref="selectedFile" class="bi bi-file-image"></label>
         </div>
         <!-- vue3 image upload easy (v-upload-image) 참고 -->
         <!-- npm설치해야하면 설치할 것 -->
         <!-- <button @click="onUpload">Upload</button> -->
       </div>
       <div class="filebox">
-        <label
-          for="ex_gif"
-          ref="selectedGif"
-          class="bi bi-filetype-gif"
-        ></label>
-        <input
-          ref="gifInput"
-          v-on:change="handleGifUpload()"
-          type="file"
-          id="ex_gif"
-        />
+        <label for="ex_gif" ref="selectedGif" class="bi bi-filetype-gif"></label>
+        <input ref="gifInput" @change="handleGifUpload($event)" type="file" id="ex_gif" />
       </div>
       <div class="icon"></div>
       <div class="icon"></div>
     </div>
-    <button
-      @click="writeCompletedBtn"
-      class="btn-regular"
-      :class="{
-        btnDisabled: myWriteTitle.length < 1 || myWriteContent.length < 1,
-      }"
-      :disabled="myWriteTitle.length < 1 || myWriteContent.length < 1"
-    >
+    <button @click="writeCompletedBtn" class="btn-regular" :class="{
+      btnDisabled: myWriteTitle.length < 1 || myWriteContent.length < 1,
+    }" :disabled="myWriteTitle.length < 1 || myWriteContent.length < 1">
       작성완료
     </button>
   </div>
@@ -128,9 +77,39 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { computed } from "@vue/runtime-core";
+import ClassicEditor from "@ckeditor/ck5/build/ckeditor"
+import store from "@/store";
 
 export default {
+  data() {
+    let token = store.state.users.me.token
+    let md = store.state.users.me.mid
+		return {
+			shareable: true,
+			openable: true,
+			editor: ClassicEditor,
+      // 여기에 본문
+			editorData: "",
+			editorConfig: {
+				language: "ko",
+				simpleUpload:
+				{
+					uploadUrl: "./api/diary/write/image",
+					withCredentials: true,
+					headers: {
+						Authorization: token,
+            mid: md,
+					}
+				}
+
+			},
+		}
+	},
   setup() {
+    
+		function onReady(editor) {
+			editor.ui.getEditableElement().parentElement.insertBefore(editor.ui.view.toolbar.element, editor.ui.getEditableElement())
+		}
     // Comments, Images, id(고유번호), createdAt 등 어케 받을건지 백엔드와 상의
     const router = useRouter();
     const store = useStore();
@@ -144,12 +123,79 @@ export default {
     const clickTA = ref(false);
     const selectedFile = ref(null);
     const selectedFiles = ref(null);
-    const imgInput = ref(null);
-    const gifInput = ref(null);
     const privacyPermit = ref(true);
     const tagValue = ref("");
     let tags = reactive([]);
     const file = ref("");
+
+    // image upload
+    // regex 가능한 정규표현식만 넣기
+    const regex = new RegExp("(.*?).(exe|sh|zip|alz|tiff)$");
+    const maxSize = 1024 * 1024 * 10; //10MB
+    const state = reactive({
+      imgInput: '',
+      gifInput: '',
+      appended: false,
+      // uploaded : '',
+    })
+    const imgInput = ref('')
+    const gifInput = ref('')
+
+    const checkExtension = (fileName, fileSize) => {
+      if (fileSize > maxSize) {
+        alert('파일사이즈초과')
+        return false;
+      }
+      if (regex.test(fileName)) {
+        alert('해당파일은 업로드 될 수 없습니다.')
+        return false;
+      }
+      return true;
+    }
+
+    const handleFileUpload = async() => {
+      // console.log(e.target.files[0])
+      const fileName = imgInput.value.value.split("\\").pop() //맨끝만 나옴.
+      console.log(fileName)
+      // fileLabel.value.innerHTML = (imgInput.value.files.length-1)==0?"":
+      //             fileName+" 외 "+(imgInput.value.files.length-1)+"개";
+      let formData = new FormData();
+      let files = imgInput.value.files;
+
+      for(let i=0;i<files.length;i++){
+        if(!checkExtension(files[i].name, files[i].size)) {
+          // fileLabel.value.innerHTML = ""
+          // this.value = ''
+          return false;
+        }
+        formData.append("uploadFiles", files[i]);
+        state.appended = true;
+      }
+
+      //전송할 파일이 없으면 여기서 끝.
+      if(!state.appended) return;
+
+      for(let value of formData.values()) console.log(value)
+
+      // formData 보내지 말고 세팅만 해주고
+      // submit할 때 한 번에 보낼 것
+      console.log(formData)
+
+      // const url = './api/diary/write/uploadAjax'
+      // await axios.post(url, formData, {
+      //   headers: {
+      //     "Content-Type" : "multipart/form-data",
+      //     "process-data" : false
+      //     },
+      // }).then(function(res){
+      //   console.log(res.data)
+      //   showResult(res.data);
+      // }).catch(function(err){
+      //   console.log(err)
+      // })
+    }
+
+
 
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
@@ -170,16 +216,41 @@ export default {
 
     // intersection observe로 무한 스크롤링
 
-    const handleFileUpload = (e) => {
+    // let files = ref([])
+    // let uploadImageIndex= ref(0)
+
+    // const handleFileUpload = (e) => {
+      // let num = -1;
+      // for (let i = 0; i < e.target.files.length; i++) {
+      //   files.value = [
+      //     ...files.value,
+      //     {
+      //       file: e.target.files[i],
+      //       preview: URL.createObjectURL(e.target.files[i]),
+      //       number: i //삭제를 위한 번호
+      //     }
+      //   ];
+      //   num = i;
+      // }
+      // uploadImageIndex.value = num + 1;
+      // console.log(files.value)
+
       // image는 Json이 아니라 FormData로 보낸다.
-      console.log(e.target.files[0]);
-      const imageFormData = new FormData();
-      [].forEach.call(e.target.files, (f) => {
-        imageFormData.append("image", f); // { image: [file1, file2] }
-      });
-      console.log(imageFormData);
-      // store.dispatch("posts/uploadImages", imageFormData);
-    };
+
+    //   let imageFormData = new FormData();
+
+    //   console.log("upload", e.target.files[0]);
+    //   if (e.target.files[0]) {
+    //     let itemImage = selectedFile.value
+    //     itemImage.src = URL.createObjectURL(e.target.files[0])
+    //     console.log(itemImage.src)
+    //   }
+    //   [].forEach.call(e.target.files, (f) => {
+    //     imageFormData.append("image", f); // { image: [file1, file2] }
+    //   });
+    //   console.log(imageFormData);
+    //   // store.dispatch("posts/uploadImages", imageFormData);
+    // };
 
     const handleGifUpload = () => {
       console.log("selected file", gifInput.value.files);
@@ -296,11 +367,9 @@ export default {
       clickTA,
       selectedFile,
       selectedFiles,
-      imgInput,
       handleFileUpload,
       handleGifUpload,
       today,
-      gifInput,
       privacyPermit,
       me,
       tagValue,
@@ -308,6 +377,14 @@ export default {
       addTag,
       removeTag,
       file,
+      regex,
+      maxSize,
+      state,
+      checkExtension,
+      imgInput,
+      gifInput,
+      onReady,
+      // fileChange
     };
   },
 };

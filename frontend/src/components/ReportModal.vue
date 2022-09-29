@@ -86,6 +86,14 @@ export default {
     };
 
     const sendReport = async () => {
+      console.log(selectReport.value.report)
+      if (selectReport.value.report == undefined) {
+        alert('문제점을 선택해주세요');
+        return
+      } else if (textareaReport.value == '') {
+        alert('내용을 입력해주세요');
+        return
+      }
       try {
         const url = "/decommi/api/diary/report";
         const headers = {
@@ -96,7 +104,8 @@ export default {
         const body = {
           dino: props.dino,
           mid: store.state.users.me.mid,
-          reportContent: textareaReport.value
+          reportContent: textareaReport.value,
+          title: selectReport.value.report
         };
         console.log(body);
         await axios
@@ -122,7 +131,6 @@ export default {
           .catch((err) => {
             console.error(err);
           });
-        console.log(selectReport.value.report);
       } catch (err) {
         console.log(err);
       }
