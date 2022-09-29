@@ -70,6 +70,12 @@ import { useRouter } from "vue-router";
 import axios from "@/axios";
 
 export default {
+  props: {
+    dino: {
+      type: Number,
+      required: true,
+    },
+  },
   setup() {
     const store = useStore();
     const router = useRouter();

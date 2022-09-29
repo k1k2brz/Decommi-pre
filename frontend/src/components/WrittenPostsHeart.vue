@@ -16,13 +16,13 @@ export default {
     dino: {
       type: Number,
       required: true,
-    }
+    },
   },
   setup(props) {
     const store = useStore();
     let state = reactive({
       bmFav: false,
-    })
+    });
     // 신호 받기
     // dino랑 mid가 들어온다
     // 좋아요의 상태 체크
@@ -57,7 +57,6 @@ export default {
     //   }
     // }
 
-
     // 좋아요 누르기 (빨간색)
     const bookmarkFav = async () => {
       try {
@@ -68,7 +67,6 @@ export default {
           mid: store.state.users.me.mid,
         };
         const body = {
-          // hid: bmFav.value,
           dino: props.dino,
           mid: store.state.users.me.mid,
         };
@@ -92,7 +90,7 @@ export default {
         console.log(err);
       }
       // 좋아요 누르면 데이터 보낼 것
-    }
+    };
     return {
       state,
       bookmarkFav,

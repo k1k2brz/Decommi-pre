@@ -14,8 +14,6 @@ https://ckeditor.com/ckeditor-5/online-builder/
 글쓰기 수정할 때 다이어리 비공개 댓글 비공개 여부 이런것들 체크 if문 돌리기
 그리고 axios안에 박아둔 res.data이런것들 state reactive안에 넣기
 
-comment는 내가 집가서 예전에 작성해놓은거 보고 그대로 쳐야 될 것 같다.
-
 로그인시 db에 없으면 없는 아이디라고 떠야함.
 
 강의 보고 필요한 것들 적어서 전달 할 것

@@ -37,7 +37,6 @@
             <WrittenPostsBookmark :dino="state.dino" />
             <WrittenPostsHeart :dino="state.dino" />
             <ReportModal :dino="state.dino" />
-            <!-- <WrittenPostsComment /> -->
           </div>
           <WrittenComments :dino="state.dino" />
         </div>
