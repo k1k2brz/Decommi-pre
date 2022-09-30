@@ -111,6 +111,7 @@ export default {
           })
           .catch((err) => {
             console.error(err);
+            console.log("rere")
           });
         } catch(err) {
           console.log(err);
