@@ -5,6 +5,7 @@
       @click="clickTextarea"
       type="text"
       class="myWriteTitle none form-control"
+      maxlength="80"
       placeholder="제목을 입력하세요."
     />
     <textarea
@@ -256,6 +257,11 @@ export default {
 
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
+      if (tags.includes(result) == true) {
+        alert('이미 등록된 태그입니다.')
+        tagValue.value = "";
+        return
+      }
       if (!result == "") {
         tags.push(result);
         tagValue.value = "";
@@ -316,20 +322,6 @@ export default {
     // time: today.getMonth(),
 
     const writeCompletedBtn = async () => {
-      // store.dispatch("posts/add", {
-      //   title: myWriteTitle.value,
-      //   content: myWriteContent.value,
-      //   Comments: [],
-      //   Images: [],
-      //   tagList: [],
-      //   openYN: diaryPrivacyCheck.value,
-      //   replyYN: commentPrivacyCheck.value,
-      //   id: Date.now(),
-      //   createdAt: Date.now(),
-      // });
-      // router.push({
-      //   name: "Main",
-      // });
       try {
         const url = "./api/diary/write";
         const headers = {

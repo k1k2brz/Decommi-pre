@@ -14,6 +14,7 @@
                 v-model="myWriteTitle"
                 type="text"
                 class="myWriteTitle none form-control"
+                maxlength="80"
                 placeholder="제목을 입력하세요."
               />
               <textarea
@@ -125,7 +126,7 @@
                 <div class="icon"></div>
               </div>
               <button
-                @click="writeCompletedBtn"
+                @click="editCompleteBtn"
                 class="btn-regular"
                 :class="{
                   btnDisabled:
@@ -173,6 +174,11 @@ export default {
 
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
+      if (tags.includes(result) == true) {
+        alert('이미 등록된 태그입니다.')
+        tagValue.value = "";
+        return
+      }
       if (!result == "") {
         tags.push(result);
         tagValue.value = "";
@@ -250,7 +256,7 @@ export default {
       };
       const body = {
         dino: params,
-        writer: store.state.users.me.email,
+        writer: store.state.users.me.id,
       };
       console.log(body);
       await axios
@@ -272,7 +278,7 @@ export default {
       axiosComponent();
     });
 
-    const writeCompletedBtn = async () => {
+    const editCompleteBtn = async () => {
       try {
         const url = "./api/diary/modify/register";
         const headers = {
@@ -286,13 +292,14 @@ export default {
           content: myWriteContent.value,
           openYN: diaryPrivacyCheck.value,
           replyYN: commentPrivacyCheck.value,
-          writer: store.state.users.me.email,
+          writer: store.state.users.me.id,
           tagList: tags,
         };
         console.log(body);
         await axios
           .post(url, body, { headers })
           .then((res) => {
+            
             console.log(res);
           })
           .catch((err) => {
@@ -319,7 +326,7 @@ export default {
       diaryPP,
       commentDisable,
       commentPP,
-      writeCompletedBtn,
+      editCompleteBtn,
       WCDisabled,
       myWriteTitle,
       myWriteContent,

@@ -52,6 +52,11 @@ export default {
 
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
+      if (tags.includes(result) == true) {
+        alert('이미 등록된 태그입니다.')
+        tagValue.value = "";
+        return
+      }
       if (!result == "") {
         tags.push(result);
         tagValue.value = "";

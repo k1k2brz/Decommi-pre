@@ -1,16 +1,7 @@
-// 전체 더미 포스트 (서버 생기면 없애버릴 것)
-const totalPosts = 51;
-// 무한스크롤 로딩 게시글 수 제한
-const limit = 10;
-
 export default {
   namespaced: true,
   state: {
     mainPosts: [],
-    changePosts: [],
-    // 쓸데 없는 요청 안보내기
-    hasMorePost: true,
-    reportToggle: true,
     dino: "",
     regDate: "",
     bookmarkSave: false,
@@ -67,30 +58,6 @@ export default {
       // );
       // console.log(index2);
       state.mainPosts[index].Comments.splice(index, 1);
-    },
-    // 가짜 데이터(아직 실제 데이터가 없으므로)
-    loadPosts(state) {
-      // 전체게시글 - 현재 내가 불러온 갯수 = 아직 안불러온 게시글 수
-      const diff = totalPosts - state.mainPosts.length;
-      // fill을 사용해 빈 배열을 만들고 map으로 더미데이터 때려넣음
-      // 남은 게시글이 10개 이하일 때 false로 바뀌면서 나머지를 불러온다.
-      const fakePosts = Array(diff > limit ? limit : diff)
-        .fill()
-        .map(() => ({
-          // id 안겹치게 하기 위해 random
-          id: Math.random().toString(),
-          User: {
-            id: 1,
-          },
-          // 백엔드가 아직 없어서 더미데이터 넣음
-          content: `scrolling ${Math.random()}`,
-          Comments: [],
-          Images: [],
-        }));
-      // 더미 10개씩 추가
-      state.mainPosts = state.mainPosts.concat(fakePosts);
-      // limit이 아니면 hasMorePost가 false
-      state.hasMorePost = fakePosts.length === limit;
     },
 
     setReportToggle(state, payload) {

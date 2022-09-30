@@ -12,22 +12,17 @@
           <span class="days">{{ post.regDate.split("-")[0] }}.</span>
           <span class="days">{{ post.regDate.split("-")[1] }}.</span>
           <span class="days">{{
-            post.regDate.split("-")[2].split("T")[0]
+          post.regDate.split("-")[2].split("T")[0]
           }}</span>
           <span class="ml-1 lastTime margin5">{{
-            getTimeFromJavaDate(post.regDate)
+          getTimeFromJavaDate(post.regDate)
           }}</span>
         </div>
         <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
         <p class="card-text mb-4">{{ post.content }}</p>
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
-            <button
-              type="button"
-              class="btn-tag-sm d-flex"
-              v-for="tag in state.tagList"
-              :key="tag"
-            >
+            <button type="button" class="btn-tag-sm d-flex" v-for="tag in state.tagList" :key="tag">
               {{ tag }}
             </button>
           </div>
@@ -54,7 +49,6 @@ import ReportModal from "./ReportModal.vue";
 import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
 import PostMenu from "./PostMenu.vue";
 import WrittenPostsHeart from "./WrittenPostsHeart.vue";
-// import WrittenPostsComment from "./WrittenPostsComment.vue";
 import WrittenComments from "./WrittenComments.vue";
 
 export default {
@@ -89,10 +83,7 @@ export default {
     //  *
     //  */ >>
 
-    const onRemoveBtn = () => {
-      store.dispatch("posts/remove", {
-        // id: props.post.id,
-      });
+    const onRemoveBtn = async () => {
       // try {
       //   const url = "./api/diary/write";
       //   const headers = {
@@ -104,7 +95,7 @@ export default {
       //     writer: store.state.users.me.email,
       //   };
       //   console.log(body);
-      //   axios
+      //   await axios
       //     .post(url, body, { headers })
       //     .then((res) => {
       //       console.log(res.data);
@@ -129,19 +120,22 @@ export default {
         };
         const body = {
           dino: state.dino,
-          writer: store.state.users.me.email,
+          writer: store.state.users.me.id,
         };
         console.log(body);
         await axios
           .post(url, body, { headers })
           .then((res) => {
-            // 일치되지않으면 if문 써서
-            // 만약 일치되지않으면(null이면)
-            // alert 띄우고 수정할 권한이 없습니다 하고
-            // router.push로 /home 이런식으로
             // reactive로 빼기
             // 누구나 수정 불가능하도록 고유번호 지정
-            router.push(`/editPost?edit=${res.data.dino}`);
+            if (res.data.writer == store.state.users.me.email) {
+              router.push(`/editPost?edit=${res.data.dino}`);
+            } else {
+              alert('수정할 권한이 없습니다')
+              router.push({
+                name: "Main"
+              })
+            }
             console.log(res.data);
           })
           .catch((err) => {
@@ -183,19 +177,10 @@ export default {
     // 컨트롤러 작성해 달라고 할 것
 
     axios.get(`./diary/read/${state.dino}`).then((res) => {
-      // console.log(res.data.diaryPost);
-      // state.regDate = getTimeFromJavaDate(res.data.diaryPost.regDate);
       state.dino = res.data.diaryPost.dino;
       for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
         state.tagList.push(res.data.diaryPost.tagList[i]);
       }
-
-      // state.tagList = res.data.diaryPost.tagList;
-      // state.title = res.data.diaryPost.title;
-      // state.content = res.data.diaryPost.content;
-      // state.openYN = res.data.diaryPost.openYN;
-      // state.replyYN = res.data.diaryPost.replyYN;
-      // state.modDate = res.data.diaryPost.modDate;
     });
 
     const dinoTest = (dino) => {
@@ -237,4 +222,11 @@ export default {
 
 .card-text
   white-space: pre-line
+  text-overflow: ellipsis
+  overflow: hidden
+  word-break: break-word
+    
+  display: -webkit-box
+  -webkit-line-clamp: 15 // 원하는 라인수
+  -webkit-box-orient: vertical
 </style>

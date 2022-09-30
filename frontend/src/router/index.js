@@ -33,6 +33,7 @@ import Mydiary from "../pages/mypage/MyDiary.vue";
 import DiaryWriteEdit from "../pages/mainpage/DiaryWriteEdit.vue";
 import EditTag from "../pages/findtag/EditTags.vue";
 import UserBookmark from "../pages/bookmark/UserBookmark.vue";
+import Read from "../components/WrittenPostPage.vue";
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -206,6 +207,11 @@ const router = createRouter({
       path: "/userbookmark",
       name: "UserBookmark",
       component: UserBookmark,
+    },
+    {
+      path: "/read",
+      name: "Read",
+      component: Read,
     },
   ],
 });
