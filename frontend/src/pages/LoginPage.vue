@@ -10,6 +10,7 @@
           </div>
           <div class="mb-3">
             <input
+            ref="id"
               v-model="info.id"
               type="email"
               class="form-control"
@@ -23,6 +24,7 @@
           </div>
           <div class="mb-3">
             <input
+            ref="pass"
               v-model="info.pass"
               type="password"
               class="form-control"
@@ -81,7 +83,7 @@
 
 <script>
 import { reactive } from "@vue/reactivity";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { useCookies } from "vue3-cookies";
@@ -99,8 +101,8 @@ export default {
       pass: "",
       token: 0,
     });
-    // const loginEmail = reactive({});
-    // const loginPass = reactive({});
+    const id = ref('')
+    const pass = ref('')
 
     const onSubmitForm = async () => {
       // cookies
@@ -108,10 +110,14 @@ export default {
       //trim으로 잘라서 하나도 없으면
       if (info.id.trim().length == 0) {
         emailError.value = true;
+        passError.value = false;
+        id.value.focus()
         return;
       }
       if (info.pass.trim().length == 0) {
         passError.value = true;
+        emailError.value = false;
+        pass.value.focus()
         return;
       }
       try {
@@ -128,6 +134,10 @@ export default {
       }
     };
 
+    onMounted(() => {
+      id.value.focus()
+    })
+
     return {
       emailError,
       passError,
@@ -137,6 +147,8 @@ export default {
       route,
       store,
       cookies,
+      id,
+      pass
     };
   },
   middleware: "anonymous",

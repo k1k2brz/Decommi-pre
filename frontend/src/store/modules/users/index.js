@@ -88,7 +88,8 @@ export default {
     },
     logIn({ commit }, payload) {
       const log = async () => {
-        const url = "./decommi/member/login";
+        try {
+          const url = "./decommi/member/login";
         const headers = {
           "Content-Type": "application/json",
         };
@@ -98,13 +99,9 @@ export default {
         };
         console.log(body);
         await axios
-          .post(url, body, { headers })
-          .then((res) => {
+        .post(url, body, { headers })
+        .then((res) => {
             console.log(res.data)
-            if(res.data.email !== body.email) {
-              alert('가입되지 않은 메일이거나 비밀번호가 틀렸습니다.')
-              return
-            }
             // payload는 프론트 값을 받아옴
             // res.data 백엔드 값을 받아옴
             commit("setMe", res.data);
@@ -115,9 +112,12 @@ export default {
           .catch((err) => {
             console.error(err);
           });
+        } catch(err) {
+          console.log(err);
+        }
       }
       log()
-        
+      
     },
     logOut({ commit }) {
       localStorage.removeItem("vuex");

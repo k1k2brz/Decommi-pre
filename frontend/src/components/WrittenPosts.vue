@@ -6,17 +6,20 @@
           <h5 @click="dinoTest(post.dino)" type="button" class="card-title">
             {{ post.title }}
           </h5>
-          <PostMenu :onEditBtn="onEditBtn" :onRemoveBtn="onRemoveBtn" />
         </div>
-        <div class="small-text mb-4">
-          <span class="days">{{ post.regDate.split("-")[0] }}.</span>
-          <span class="days">{{ post.regDate.split("-")[1] }}.</span>
-          <span class="days">{{
-          post.regDate.split("-")[2].split("T")[0]
-          }}</span>
-          <span class="ml-1 lastTime margin5">{{
-          getTimeFromJavaDate(post.regDate)
-          }}</span>
+        <hr />
+        <div class="small-text mb-4 d-flex justify-content-between">
+          <div>
+            <span class="days">{{ post.regDate.split("-")[0] }}.</span>
+            <span class="days">{{ post.regDate.split("-")[1] }}.</span>
+            <span class="days">{{
+            post.regDate.split("-")[2].split("T")[0]
+            }}</span>
+            <span class="ml-1 lastTime margin5">{{
+            getTimeFromJavaDate(post.regDate)
+            }}</span>
+          </div>
+          <PostMenu :onEditBtn="onEditBtn" :onRemoveBtn="onRemoveBtn" />
         </div>
         <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
         <p class="card-text mb-4">{{ post.content }}</p>
