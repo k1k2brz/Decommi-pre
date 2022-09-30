@@ -1,4 +1,5 @@
 import axios from "@/axios";
+import router from "@/router";
 // import { useCookies } from "vue3-cookies";
 // const { cookies } = useCookies();
 
@@ -6,7 +7,6 @@ export default {
   namespaced: true,
   state: {
     me: '',
-    bookmark: [],
   },
   mutations: {
     setMe(state, payload) {
@@ -87,27 +87,37 @@ export default {
       commit("setMe", payload);
     },
     logIn({ commit }, payload) {
-      const url = "./decommi/member/login";
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      const body = {
-        email: payload.email,
-        pw: payload.pw,
-      };
-      console.log(body);
-      axios
-        .post(url, body, { headers })
-        .then((res) => {
-          console.log(res.data);
-          console.log(res.data.id);
-          // payload는 프론트 값을 받아옴
-          // res.data 백엔드 값을 받아옴
-          commit("setMe", res.data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      const log = async () => {
+        const url = "./decommi/member/login";
+        const headers = {
+          "Content-Type": "application/json",
+        };
+        const body = {
+          email: payload.email,
+          pw: payload.pw,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            console.log(res.data)
+            if(res.data.email !== body.email) {
+              alert('가입되지 않은 메일이거나 비밀번호가 틀렸습니다.')
+              return
+            }
+            // payload는 프론트 값을 받아옴
+            // res.data 백엔드 값을 받아옴
+            commit("setMe", res.data);
+            router.push({
+              name: "Main",
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+      log()
+        
     },
     logOut({ commit }) {
       localStorage.removeItem("vuex");

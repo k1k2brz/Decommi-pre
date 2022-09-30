@@ -5,10 +5,7 @@
       <div v-else class="bi bi-bookmark"></div>
     </button>
     <div v-if="bookmarkSave" class="d-flex bmSave position-relative">
-      <div
-        class="position-absolute d-flex flex-column box-shadow zindex p-3 gap-2"
-        style="min-width: 250px"
-      >
+      <div class="position-absolute d-flex flex-column box-shadow zindex p-3 gap-2" style="min-width: 250px">
         <div class="d-flex justify-content-between">
           <div style="margin: auto; width: 100%">
             <span class="bold">내 북마크에 저장</span>
@@ -25,10 +22,7 @@
       </div>
     </div>
     <div v-if="addBookmark" class="d-flex bmSave position-relative">
-      <div
-        class="position-absolute d-flex flex-column box-shadow zindex p-3 gap-2"
-        style="min-width: 250px"
-      >
+      <div class="position-absolute d-flex flex-column box-shadow zindex p-3 gap-2" style="min-width: 250px">
         <div class="d-flex justify-content-between">
           <div style="margin: auto; width: 100%">
             <span class="bold">북마크를 추가해주세요</span>
@@ -37,21 +31,13 @@
         </div>
         <div class="stroke-default"></div>
         <div class="gap-2 mt-1 d-flex flex-column justify-content-center">
-          <input
-            v-model="sendBookmarkInput"
-            maxlength="20"
-            type="text"
-            class="form-control"
-          />
+          <input @keyup.enter="sendBookmark" v-model="sendBookmarkInput" maxlength="20" type="text" class="form-control" />
           <button @click="sendBookmark" class="btn-regular">북마크 생성</button>
         </div>
       </div>
     </div>
     <div v-if="bookmarkSaveCheck" class="d-flex bmSave position-relative">
-      <div
-        class="position-absolute bm-container d-flex box-shadow zindex p-3 gap-2"
-        style="min-width: 250px"
-      >
+      <div class="position-absolute bm-container d-flex box-shadow zindex p-3 gap-2" style="min-width: 250px">
         <div class="d-flex flex-wrap">
           <span class="ml-3">북마크가 저장되었습니다.</span>
           <button @click="bookmarkChecking" class="text-btn pr-3">
@@ -109,16 +95,16 @@ export default {
     };
 
     const sendBookmark = async () => {
-      sendBookmarkInput.value = "";
-      addBookmark.value = false;
       try {
-        const url = "./api/diary/save";
+        const url = "/decommi/api/diary/save";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
           mid: store.state.users.me.mid,
         };
         const body = {
+          mid: store.state.users.me.mid,
+          // dino: props.dino,
           // bfolderName: sendBookmarkInput.value,
           // writer: store.state.users.me.email,
         };
@@ -131,22 +117,50 @@ export default {
           .catch((err) => {
             console.error(err);
           });
+          sendBookmarkInput.value = "";
+          addBookmark.value = false;
+          bookmarkSave.value = true;
+        } catch (err) {
+          console.log(err);
+        }
+    };
+
+    const bookmarkSaveBtn = async () => {
+      try {
+        const url = "/decommi/api/diary/save";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          mid: store.state.users.me.mid,
+          // dino: props.dino,
+          // bfolderName: sendBookmarkInput.value,
+          // writer: store.state.users.me.email,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            console.log(res.data);
+            if (bookmarkSaveCheck.value == false) {
+              bookmarkSaveCheck.value = true;
+              bookmarkSave.value = false;
+              setTimeout(() => {
+                // 마우스가 올라가 있으면 사라지지 않게 이벤트 추가
+                // Fade 애니메이션 줄 것
+                bookmarkSaveCheck.value = false;
+              }, 5000);
+            } else if (bookmarkSaveCheck.value == true)
+              bookmarkSaveCheck.value = false;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       } catch (err) {
         console.log(err);
       }
-    };
-
-    const bookmarkSaveBtn = () => {
-      if (bookmarkSaveCheck.value == false) {
-        bookmarkSaveCheck.value = true;
-        bookmarkSave.value = false;
-        setTimeout(() => {
-          // 마우스가 올라가 있으면 사라지지 않게 이벤트 추가
-          // Fade 애니메이션 줄 것
-          bookmarkSaveCheck.value = false;
-        }, 5000);
-      } else if (bookmarkSaveCheck.value == true)
-        bookmarkSaveCheck.value = false;
     };
 
     const bookmarkChecking = () => {

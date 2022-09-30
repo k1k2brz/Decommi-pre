@@ -35,7 +35,12 @@ import EditTag from "../pages/findtag/EditTags.vue";
 import UserBookmark from "../pages/bookmark/UserBookmark.vue";
 import Read from "../components/WrittenPostPage.vue";
 
+
+
 const router = createRouter({
+  scrollBehavior(){
+    return {top : 0}
+  },
   history: createWebHistory(process.env.BASE_URL),
   // 하나의 객체가 하나의 route를 의미
   routes: [

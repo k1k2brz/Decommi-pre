@@ -7,9 +7,11 @@ emailChange 에러먹음
 회원가입,로그인에 ref걸고 focus걸기
 report창 alert뜨는거 좀 이쁘게 수정하기
 
+기본적으로 focus를 다 줘야한다.
+
 다이어리 작성이 완료되었습니다 창 뜨고 1~2초 뒤에 마이페이지로 넘어가게 setTimeout
 async await으로 새로고침 안해도 되게 (함수로 빼고 axios 맨 밑에다 await으로 붙여준다)
-스크롤바 자동으로 위로 올라가게
+스크롤바 자동으로 위로 올라가게(임시 top 0) 이거 해둠
 댓글 레이아웃 맞추기
 
 https://ckeditor.com/ckeditor-5/online-builder/

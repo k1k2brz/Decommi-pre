@@ -123,9 +123,6 @@ export default {
         emailError.value = false;
         passError.value = false;
         store.state.me = true;
-        router.push({
-          name: "Main",
-        });
       } catch (err) {
         console.log(err);
       }

@@ -11,19 +11,28 @@
           <h5 class="card-title">
             {{ state.title }}
           </h5>
-          <!-- <PostMenu class="pl-3" :onEditBtn="onEditBtn" :onRemoveBtn="onRemoveBtn" /> -->
         </div>
-        <!-- <div class="small-text mb-4">
-          <span class="days">{{ state.regDate.split("-")[0] }}.</span>
-          <span class="days">{{ state.regDate.split("-")[1] }}.</span>
-          <span class="days">{{
-          state.regDate.split("-")[2].split("T")[0]
-          }}</span>
-          <span class="ml-1 lastTime margin5">{{
-          getTimeFromJavaDate(state.regDate)
-          }}</span>
-        </div> -->
         <hr />
+        <div class="small-text mb-4 d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <span class="days">{{ state.regDate.split("-")[0] }}.</span>
+            <span class="days">{{ state.regDate.split("-")[1] }}.</span>
+            <span class="days">{{
+            state.regDate.split("-")[2].split("T")[0]
+            }}</span>
+            <span class="ml-1 lastTime margin5">{{
+            getTimeFromJavaDate(state.regDate)
+            }}</span>
+          </div>
+          <div class="d-flex">
+            <button @click="onEditBtn" type="button" class="reportBtn reportBtnHover">
+              수정
+            </button>
+            <button @click="onRemoveBtn" type="button" class="reportBtn reportBtnHover">
+              삭제
+            </button>
+          </div>
+        </div>
         <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4 mt-4" alt="none" />
         <p class="card-text mb-4">{{ state.content }}</p>
         <div class="mb-2 d-flex justify-content-between flex-column">
@@ -47,8 +56,8 @@
   
 <script>
 import { reactive } from "@vue/reactivity";
-// import { useStore } from "vuex";
-// import { useRouter } from "vuex";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router"; 
 import axios from "axios";
 import { onBeforeMount } from "vue";
 import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
@@ -58,9 +67,8 @@ import ReportModal from "./ReportModal.vue";
 
 export default {
   setup() {
-    // const store = useStore();
-    // const router = useRouter();
-    // 여기 CSS 수정하기
+    const store = useStore();
+    const router = useRouter();
     const state = reactive({
       dino: null,
       title: null,
@@ -73,6 +81,46 @@ export default {
       modDate: null,
       regDate: null,
     });
+
+    const onEditBtn = async () => {
+      try {
+        const url = "./api/diary/modify/check";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          dino: state.dino,
+          writer: store.state.users.me.id,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            // reactive로 빼기
+            // 누구나 수정 불가능하도록 고유번호 지정
+            if (res.data.writer == store.state.users.me.email) {
+              router.push(`/editPost?edit=${res.data.dino}`);
+            } else {
+              alert('수정할 권한이 없습니다')
+              router.push({
+                name: "Main"
+              })
+            }
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    const onRemoveBtn = async () => {
+
+    }
+
     let dino = new URLSearchParams(window.location.search).get("id");
     state.dino = parseInt(`${dino}`)
     // if (dino.length == 0) {
@@ -107,8 +155,7 @@ export default {
     }
     const mountedAxios = async () => {
       await axios.get(`./diary/read/${dino}`).then((res) => {
-        console.log(res.data.diaryPost);
-        state.regDate = getTimeFromJavaDate(res.data.diaryPost.regDate);
+        state.regDate = res.data.diaryPost.regDate;
         state.title = res.data.diaryPost.title;
         state.content = res.data.diaryPost.content;
         state.openYN = res.data.diaryPost.openYN;
@@ -120,7 +167,7 @@ export default {
     onBeforeMount(() => {
       mountedAxios();
     });
-    return { state, mountedAxios };
+    return { state, mountedAxios, getTimeFromJavaDate, onEditBtn, onRemoveBtn };
   },
   components: { WrittenPostsBookmark, WrittenPostsHeart, ReportModal, WrittenComments }
 };

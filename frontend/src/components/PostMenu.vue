@@ -18,8 +18,6 @@
             @click="onEditBtn"
             type="button"
             class="reportBtn reportBtnHover"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
           >
             수정하기
           </button>
@@ -27,8 +25,6 @@
             @click="onRemoveBtn"
             type="button"
             class="reportBtn reportBtnHover"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
           >
             삭제하기
           </button>
