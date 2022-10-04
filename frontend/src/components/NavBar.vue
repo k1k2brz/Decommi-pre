@@ -8,7 +8,7 @@
       <!-- to뒤에 경로나 :찍고 index.js의 name을 걸어주면 링크이동 -->
       <!-- index.js에서 설정한 home component가 여기에 들어온다 -->
       <a href="#" @click="logoBtn" class="navbar-brand"><b>DeCommi</b></a>
-      <ul class="navbar-nav">
+      <ul class="navbar-nav d-flex justify-content-between">
         <li
           v-if="!me"
           class="nav-item active d-flex align-items-center flex-wrap"
@@ -30,9 +30,12 @@
           <div class="d-flex justify-content-center align-items-center">
             <input
               type="text"
-              class="form-control serviceSearch mr-5"
-              aria-label="Text input with segmented dropdown button"
+              class="form-control serviceSearch mr-2"
+              ref="navInput"
+              v-model="state.navInput"
+              @keyup.enter="btnSearch"
             />
+            <button @click="btnSearch" class="btn-regular mr-5">입력</button>
           </div>
           <div
             class="d-flex justify-content-center align-items-center flex-wrap"
@@ -92,7 +95,7 @@
                   <router-link
                     class="menu-hover menu-btn nav-link"
                     :to="{ name: 'EditTag' }"
-                    >내 태그 설정</router-link
+                    >관심있는 다이어리</router-link
                   >
                   <router-link
                     class="menu-hover menu-btn nav-link"
@@ -121,23 +124,27 @@
 </template>
 
 <script>
-// 검색기능 에어리뷰 참고하기
 import {
   computed,
   defineComponent,
   onBeforeUnmount,
   onMounted,
+  reactive,
   ref,
 } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
 
-    const clickOuter = ref("");
+    const navInput = ref("");
+    const state = reactive({
+      navInput: "",
+    });
     const dropdown = {
       active: ref(false),
       caret: ref(false),
@@ -145,11 +152,6 @@ export default defineComponent({
         dropdown.active.value = false;
       },
     };
-
-    // const navMenuBtn = () => {
-    //   dropdown.active.value = !dropdown.active.value;
-    //   dropdown.caret.value = !dropdown.caret.value;
-    // };
 
     function close() {
       store.state.nav.navToggle = false;
@@ -172,7 +174,65 @@ export default defineComponent({
     }
     onMounted(() => {
       loginCheck();
+      localStorage.removeItem("tagList");
     });
+
+    const btnSearch = async () => {
+      if (state.navInput == "") {
+        alert("검색어를 입력해주세요");
+        navInput.value.focus();
+        return;
+      }
+      // let keyword2 = localStorage.getItem("tagList");
+      // console.log(keyword2);
+      let keyword = localStorage.getItem("tagList");
+      if (keyword !== null && keyword !== "") {
+        let kwd = keyword.split(",");
+        try {
+          const url = "./diary/list/search";
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: store.state.users.me.token,
+            mid: store.state.users.me.mid,
+          };
+          const body = {
+            type: "s",
+            keyword: state.navInput,
+            tagList: kwd,
+            writer: store.state.users.me.id,
+          };
+          console.log(body);
+          await axios.post(url, body, { headers }).then((res) => {
+            console.log(res.data);
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      } else if (!keyword || keyword == "") {
+        try {
+          const url = "./diary/list/search";
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: store.state.users.me.token,
+            mid: store.state.users.me.mid,
+          };
+          const body = {
+            keyword: state.navInput,
+            writer: store.state.users.me.id,
+          };
+          console.log(body);
+          await axios.post(url, body, { headers }).then((res) => {
+            console.log(res.data);
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      // let tmp = localStorage.getItem("tagList").split(",");
+      // tmp.push(state.navInput);
+      state.navInput == "";
+      navInput.value.focus();
+    };
 
     const logoBtn = () => {
       if (store.state.users.me == false || store.state.users.me == null) {
@@ -217,15 +277,16 @@ export default defineComponent({
       onMounted,
       loginCheck,
       logoBtn,
-      // navMenuBtn,
       onLogout,
       me,
       navToggle,
       navMenuicon,
-      clickOuter,
+      navInput,
+      state,
       myPage,
       close,
       dropdown,
+      btnSearch,
     };
   },
 });

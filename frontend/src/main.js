@@ -6,6 +6,7 @@ import store from "./store";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 // CKEditor Translation
 import "@ckeditor/ckeditor5-build-classic/build/translations/ko";
+// import "@ckeditor/ckeditor5-editor-inline";
 
 import "./plugins/chart.js";
 
@@ -16,15 +17,15 @@ import "bootstrap";
 //Bootstrap Icon https://icons.getbootstrap.com/
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-import { globalCookiesConfig } from "vue3-cookies";
+// import { globalCookiesConfig } from "vue3-cookies";
 
-globalCookiesConfig({
-  expireTimes: "30d",
-  path: "/",
-  domain: "",
-  secure: true,
-  sameSite: "None",
-});
+// globalCookiesConfig({
+//   expireTimes: "30d",
+//   path: "/",
+//   domain: "",
+//   secure: true,
+//   sameSite: "None",
+// });
 
 // store를 추가함으로써 vuex state에 접근이 가능해진다.
 createApp(App)

@@ -13,10 +13,10 @@
             <span class="days">{{ post.regDate.split("-")[0] }}.</span>
             <span class="days">{{ post.regDate.split("-")[1] }}.</span>
             <span class="days">{{
-            post.regDate.split("-")[2].split("T")[0]
+              post.regDate.split("-")[2].split("T")[0]
             }}</span>
             <span class="ml-1 lastTime margin5">{{
-            getTimeFromJavaDate(post.regDate)
+              getTimeFromJavaDate(post.regDate)
             }}</span>
           </div>
           <PostMenu :onEditBtn="onEditBtn" :onRemoveBtn="onRemoveBtn" />
@@ -25,7 +25,12 @@
         <p class="card-text mb-4">{{ post.content }}</p>
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
-            <button type="button" class="btn-tag-sm d-flex" v-for="tag in state.tagList" :key="tag">
+            <button
+              type="button"
+              class="btn-tag-sm d-flex"
+              v-for="tag in state.tagList"
+              :key="tag"
+            >
               {{ tag }}
             </button>
           </div>
@@ -87,29 +92,31 @@ export default {
     //  */ >>
 
     const onRemoveBtn = async () => {
-      // try {
-      //   const url = "./api/diary/write";
-      //   const headers = {
-      //     "Content-Type": "application/json",
-      //     Authorization: store.state.users.me.token,
-      //     mid: store.state.users.me.mid,
-      //   };
-      //   const body = {
-      //     writer: store.state.users.me.email,
-      //   };
-      //   console.log(body);
-      //   await axios
-      //     .post(url, body, { headers })
-      //     .then((res) => {
-      //       console.log(res.data);
-      //     })
-      //     .catch((err) => {
-      //       console.error(err);
-      //     });
-      // } catch (err) {
-      //   console.log(err);
-      // }
+      try {
+        const url = "./api/diary/delete";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          dino: state.dino,
+          writer: store.state.users.me.id,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
     };
+
     const onEditBtn = async () => {
       // store.dispatch("posts/changeMainPost", {
       // id: props.post.id,
@@ -134,10 +141,10 @@ export default {
             if (res.data.writer == store.state.users.me.email) {
               router.push(`/editPost?edit=${res.data.dino}`);
             } else {
-              alert('수정할 권한이 없습니다')
+              alert("수정할 권한이 없습니다");
               router.push({
-                name: "Main"
-              })
+                name: "Main",
+              });
             }
             console.log(res.data);
           })
@@ -177,14 +184,17 @@ export default {
       dino: props.post.dino,
       tagList: [],
     });
-    // 컨트롤러 작성해 달라고 할 것
 
-    axios.get(`./diary/read/${state.dino}`).then((res) => {
-      state.dino = res.data.diaryPost.dino;
-      for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
-        state.tagList.push(res.data.diaryPost.tagList[i]);
-      }
-    });
+    const PostList = async () => {
+      await axios.get(`./diary/read/${state.dino}`).then((res) => {
+        state.dino = res.data.diaryPost.dino;
+        for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
+          state.tagList.push(res.data.diaryPost.tagList[i]);
+        }
+      });
+    };
+
+    PostList();
 
     const dinoTest = (dino) => {
       router.push(`/read?id=${dino}`);
@@ -228,7 +238,7 @@ export default {
   text-overflow: ellipsis
   overflow: hidden
   word-break: break-word
-    
+
   display: -webkit-box
   -webkit-line-clamp: 15 // 원하는 라인수
   -webkit-box-orient: vertical

@@ -44,21 +44,30 @@
 
 <script>
 import { reactive, ref } from "@vue/reactivity";
+import { onMounted } from "@vue/runtime-core";
 
 export default {
   setup() {
     const tagValue = ref("");
     let tags = reactive([]);
 
+    onMounted(() => {
+      if (tags.length == 0) {
+        console.log(tags);
+      }
+    });
+
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
       if (tags.includes(result) == true) {
-        alert('이미 등록된 태그입니다.')
+        alert("이미 등록된 태그입니다.");
         tagValue.value = "";
-        return
+        return;
       }
       if (!result == "") {
         tags.push(result);
+        localStorage.setItem("tagList", null);
+        localStorage.setItem("tagList", tags.join(","));
         tagValue.value = "";
       }
       tagValue.value = "";
@@ -66,6 +75,8 @@ export default {
 
     const removeTag = (index) => {
       tags.splice(index, 1);
+      localStorage.setItem("tagList", null);
+      localStorage.setItem("tagList", tags.join(","));
     };
 
     return { tagValue, tags, addTag, removeTag };

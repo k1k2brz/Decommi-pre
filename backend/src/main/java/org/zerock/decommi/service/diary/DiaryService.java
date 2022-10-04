@@ -3,12 +3,13 @@ package org.zerock.decommi.service.diary;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.zerock.decommi.dto.BookmarkDTO;
 import org.zerock.decommi.dto.DiaryDTO;
 import org.zerock.decommi.dto.FileDTO;
 import org.zerock.decommi.dto.HeartDTO;
+import org.zerock.decommi.dto.PageRequestDTO;
+import org.zerock.decommi.dto.PageResultDTO;
 import org.zerock.decommi.dto.ReplyDTO;
 import org.zerock.decommi.dto.ReportDTO;
 import org.zerock.decommi.dto.TagDTO;
@@ -20,7 +21,6 @@ import org.zerock.decommi.entity.diary.Report;
 import org.zerock.decommi.entity.diary.Tag;
 import org.zerock.decommi.entity.member.Bookmark;
 import org.zerock.decommi.entity.member.Member;
-import org.zerock.decommi.vo.DiaryPostList;
 
 public interface DiaryService {
     // 다이어리
@@ -30,30 +30,24 @@ public interface DiaryService {
 
     String modifyDiary(DiaryDTO dto, List<String> tagList);
 
-    void deleteDiary(Long dino);
+    Boolean deleteDiary(DiaryDTO dto);
 
     DiaryDTO getDiaryPostByDino(Long dino);
 
-    List<DiaryPostList> getDiaryPostList();
+    PageResultDTO<DiaryDTO, Diary> getDiaryPostList(PageRequestDTO requestDTO);
+    // 추가예정
+    // PageResultDTO<DiaryDTO, Diary> getDiaryPostListByTagName(PageRequestDTO
+    // requestDTO);
+    
+    String registerReply(ReplyDTO dto);
 
-    //정렬조건
-    //default 는 작성일자 최신이 제일 위로
-    //하트순
-    //북마크순
+    Long addNewReply(ReplyDTO dto); // 대댓글?
 
-    // 검색조건 만족하는 다이어리 게시글 리스트
-    // List<Object[]> getSearchDiaryList(String search);
+    String modifyReply(ReplyDTO dto);
 
-    // 좋아요태그포함된 다이어리 게시글 리스트
-    // List<Object[]> getLikeTagDiaryList();
+    String deleteReply(ReplyDTO dto);
 
-    // // 댓글
-    // Long registerReply(ReplyDTO dto);
-    // String modifyReply(ReplyDTO dto, String id);
-    // String deleteReply(ReplyDTO dto, String id);
-    // HashMap<String, Object> getReplyListByDino(Long dino, Pageable pageable);
-    // HashMap<String, Object> getReplyListByDinoWithId(Long dino, Pageable
-    // pageable, String id);
+    HashMap<String, Object> getReplyListByDino(Long dino, Pageable pageable);
 
     // 북마크
     Boolean addBookmark(BookmarkDTO dto);
@@ -124,7 +118,7 @@ public interface DiaryService {
     // 댓글
     default Reply replyDTOtoEntity(ReplyDTO dto) {
         Diary diary = Diary.builder().dino(dto.getDino()).build();
-        Member member = Member.builder().id(dto.getId()).build();
+        Member member = Member.builder().mid(dto.getMid()).build();
         Reply reply = Reply.builder()
                 .rno(dto.getRno())
                 .dino(diary)
@@ -142,7 +136,7 @@ public interface DiaryService {
         ReplyDTO dto = ReplyDTO.builder()
                 .rno(reply.getRno())
                 .dino(reply.getDino().getDino())
-                .id(reply.getMember().getId())
+                .mid(reply.getMember().getMid())
                 .replyContent(reply.getReplyContent())
                 .replyGroup(reply.getReplyGroup())
                 .replyDepth(reply.getReplyDepth())
@@ -214,4 +208,5 @@ public interface DiaryService {
                 .build();
         return dto;
     }
+
 }

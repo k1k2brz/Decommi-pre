@@ -6,7 +6,7 @@ import router from "@/router";
 export default {
   namespaced: true,
   state: {
-    me: '',
+    me: "",
   },
   mutations: {
     setMe(state, payload) {
@@ -90,35 +90,34 @@ export default {
       const log = async () => {
         try {
           const url = "./decommi/member/login";
-        const headers = {
-          "Content-Type": "application/json",
-        };
-        const body = {
-          email: payload.email,
-          pw: payload.pw,
-        };
-        console.log(body);
-        await axios
-        .post(url, body, { headers })
-        .then((res) => {
-            console.log(res.data)
-            // payload는 프론트 값을 받아옴
-            // res.data 백엔드 값을 받아옴
-            commit("setMe", res.data);
-            router.push({
-              name: "Main",
+          const headers = {
+            "Content-Type": "application/json",
+          };
+          const body = {
+            email: payload.email,
+            pw: payload.pw,
+          };
+          console.log(body);
+          await axios
+            .post(url, body, { headers })
+            .then((res) => {
+              console.log(res.data);
+              // payload는 프론트 값을 받아옴
+              // res.data 백엔드 값을 받아옴
+              commit("setMe", res.data);
+              router.push({
+                name: "Main",
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+              alert("없는 아이디거나 비밀번호가 일치하지 않습니다.");
             });
-          })
-          .catch((err) => {
-            console.error(err);
-            console.log("rere")
-          });
-        } catch(err) {
+        } catch (err) {
           console.log(err);
         }
-      }
-      log()
-      
+      };
+      log();
     },
     logOut({ commit }) {
       localStorage.removeItem("vuex");
@@ -144,6 +143,10 @@ export default {
   getters: {
     toastMessageWithSmile(state) {
       return state.toastMessage + "^-^";
+    },
+
+    isLogin(state) {
+      return state.users.me == null;
     },
   },
 };

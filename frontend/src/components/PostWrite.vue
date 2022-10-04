@@ -15,14 +15,19 @@
       @input="autoResize"
       class="myWriteContent form-control"
       placeholder="오늘의 다이어리를 작성해 보세요!"
-      id="floatingTextarea"
     />
     <ckeditor
+      v-if="clickTA"
       @ready="onReady"
       :editor="editor"
       v-model="editorData"
       :config="editorConfig"
-    ></ckeditor>
+      class="myWriteContent ck-placeholder"
+      id="editor"
+      data-placeholder="Type some text..."
+      style="border: 1px solid lightgrey; border-radius: 10px"
+      >::before</ckeditor
+    >
     <div v-if="clickTA">
       <div class="flex-wrap gap-2 d-flex">
         <div class="tag" v-for="(tag, index) in tags" :key="'tag' + index">
@@ -43,6 +48,44 @@
         />
       </div>
     </div>
+  </div>
+  <div>
+    <div class="LoginLine mb-3"></div>
+  </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <!-- <div class="d-flex gap-1">
+      <div class="form-group centerz">
+        <div class="filebox">
+          <input
+            ref="imgInput"
+            @change="handleFileUpload($event)"
+            type="file"
+            id="ex_file"
+            multiple
+          />
+          <label
+            for="ex_file"
+            ref="selectedFile"
+            class="bi bi-file-image"
+          ></label>
+        </div>
+      </div>
+      <div class="filebox">
+        <label
+          for="ex_gif"
+          ref="selectedGif"
+          class="bi bi-filetype-gif"
+        ></label>
+        <input
+          ref="gifInput"
+          @change="handleGifUpload($event)"
+          type="file"
+          id="ex_gif"
+        />
+      </div>
+      <div class="icon"></div>
+      <div class="icon"></div>
+    </div> -->
     <button
       v-if="privacyPermit"
       @click="publicPrivacy"
@@ -75,47 +118,6 @@
         </div>
       </div>
     </div>
-  </div>
-  <div>
-    <div class="LoginLine mb-3"></div>
-  </div>
-  <div class="d-flex justify-content-between align-items-center">
-    <div class="d-flex gap-1">
-      <div class="form-group centerz">
-        <div class="filebox">
-          <input
-            ref="imgInput"
-            @change="handleFileUpload($event)"
-            type="file"
-            id="ex_file"
-            multiple
-          />
-          <label
-            for="ex_file"
-            ref="selectedFile"
-            class="bi bi-file-image"
-          ></label>
-        </div>
-        <!-- vue3 image upload easy (v-upload-image) 참고 -->
-        <!-- npm설치해야하면 설치할 것 -->
-        <!-- <button @click="onUpload">Upload</button> -->
-      </div>
-      <div class="filebox">
-        <label
-          for="ex_gif"
-          ref="selectedGif"
-          class="bi bi-filetype-gif"
-        ></label>
-        <input
-          ref="gifInput"
-          @change="handleGifUpload($event)"
-          type="file"
-          id="ex_gif"
-        />
-      </div>
-      <div class="icon"></div>
-      <div class="icon"></div>
-    </div>
     <button
       @click="writeCompletedBtn"
       class="btn-regular"
@@ -136,6 +138,7 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { computed } from "@vue/runtime-core";
 import ClassicEditor from "@ckeditor/ck5/build/ckeditor";
+// import InlineEditor from "@ckeditor/ck5/build/ckeditor";
 import store from "@/store";
 
 export default {
@@ -170,7 +173,7 @@ export default {
           editor.ui.getEditableElement()
         );
     }
-    // Comments, Images, id(고유번호), createdAt 등 어케 받을건지 백엔드와 상의
+
     const router = useRouter();
     const store = useStore();
     const pp = ref(false);
@@ -258,9 +261,9 @@ export default {
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
       if (tags.includes(result) == true) {
-        alert('이미 등록된 태그입니다.')
+        alert("이미 등록된 태그입니다.");
         tagValue.value = "";
-        return
+        return;
       }
       if (!result == "") {
         tags.push(result);
@@ -404,6 +407,13 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.ck-placeholder::before
+  color: #d21714
+
+.tagContainer
+  border: 1px solid lightgrey
+  border-radius: 10px
+
 .myWriteContent
   overflow: visible
   border: none

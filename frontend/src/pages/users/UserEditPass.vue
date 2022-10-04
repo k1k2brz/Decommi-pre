@@ -46,6 +46,7 @@ import router from "@/router";
 import { computed } from "@vue/reactivity";
 import { reactive } from "vue";
 import { useStore } from "vuex";
+import axios from "axios";
 
 export default {
   setup() {
@@ -59,13 +60,37 @@ export default {
       pw: "",
       pwErr: false,
     });
-    const onBtn = () => {
-      if (pass.pw !== store.state.users.me.pass) {
-        pass.pwErr = true;
-        return;
+    const onBtn = async () => {
+      try {
+        const url = "/decommi/member/checkpw";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          email: store.state.users.me.email,
+          pw: pass.pw,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            if (res.data == true) {
+              router.push({
+                name: "UserEdit",
+              });
+              pass.pwErr = false;
+            } else if (res.data == false) {
+              pass.pwErr = true;
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
       }
-      pass.pwErr = false;
-      router.push("/pages/users/edit");
     };
 
     return { onBtn, pass, me };

@@ -16,7 +16,7 @@ module.exports = defineConfig({
       "/decommi/api/diary": { target, changeOrigin: true },
       "/decommi/diary": { target, changeOrigin: true },
       "/decommi/member/": { target, changeOrigin: true },
-      "/decommi/info/": { target, changeOrigin: true },
+      "/decommi/mydiary/": { target, changeOrigin: true },
     },
   },
 

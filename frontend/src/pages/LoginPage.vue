@@ -10,7 +10,7 @@
           </div>
           <div class="mb-3">
             <input
-            ref="id"
+              ref="id"
               v-model="info.id"
               type="email"
               class="form-control"
@@ -24,7 +24,7 @@
           </div>
           <div class="mb-3">
             <input
-            ref="pass"
+              ref="pass"
               v-model="info.pass"
               type="password"
               class="form-control"
@@ -101,8 +101,8 @@ export default {
       pass: "",
       token: 0,
     });
-    const id = ref('')
-    const pass = ref('')
+    const id = ref("");
+    const pass = ref("");
 
     const onSubmitForm = async () => {
       // cookies
@@ -111,13 +111,13 @@ export default {
       if (info.id.trim().length == 0) {
         emailError.value = true;
         passError.value = false;
-        id.value.focus()
+        id.value.focus();
         return;
       }
       if (info.pass.trim().length == 0) {
         passError.value = true;
         emailError.value = false;
-        pass.value.focus()
+        pass.value.focus();
         return;
       }
       try {
@@ -128,15 +128,14 @@ export default {
         });
         emailError.value = false;
         passError.value = false;
-        store.state.me = true;
       } catch (err) {
         console.log(err);
       }
     };
 
     onMounted(() => {
-      id.value.focus()
-    })
+      id.value.focus();
+    });
 
     return {
       emailError,
@@ -148,7 +147,7 @@ export default {
       store,
       cookies,
       id,
-      pass
+      pass,
     };
   },
   middleware: "anonymous",

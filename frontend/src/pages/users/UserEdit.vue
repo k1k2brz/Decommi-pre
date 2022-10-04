@@ -65,8 +65,15 @@
             >
           </div>
           <div class="d-flex align-items-center mt-2">
-            <button @click="changeEditEmail" :disabled="me.email == edit.email" :class="{ btnChange: me.email != edit.email,
-            btnChangeDisalbed: me.email == edit.email || edit.email.trim().length == 0 }">
+            <button
+              @click="changeEditEmail"
+              :disabled="me.email == edit.email"
+              :class="{
+                btnChange: me.email != edit.email,
+                btnChangeDisalbed:
+                  me.email == edit.email || edit.email.trim().length == 0,
+              }"
+            >
               변경 확인
             </button>
             <button @click="cancelBtn" class="ml-1 btnChange">취소</button>
@@ -81,18 +88,20 @@
           <div class="mt-3 mb-3 mr-3">비밀번호 변경</div>
         </div>
         <div class="d-flex flex-column gap-2 ml-4">
-          <input
+          <!-- <input
+            maxlength="16"
             v-model="edit.nowpass"
-            class="mt-3 input-box form-control"
+            class="mt-3 pass-input input-box form-control"
             type="password"
             placeholder="현재 비밀번호"
           />
           <span v-if="edit.nowpassError" class="font14 ml-2"
             >비밀번호가 맞지 않습니다.</span
-          >
+          > -->
           <input
+            maxlength="16"
             v-model="edit.newpass"
-            class="input-box form-control"
+            class="pass-input input-box form-control"
             type="password"
             placeholder="새 비밀번호"
           />
@@ -100,8 +109,9 @@
             >비밀번호를 다시 확인해주세요.</span
           >
           <input
+            maxlength="16"
             v-model="edit.newrepass"
-            class="input-box form-control"
+            class="pass-input input-box form-control"
             type="password"
             placeholder="새 비밀번호 확인"
           />
@@ -159,9 +169,11 @@
 
 <script>
 import Withdraw from "@/pages/users/UserWithdraw.vue";
+// import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { computed, reactive } from "@vue/reactivity";
 import { useStore } from "vuex";
+import axios from "axios";
 
 export default {
   components: {
@@ -169,6 +181,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    // const router = useRouter();
 
     const me = computed(() => {
       return store.state.users.me;
@@ -196,13 +209,14 @@ export default {
       }
     };
 
-    const passSubmit = () => {
-      if (edit.nowpass !== store.state.users.me.pass) {
-        edit.nowpassError = true;
-        edit.newpassError = false;
-        edit.newrepassError = false;
-        return;
-      } else if (
+    const passSubmit = async () => {
+      // if (edit.nowpass !== store.state.users.me.pass) {
+      //   edit.nowpassError = true;
+      //   edit.newpassError = false;
+      //   edit.newrepassError = false;
+      //   return;
+      // } else
+      if (
         edit.newpass.trim().length == 0 ||
         edit.newpass === store.state.users.me.pass
       ) {
@@ -216,9 +230,29 @@ export default {
         edit.newpassError = false;
         return;
       }
-      store.dispatch("users/changePassword", {
-        pass: edit.newpass,
-      });
+      try {
+        const url = "/decommi/member/checkpw";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          mid: store.state.users.me.mid,
+          pw: edit.newpass,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
       alert("비밀번호가 변경되었습니다.");
       edit.nowpassError = false;
       edit.newpassError = false;
@@ -283,6 +317,9 @@ export default {
 .change-email-text
     color: grey
     font-size: 14px
+
+.pass-input
+  width: 350px
 
 hr
   margin: 0

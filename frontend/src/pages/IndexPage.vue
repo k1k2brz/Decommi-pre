@@ -22,8 +22,24 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 export default {
   name: "MainPage",
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    function a() {
+      if (store.state.users.me != null) {
+        router.push({
+          name: "Main",
+        });
+      }
+    }
+    a();
+  },
   // 로그인한 사용자만 접근
   middleware: "anonymous",
 };

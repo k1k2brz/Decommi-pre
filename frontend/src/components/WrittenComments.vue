@@ -22,13 +22,21 @@
         @change="change($event)"
       />
     </div>
+    <button class="btn btn-primary w-100" v-if="stateInfo" @click="reply">
+      댓글 더 보기
+    </button>
   </div>
+  <!-- <PageInfinite /> -->
 </template>
 
 <script>
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { ref, reactive } from "@vue/reactivity";
 import WrittenCommentsContent from "./WrittenCommentsContent.vue";
-// import { useStore } from "vuex";
+import axios from "axios";
+// import PageInfinite from "./PageInfinite.vue";
+
 export default {
   props: {
     dino: {
@@ -37,27 +45,115 @@ export default {
     },
   },
   setup(props) {
+    const store = useStore();
+    const router = useRouter();
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: store.state.users.me.token,
+      mid: store.state.users.me.mid,
+    };
+    let stateInfo = ref(false);
+    const commentList = reactive([]);
     const state = reactive({
       dino: props.dino,
+      reqPage: 0,
+      writer: store.state.users.me.id,
     });
-    // const store = useStore();
+
+    const reply = async () => {
+      try {
+        const body = {
+          dino: state.dino,
+          reqPage: state.reqPage,
+          mid: store.state.users.me.mid,
+        };
+        await axios
+          .post(`/decommi/api/diary/reply/`, body, { headers })
+          .then((res) => {
+            if (res.data.replyList == undefined) {
+              return;
+            }
+            commentList.push(...res.data.replyList);
+            if (res.data.replyList.length % 5 == 0) {
+              state.reqPage += 1;
+              stateInfo.value = true;
+            } else {
+              stateInfo.value = false;
+            }
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    reply();
+
+    function getMoreComment() {
+      state.reqPage += 1;
+      reply();
+    }
+
+    function updateStates(cState, sInfo) {
+      commentList.push(...cState);
+      stateInfo.push(sInfo);
+    }
+
+    // async function getComments() {
+    //   const body = {
+    //     dino: state.dino,
+    //     reqPage: state.reqPage,
+    //     mid: store.state.users.me.mid,
+    //   };
+    //   await axios
+    //     .post(`/decommi/api/diary/reply/`, body, { headers })
+    //     .then(function (res) {
+    //       console.log(res.data);
+    //       // if (res.data.pageTotalCount == state.reqPage + 1) {
+    //       //   updateStates(res.data.commentList, -999);
+    //       // } else {
+    //       //   updateStates(res.data.commentList, res.data.commentList.length);
+    //       // }
+    //     })
+    //     .catch(function () {});
+    // }
+
     const onComment = ref(true);
     const cmtChangeBtn = ref(true);
     const commentValue = ref("");
-    const commentList = reactive([]);
+
     // 좋아요
     // false가 체크임
-    const remove = (item, index) => {
-      commentList.splice(index, 1);
+    const remove = async () => {
+      router.go(0);
+      // commentList.splice(index, 1);
     };
 
     const change = (comment) => {
       console.log(comment);
     };
 
-    const addComment = () => {
+    const addComment = async () => {
       if (!commentValue.value == "") {
-        commentList.unshift(commentValue.value);
+        try {
+          const url = "/decommi/api/diary/reply/add/";
+          const body = {
+            mid: store.state.users.me.mid,
+            dino: state.dino,
+            replyContent: commentValue.value,
+          };
+          console.log(body);
+          await axios
+            .post(url, body, { headers })
+            .then((res) => {
+              console.log(res.data);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        } catch (err) {
+          console.error(err);
+        }
+        // commentList.unshift(commentValue.value);
       }
       commentValue.value = "";
     };
@@ -71,6 +167,11 @@ export default {
       commentList,
       state,
       change,
+      stateInfo,
+      getMoreComment,
+      // getComments,
+      updateStates,
+      reply,
     };
   },
   components: { WrittenCommentsContent },

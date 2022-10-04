@@ -6,21 +6,48 @@ emailChange 에러먹음
 글쓰기에서 북마크 저장하는 거 구현하기 (퍼블 완료 백엔드에서 북마크값 받으면 띄우도록 한다)
 report창 alert뜨는거 좀 이쁘게 수정하기
 
-토큰이 들어있으면 로그인이 안된다
+댓글 역순으로 (백에 말하기)
+새로고침 안하면 댓글삭제랑 댓글 등록 실시간으로 안뜨는 문제
+
+comment 대댓수정 만들기
+
+라우터 메타 필드, 라우터 네비게이션 가드
+useRouter로 가져오기
+https://router.vuejs.org/guide/advanced/navigation-guards.html#global-after-hooks
+https://www.youtube.com/watch?v=P3PW-PbG-ns
+
+https://github.com/DS-Pirate/-AIRREVIEW/blob/HYUNSEOK/frontend/src/components/RecommentList.vue
+16, 17번줄
+44
+~46번줄
+
+로그 계속 뜨는거 없애려면
+아까 그 컨트롤러에서
+result.getDtolist >> 이게 result
+그러면 result에 총 페이지수가 나오는데
+현재페이지 = 총페이지면 함수 실행 못하게끔
+
+백엔드에서 result그대로 넘기면 page랑 totalPage 값이넘어와영
+page = 현재 total = 총페이지 인데
+16번줄 = totalPage, 17번줄 = currentPage
+그래서 로딩 더이상 안하게하는게 44~46 번줄
+
+
+내가 쓴 글에만 수정하기/삭제하기 보이게 하고 다른 사람이 쓴 글에는 좋아요 북마크 신고하기가 보이게 한다
 
 자동로그인 구현하기 (세션 로그인이랑 로컬스토리지를 분리하는건가?)
-
-기본적으로 focus를 다 줘야한다.
 
 다이어리 작성이 완료되었습니다 창 뜨고 1~2초 뒤에 마이페이지로 넘어가게 setTimeout
 async await으로 새로고침 안해도 되게 (함수로 빼고 axios 맨 밑에다 await으로 붙여준다)
 스크롤바 자동으로 위로 올라가게(임시로 top 0 이거 해둠)
 댓글 레이아웃 맞추기
 
+가입 될 때 FavTag 선택 부분에서 token이 뜨는 현상 막기
+
+자바스크립트 배열 전체삭제 할 것
+
 https://ckeditor.com/ckeditor-5/online-builder/
 ***** 이미지 업로드 확인 + ck에디터 맞는거 찾기!!! (c드라이브에 testingimage 파일 만들기)
-게시글 클릭시 레이아웃 제대로 뜨도록 axios를 받자
-글쓰기 수정할 때 다이어리 비공개 댓글 비공개 여부 이런것들 체크 if문 돌리기
 + 게시글 클릭했을 때 페이지 수정
 그리고 axios안에 박아둔 res.data이런것들 state reactive안에 넣기
 

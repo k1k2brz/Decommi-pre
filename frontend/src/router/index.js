@@ -35,35 +35,50 @@ import EditTag from "../pages/findtag/EditTags.vue";
 import UserBookmark from "../pages/bookmark/UserBookmark.vue";
 import Read from "../components/WrittenPostPage.vue";
 
+// import { useStore } from "vuex";
 
+// const store = useStore();
 
 const router = createRouter({
-  scrollBehavior(){
-    return {top : 0}
+  scrollBehavior() {
+    return { top: 0 };
   },
   history: createWebHistory(process.env.BASE_URL),
+
   // 하나의 객체가 하나의 route를 의미
   routes: [
     {
       path: "/",
       name: "Home",
       component: Home,
+      meta: {
+        requiresGuest: true,
+      },
     },
     // 뒤에 todos붙여주면 Todos파일로 가게 Path설정
     {
       path: "/login",
       name: "Login",
       component: Login,
+      meta: {
+        requiresGuest: true,
+      },
     },
     {
       path: "/signup",
       name: "Signup",
       component: Signup,
+      meta: {
+        requiresGuest: true,
+      },
     },
     {
       path: "/idfind",
       name: "IdFind",
       component: Idfind,
+      meta: {
+        requiresGuest: true,
+      },
     },
     {
       path: "/todos",
@@ -86,6 +101,9 @@ const router = createRouter({
       path: "/mainpage",
       name: "Main",
       component: Mainpage,
+      meta: {
+        requiresAuth: true,
+      },
       // beforeEnter: requireAuth(),
     },
     {
@@ -99,7 +117,7 @@ const router = createRouter({
       component: Useredit,
     },
     {
-      path: "/users/edit",
+      path: "/users/editpass",
       name: "UserEditPass",
       component: Usereditpass,
     },
