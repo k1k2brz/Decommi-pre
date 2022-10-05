@@ -189,7 +189,7 @@ export default defineComponent({
       if (keyword !== null && keyword !== "") {
         let kwd = keyword.split(",");
         try {
-          const url = "./diary/list/search";
+          const url = "./diary/list";
           const headers = {
             "Content-Type": "application/json",
             Authorization: store.state.users.me.token,
@@ -210,7 +210,7 @@ export default defineComponent({
         }
       } else if (!keyword || keyword == "") {
         try {
-          const url = "./diary/list/search";
+          const url = "./diary/list";
           const headers = {
             "Content-Type": "application/json",
             Authorization: store.state.users.me.token,

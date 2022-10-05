@@ -88,7 +88,7 @@
           <div class="mt-3 mb-3 mr-3">비밀번호 변경</div>
         </div>
         <div class="d-flex flex-column gap-2 ml-4">
-          <!-- <input
+          <input
             maxlength="16"
             v-model="edit.nowpass"
             class="mt-3 pass-input input-box form-control"
@@ -97,7 +97,7 @@
           />
           <span v-if="edit.nowpassError" class="font14 ml-2"
             >비밀번호가 맞지 않습니다.</span
-          > -->
+          >
           <input
             maxlength="16"
             v-model="edit.newpass"
@@ -210,12 +210,6 @@ export default {
     };
 
     const passSubmit = async () => {
-      // if (edit.nowpass !== store.state.users.me.pass) {
-      //   edit.nowpassError = true;
-      //   edit.newpassError = false;
-      //   edit.newrepassError = false;
-      //   return;
-      // } else
       if (
         edit.newpass.trim().length == 0 ||
         edit.newpass === store.state.users.me.pass
@@ -231,7 +225,7 @@ export default {
         return;
       }
       try {
-        const url = "/decommi/member/checkpw";
+        const url = "/decommi/member/setpw";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -239,13 +233,27 @@ export default {
         };
         const body = {
           mid: store.state.users.me.mid,
-          pw: edit.newpass,
+          currentPw: edit.nowpass,
+          changePw: edit.newpass,
         };
         console.log(body);
         await axios
           .post(url, body, { headers })
           .then((res) => {
-            console.log(res);
+            console.log(res.data);
+            if (res.data == false) {
+              edit.nowpassError = true;
+              edit.newpassError = false;
+              edit.newrepassError = false;
+              return;
+            }
+            alert("비밀번호가 변경되었습니다.");
+            edit.nowpassError = false;
+            edit.newpassError = false;
+            edit.newrepassError = false;
+            edit.nowpass = "";
+            edit.newpass = "";
+            edit.newrepass = "";
           })
           .catch((err) => {
             console.error(err);
@@ -253,13 +261,6 @@ export default {
       } catch (err) {
         console.log(err);
       }
-      alert("비밀번호가 변경되었습니다.");
-      edit.nowpassError = false;
-      edit.newpassError = false;
-      edit.newrepassError = false;
-      edit.nowpass = "";
-      edit.newpass = "";
-      edit.newrepass = "";
     };
 
     const changeEditEmail = () => {

@@ -166,6 +166,8 @@ export default {
             .catch((err) => {
               console.error(err);
             });
+            onAddReply.value = false
+            onComment2.value = true
         } catch (err) {
           console.error(err);
         }

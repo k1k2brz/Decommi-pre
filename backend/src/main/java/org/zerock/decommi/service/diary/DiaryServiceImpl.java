@@ -140,10 +140,12 @@ public class DiaryServiceImpl implements DiaryService {
         }
         return modifiedDiary.getDino().toString();
     }
-
+    @Transactional
     @Override
     public Boolean deleteDiary(DiaryDTO dto) {
         Optional<Diary> check = repository.getDiaryByDinoAndId(dto.getDino(), dto.getWriter());
+        log.info(dto);
+        log.info(check);
         if (check.isPresent()) {
             repository.deleteById(dto.getDino());
             repository.deleteFileByDino(dto.getDino());
@@ -165,13 +167,13 @@ public class DiaryServiceImpl implements DiaryService {
         dto.setTagList(tagString);
         return dto;
     }
-
+    
+    @Transactional
     @Override
     public PageResultDTO<DiaryDTO, Diary> getDiaryPostList(PageRequestDTO requestDTO) {
         Pageable pageable = requestDTO.getPageable(Sort.by("dino").descending());
         BooleanBuilder booleanBuilder = getSearch(requestDTO);
         Page<Diary> result = repository.findAll(booleanBuilder, pageable);
-        log.info("service Class 공개된 다이어리 모두 가져오기 :::"+result);
         Function<Diary, DiaryDTO> fn = new Function<Diary, DiaryDTO>() {
             @Override
             public DiaryDTO apply(Diary t) {
@@ -181,6 +183,20 @@ public class DiaryServiceImpl implements DiaryService {
         return new PageResultDTO<>(result, fn);
     }
 
+    @Transactional
+    @Override
+    public PageResultDTO<DiaryDTO, Diary> getDiaryPostListByTagName(PageRequestDTO requestDTO, String tagName) {
+        Pageable pageable = requestDTO.getPageable(Sort.by("dino").descending());
+        BooleanBuilder booleanBuilder = getSearchByTagName(requestDTO, tagName);
+        Page<Diary>result = repository.findAll(booleanBuilder, pageable);
+        Function<Diary, DiaryDTO> fn = new Function<Diary, DiaryDTO>(){
+            @Override
+            public DiaryDTO apply(Diary t) {
+              return entityToDTO(t);
+            }
+        };
+        return new PageResultDTO<>(result,fn);
+    }
 
     // 하트
     @Override
@@ -228,7 +244,7 @@ public class DiaryServiceImpl implements DiaryService {
     // 댓글 등록
     @Override
     public String registerReply(ReplyDTO dto) {
-        Optional<Member> result = memberRepository.findById(dto.getMid());
+        Optional<Member> result = memberRepository.findByMid(dto.getMid());
         Optional<List<Long>> lastestrg = replyRepository.getLastestReplyGroupWhereMatchWithDino(dto.getDino());
         // rno 안쓰는 이유는 대 댓글때문임.
         Long setrg = 1L; // set ReplyGroup = rg //처음 등록된 댓글은 setrg = 1L
@@ -241,20 +257,28 @@ public class DiaryServiceImpl implements DiaryService {
         dto.setMid(result.get().getMid());
         Reply reply = replyDTOtoEntity(dto);
         replyRepository.save(reply);
+        log.info("reply rno "+reply.getRno());
+        log.info("reply.getReplyContent()"+reply.getReplyContent());
+        log.info("reply.getReplyDepth()"+reply.getReplyDepth());
+        log.info("reply.getReplyGroup()"+reply.getReplyGroup());
+        log.info("reply.getReplyOrder()"+reply.getReplyOrder());
         return reply.getDino().toString();
     }
 
     // 대댓글
     @Override
     public Long addNewReply(ReplyDTO dto) {
-        Optional<Member> result = memberRepository.findById(dto.getMid());
+        Optional<Member> result = memberRepository.findByMid(dto.getMid());
         dto.setReplyGroup(dto.getReplyGroup());
         dto.setReplyDepth(dto.getReplyDepth());
         dto.setReplyOrder(dto.getReplyOrder());
         dto.setMid(result.get().getMid());
-
         Reply entity = replyDTOtoEntity(dto);
-
+        log.info("대댓글 사용자 입력값 :::::"+dto);
+        log.info("대댓글 entity :::::"+entity);
+        log.info("entity.getRno()"+entity.getRno());
+        log.info("entity.getReplyGroup()"+entity.getReplyGroup());
+        log.info("entity.getReplyDepth()"+entity.getReplyDepth());
         replyRepository.save(entity);
         return entity.getRno();
     }
@@ -277,8 +301,11 @@ public class DiaryServiceImpl implements DiaryService {
 
     // 댓글 삭제
     @Override
+    @Transactional
     public String deleteReply(ReplyDTO dto) {
+        log.info("service dto --=-----------------------" + dto);
         Optional<Reply> checkReply = replyRepository.getReplyByRnoAndMid(dto.getRno(), dto.getMid());
+        log.info("service checkReply ======================================="+checkReply);
         if (checkReply.isPresent()) {
             replyRepository.delete(checkReply.get());
             return "Deleted Successfully";
@@ -370,4 +397,12 @@ public class DiaryServiceImpl implements DiaryService {
         return booleanBuilder;
     }
 
+    private BooleanBuilder getSearchByTagName(PageRequestDTO requestDTO, String tagName){
+        QDiary qDiary = QDiary.diary;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        Optional<Tag> temp = tagRepository.findByTagName(tagName);
+        BooleanExpression expression = qDiary.dino.gt(0L).and(qDiary.openYN.isTrue()).and(qDiary.tagList.contains(temp.get()));
+        booleanBuilder.and(expression);
+        return booleanBuilder;
+    }
 }

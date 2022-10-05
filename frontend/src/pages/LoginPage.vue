@@ -54,8 +54,14 @@
               >가입하기</router-link
             >
           </div>
+
           <div class="d-flex justify-content-center findPass">
             <router-link class="nav-link ml-1" :to="{ name: 'IdFind' }"
+              >아이디 확인하기</router-link
+            >
+          </div>
+          <div class="d-flex justify-content-center findPass">
+            <router-link class="nav-link ml-1" :to="{ name: 'Pwfind' }"
               >비밀번호를 잊으셨나요?</router-link
             >
           </div>
@@ -136,6 +142,18 @@ export default {
     onMounted(() => {
       id.value.focus();
     });
+
+    function a() {
+      if (store.state.users.me == null || store.state.users.me == "") {
+        console.log("비로그인 접근");
+      } else {
+        router.push({
+          name: "Main",
+        });
+      }
+    }
+
+    a();
 
     return {
       emailError,

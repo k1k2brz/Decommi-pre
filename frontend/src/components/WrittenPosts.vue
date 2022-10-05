@@ -108,6 +108,7 @@ export default {
           .post(url, body, { headers })
           .then((res) => {
             console.log(res.data);
+            router.go(0)
           })
           .catch((err) => {
             console.error(err);

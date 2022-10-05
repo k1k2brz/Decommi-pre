@@ -118,23 +118,26 @@
         </div>
       </div>
     </div>
-    <button
-      @click="writeCompletedBtn"
-      class="btn-regular"
-      :class="{
-        btnDisabled: myWriteTitle.length < 1 || myWriteContent.length < 1,
-      }"
-      :disabled="myWriteTitle.length < 1 || myWriteContent.length < 1"
-    >
-      작성완료
-    </button>
+    <div>
+      <button
+        @click="writeCompletedBtn"
+        class="btn-regular"
+        :class="{
+          btnDisabled: myWriteTitle.length < 1 || myWriteContent.length < 1,
+        }"
+        :disabled="myWriteTitle.length < 1 || myWriteContent.length < 1"
+      >
+        작성완료
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
+import { getCurrentInstance } from "@vue/runtime-core";
 import { reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import axios from "axios";
 import { computed } from "@vue/runtime-core";
 import ClassicEditor from "@ckeditor/ck5/build/ckeditor";
@@ -142,6 +145,7 @@ import ClassicEditor from "@ckeditor/ck5/build/ckeditor";
 import store from "@/store";
 
 export default {
+  emits: ["Completed"],
   data() {
     let token = store.state.users.me.token;
     let md = store.state.users.me.mid;
@@ -174,7 +178,8 @@ export default {
         );
     }
 
-    const router = useRouter();
+    const { emit } = getCurrentInstance();
+    // const router = useRouter();
     const store = useStore();
     const pp = ref(false);
     const diaryPrivacyCheck = ref(true);
@@ -345,6 +350,7 @@ export default {
           .post(url, body, { headers })
           .then((res) => {
             console.log(res);
+            emit("Completed");
           })
           .catch((err) => {
             console.error(err);
@@ -355,7 +361,7 @@ export default {
         privacyPermit.value = true;
         pp.value = false;
         tags.length = 0;
-        router.go(0);
+        // router.go(0);
       } catch (err) {
         console.log(err);
       }

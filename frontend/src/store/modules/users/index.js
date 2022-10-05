@@ -29,7 +29,7 @@ export default {
   actions: {
     signUp({ commit }, payload) {
       // let myCookieValue = cookies.get("myCoookie");
-      const url = "./decommi/member/signup";
+      const url = "/decommi/member/signup";
       const headers = {
         "Content-Type": "application/json",
       };
@@ -57,13 +57,18 @@ export default {
           // console.log(myCookieValue);
           // cookies.set("myCoookie", `${payload}`);
           commit("setMe", payload);
+          router.push({
+            name: "SelectGoodTag",
+          });
         })
         .catch((err) => {
           console.error(err);
+          alert("회원가입에 실패하였습니다.");
+          return;
         });
     },
     likeTagList({ commit }, payload) {
-      const url = "./decommi/member/";
+      const url = "/decommi/member/liketaglist";
       const headers = {
         "Content-Type": "application/json",
       };
@@ -123,7 +128,7 @@ export default {
       localStorage.removeItem("vuex");
       localStorage.removeItem("TOKEN");
       // localStorage.removeItem("token");
-      // sessionStorage.removeItem("token");
+      sessionStorage.removeItem("token");
       commit("setMe", null);
     },
     changeEmail({ commit }, payload) {

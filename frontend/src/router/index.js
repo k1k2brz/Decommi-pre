@@ -7,6 +7,7 @@ import TodoCreate from "../pages/todos/create/IndexPage.vue";
 import Login from "../pages/LoginPage.vue";
 import Signup from "../pages/SignUp.vue";
 import Idfind from "../pages/IdFind.vue";
+import Pwfind from "../pages/PwFind.vue";
 import Mainpage from "../pages/mainpage/MainPage.vue";
 import Alarmmain from "../pages/alarm/AlarmMain.vue";
 import Useredit from "../pages/users/UserEdit.vue";
@@ -76,6 +77,14 @@ const router = createRouter({
       path: "/idfind",
       name: "IdFind",
       component: Idfind,
+      meta: {
+        requiresGuest: true,
+      },
+    },
+    {
+      path: "/pwfind",
+      name: "Pwfind",
+      component: Pwfind,
       meta: {
         requiresGuest: true,
       },

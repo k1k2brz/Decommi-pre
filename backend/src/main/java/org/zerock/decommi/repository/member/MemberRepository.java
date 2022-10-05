@@ -17,7 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 
   @EntityGraph(attributePaths = { "roleSet" }, type = EntityGraphType.LOAD)
   @Query("select m from Member m where m.mid=:mid")
-  Optional<Member> findById(Long mid);
+  Optional<Member> findByMid(Long mid);
 
   @EntityGraph(attributePaths = { "roleSet" }, type = EntityGraphType.LOAD)
   @Query("select m from Member m where m.id=:id and m.fromSocial=:social ")
@@ -43,6 +43,6 @@ public interface MemberRepository extends JpaRepository<Member, String> {
   @Transactional
   @Modifying(clearAutomatically = true)
   @Query("update Member m set m.pw=:pw where m.mid=:mid")
-  Long changePwByMid(Long mid, String pw);
+  int changePwByMid(Long mid, String pw);
 
 }

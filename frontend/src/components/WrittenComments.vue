@@ -14,7 +14,7 @@
         <button @click="addComment" class="btn-regular">댓글입력</button>
       </div>
     </div>
-    <div v-for="(comment, index) in commentList" :key="comment + index">
+    <div v-for="(comment, index) in state.commentList" :key="comment + index">
       <WrittenCommentsContent
         :dino="state.dino"
         :comment="comment"
@@ -22,7 +22,7 @@
         @change="change($event)"
       />
     </div>
-    <button class="btn btn-primary w-100" v-if="stateInfo" @click="reply">
+    <button class="btn btn-primary w-100" v-if="stateInfo" @click="btnreply()">
       댓글 더 보기
     </button>
   </div>
@@ -31,7 +31,7 @@
 
 <script>
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import { ref, reactive } from "@vue/reactivity";
 import WrittenCommentsContent from "./WrittenCommentsContent.vue";
 import axios from "axios";
@@ -46,92 +46,22 @@ export default {
   },
   setup(props) {
     const store = useStore();
-    const router = useRouter();
+    // const router = useRouter();
     const headers = {
       "Content-Type": "application/json",
       Authorization: store.state.users.me.token,
       mid: store.state.users.me.mid,
     };
     let stateInfo = ref(false);
-    const commentList = reactive([]);
     const state = reactive({
       dino: props.dino,
       reqPage: 0,
       writer: store.state.users.me.id,
+      commentList: [],
+      pageee:0
     });
 
-    const reply = async () => {
-      try {
-        const body = {
-          dino: state.dino,
-          reqPage: state.reqPage,
-          mid: store.state.users.me.mid,
-        };
-        await axios
-          .post(`/decommi/api/diary/reply/`, body, { headers })
-          .then((res) => {
-            if (res.data.replyList == undefined) {
-              return;
-            }
-            commentList.push(...res.data.replyList);
-            if (res.data.replyList.length % 5 == 0) {
-              state.reqPage += 1;
-              stateInfo.value = true;
-            } else {
-              stateInfo.value = false;
-            }
-          });
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    reply();
-
-    function getMoreComment() {
-      state.reqPage += 1;
-      reply();
-    }
-
-    function updateStates(cState, sInfo) {
-      commentList.push(...cState);
-      stateInfo.push(sInfo);
-    }
-
-    // async function getComments() {
-    //   const body = {
-    //     dino: state.dino,
-    //     reqPage: state.reqPage,
-    //     mid: store.state.users.me.mid,
-    //   };
-    //   await axios
-    //     .post(`/decommi/api/diary/reply/`, body, { headers })
-    //     .then(function (res) {
-    //       console.log(res.data);
-    //       // if (res.data.pageTotalCount == state.reqPage + 1) {
-    //       //   updateStates(res.data.commentList, -999);
-    //       // } else {
-    //       //   updateStates(res.data.commentList, res.data.commentList.length);
-    //       // }
-    //     })
-    //     .catch(function () {});
-    // }
-
-    const onComment = ref(true);
-    const cmtChangeBtn = ref(true);
-    const commentValue = ref("");
-
-    // 좋아요
-    // false가 체크임
-    const remove = async () => {
-      router.go(0);
-      // commentList.splice(index, 1);
-    };
-
-    const change = (comment) => {
-      console.log(comment);
-    };
-
+    // 코멘트 추가
     const addComment = async () => {
       if (!commentValue.value == "") {
         try {
@@ -146,6 +76,14 @@ export default {
             .post(url, body, { headers })
             .then((res) => {
               console.log(res.data);
+              state.reqPage = 0;
+              replyMore()
+              // replyMore()
+              // for (let index = 0; index <= state.reqPage; index++) {
+              //   replyMoreAddComment(index);
+              // }
+              
+              // commentList.push(commentValue.value);
             })
             .catch((err) => {
               console.error(err);
@@ -153,9 +91,85 @@ export default {
         } catch (err) {
           console.error(err);
         }
-        // commentList.unshift(commentValue.value);
       }
       commentValue.value = "";
+    };
+
+    // commenList를 초기화 하면서 다시 불러온다 (reactive 반응형 작동용)
+    const replyMore = async () => {
+      try {
+        const body = {
+          dino: state.dino,
+          reqPage: state.reqPage,
+          mid: store.state.users.me.mid,
+        };
+        if(state.reqPage == 0 ) state.commentList = null;
+        await axios
+          .post(`/decommi/api/diary/reply/`, body, { headers })
+          .then((res) => {
+            if (res.data.replyList == undefined) {
+              return;
+            }
+
+            state.commentList = []
+            state.commentList.push(...res.data.replyList);
+            if (res.data.replyList.length % 5 == 0) {
+              stateInfo.value = true;
+            } else {
+              stateInfo.value = false;
+            }
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    // 버튼을 클릭했을 때 +1이 되고 reply가 실행되도록 하는 함수
+    // 여기서 +1이 작동되어야 댓글이 부분이 안꼬임
+    function btnreply(){
+      state.reqPage += 1;
+      reply();
+    }
+
+    const reply = async () => {
+      try {
+        const body = {
+          dino: state.dino,
+          reqPage: state.reqPage,
+          mid: store.state.users.me.mid,
+        };
+        await axios
+          .post(`/decommi/api/diary/reply/`, body, { headers })
+          .then((res) => {
+            if (res.data.replyList == undefined) {
+              return;
+            }
+            state.commentList.push(...res.data.replyList);
+            if (res.data.replyList.length % 5 == 0) {
+              stateInfo.value = true;
+            } else {
+              stateInfo.value = false;
+            }
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    reply();
+
+    const onComment = ref(true);
+    const cmtChangeBtn = ref(true);
+    const commentValue = ref("");
+
+    // 좋아요
+    // false가 체크임
+    const remove = async () => {
+      replyMore();
+    };
+
+    const change = (comment) => {
+      console.log(comment);
     };
 
     return {
@@ -164,14 +178,12 @@ export default {
       cmtChangeBtn,
       commentValue,
       addComment,
-      commentList,
       state,
       change,
       stateInfo,
-      getMoreComment,
-      // getComments,
-      updateStates,
       reply,
+      btnreply,
+      replyMore
     };
   },
   components: { WrittenCommentsContent },

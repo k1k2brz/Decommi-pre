@@ -19,6 +19,7 @@ import org.zerock.decommi.dto.MemberDTO;
 import org.zerock.decommi.dto.PageRequestDTO;
 import org.zerock.decommi.dto.PageResultDTO;
 import org.zerock.decommi.entity.member.Member;
+import org.zerock.decommi.service.member.LikeTagListService;
 import org.zerock.decommi.service.member.MemberService;
 import org.zerock.decommi.vo.Findpw;
 import org.zerock.decommi.vo.Setpw;
@@ -32,12 +33,14 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class MemberApiController {
   private final MemberService service;
+  private final LikeTagListService likeTagListService;
 
   // 회원가입
   @RequestMapping(value = "/signup", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> signUp(@RequestBody MemberDTO dto) {
-    log.info("member/signup : " + dto);
+    log.info("controller class member/signup : " + dto);
     String email = service.signUp(dto);
+    log.info("controller class 회원가입이 완료된 email ::" + email);
     return new ResponseEntity<>(email, HttpStatus.OK);
   }
 
@@ -73,13 +76,15 @@ public class MemberApiController {
     // 사용자가 입력한 비밀번호가 해당 계정의 암호화되어있는 비밀번호와 일치하는 지 확인하는 매서드
     // 일치하면 true 반환 , 일치하지 않을시 false 반환
     Boolean result = service.pwCheck(email, pw);
+    log.info("service checkpw :::: " + dto);
+    log.info("service checkpw result ::" + result);
     return new ResponseEntity<Boolean>(result, HttpStatus.OK);
   }
 
   // 비밀번호 재설정
   @RequestMapping(value = "/setpw", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Boolean> setpw(@RequestBody Setpw vo) {
-    log.info("qqqqqqqqqqqqqqqqqqqqq" + vo);
+    log.info(" 사용자가 입력한 값들 vo ::::: " + vo);
     return new ResponseEntity<>(service.changePw(vo), HttpStatus.OK);
   }
 
@@ -98,4 +103,15 @@ public class MemberApiController {
     return new ResponseEntity<>(service.findPw(vo), HttpStatus.OK);
   }
 
+  // 선호태그 리스트 출력
+  @RequestMapping(value = "/liketaglist", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Optional<List<String>>> getLikeTagList(@RequestBody Long mid) {
+    return new ResponseEntity<>(likeTagListService.getLikeTagList(mid), HttpStatus.OK);
+  }
+
+  // 선호태그 변경
+  @RequestMapping(value = "/editliketaglist", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Boolean> reportingDiary(@RequestBody LikeTagListDTO dto) {
+    return new ResponseEntity<>(likeTagListService.editLikeTagList(dto), HttpStatus.OK);
+  }
 }

@@ -1,5 +1,7 @@
 <template>
-  <div class="container container_default d-flex justify-content-center align-items-center p-0 m-0">
+  <div
+    class="container container_default d-flex justify-content-center align-items-center p-0 m-0"
+  >
     <div class="q-pa-md">
       <div class="backgrondBox p-5">
         <form ref="form" @submit.prevent>
@@ -7,32 +9,60 @@
             <h1 class="home-title mb-4">SIGN-UP</h1>
           </div>
           <div class="mb-3">
-            <input ref="id" type="text" v-model="info.id" class="form-control" placeholder="아이디를 입력해주세요."
-              aria-describedby="emailHelp" />
+            <input
+              ref="id"
+              type="text"
+              v-model="info.id"
+              class="form-control"
+              placeholder="아이디를 입력해주세요."
+              aria-describedby="emailHelp"
+            />
             <div v-show="idError" class="font14 mt-1 ml-2">
               Email이 올바르지 않습니다.
             </div>
             <div v-show="info.idDuplicate" class="font14 mt-1 ml-2">
               이미 존재하는 Email입니다.
             </div>
-            <button class="btn btn-outline-primary w-100 mt-3" @click.stop="check()">중복 확인</button>
+            <button
+              class="btn btn-outline-primary w-100 mt-3"
+              @click.stop="check()"
+            >
+              중복 확인
+            </button>
           </div>
           <div class="mb-3">
-            <input ref="pass" type="password" v-model="info.pass" class="form-control" placeholder="비밀번호를 입력해주세요." />
+            <input
+              ref="pass"
+              type="password"
+              v-model="info.pass"
+              class="form-control"
+              placeholder="비밀번호를 입력해주세요."
+            />
             <div v-show="passError" class="font14 mt-1 ml-2">
               비밀번호를 입력해주세요.
             </div>
           </div>
           <div class="mb-3">
-            <input ref="repass" type="password" v-model="info.repass" class="form-control"
-              placeholder="비밀번호를 다시 입력해주세요." />
+            <input
+              ref="repass"
+              type="password"
+              v-model="info.repass"
+              class="form-control"
+              placeholder="비밀번호를 다시 입력해주세요."
+            />
             <div v-show="repassError" class="font14 mt-1 ml-2">
               비밀번호가 일치하지 않습니다.
             </div>
           </div>
           <div class="mb-3">
-            <input ref="email" type="email" v-model="info.email" class="form-control" placeholder="이메일을 입력해주세요."
-              aria-describedby="emailHelp" />
+            <input
+              ref="email"
+              type="email"
+              v-model="info.email"
+              class="form-control"
+              placeholder="이메일을 입력해주세요."
+              aria-describedby="emailHelp"
+            />
             <div v-show="emailError" class="font14 mt-1 ml-2">
               Email을 입력해주세요.
             </div>
@@ -67,30 +97,56 @@
           </div> -->
 
           <div class="mb-3">
-            <input ref="q1" type="text" v-model="info.q1" class="form-control" placeholder="인상 깊게 읽은 책 이름은??" />
+            <input
+              ref="q1"
+              type="text"
+              v-model="info.q1"
+              class="form-control"
+              placeholder="인상 깊게 읽은 책 이름은??"
+            />
             <div v-show="q1Error" class="font14 mt-1 ml-2">
               답변이 올바르지 않습니다.
             </div>
           </div>
           <div class="mb-3">
-            <input ref="q2" type="text" v-model="info.q2" class="form-control" placeholder="나의 보물 1호는?"
-              aria-describedby="emailHelp" />
+            <input
+              ref="q2"
+              type="text"
+              v-model="info.q2"
+              class="form-control"
+              placeholder="나의 보물 1호는?"
+              aria-describedby="emailHelp"
+            />
             <div v-show="q2Error" class="font14 mt-1 ml-2">
               답변이 올바르지 않습니다.
             </div>
           </div>
           <div class="mb-3">
-            <input ref="q3" type="text" v-model="info.q3" class="form-control" placeholder="기억에 남는 추억의 장소는?"
-              aria-describedby="emailHelp" />
+            <input
+              ref="q3"
+              type="text"
+              v-model="info.q3"
+              class="form-control"
+              placeholder="기억에 남는 추억의 장소는?"
+              aria-describedby="emailHelp"
+            />
             <div v-show="q3Error" class="font14 mt-1 ml-2">
               답변이 올바르지 않습니다.
             </div>
           </div>
-          <div class="d-flex justify-content-center align-items-center flex-column">
-            <button type="submit" class="btn btn-primary" @click="onSubmitForm">회원가입</button>
+          <div
+            class="d-flex justify-content-center align-items-center flex-column"
+          >
+            <button type="submit" class="btn btn-primary" @click="onSubmitForm">
+              회원가입
+            </button>
             <div class="d-flex">
               <span> 계정이 있으신가요? </span>
-              <router-link class="nav-link purple-color ml-1" :to="{ name: 'Login' }">로그인</router-link>
+              <router-link
+                class="nav-link purple-color ml-1"
+                :to="{ name: 'Login' }"
+                >로그인</router-link
+              >
             </div>
           </div>
           <div class="d-flex justify-content-center align-items-center">
@@ -129,17 +185,17 @@ export default {
     const q1Error = ref(false);
     const q2Error = ref(false);
     const q3Error = ref(false);
-    const id = ref('');
-    const pass = ref('');
-    const repass = ref('');
-    const email = ref('');
-    const q1 = ref('');
-    const q2 = ref('');
-    const q3 = ref('');
+    const id = ref("");
+    const pass = ref("");
+    const repass = ref("");
+    const email = ref("");
+    const q1 = ref("");
+    const q2 = ref("");
+    const q3 = ref("");
 
     onMounted(() => {
-      id.value.focus()
-    })
+      id.value.focus();
+    });
 
     // ref로 focus()할 것
     let info = reactive({
@@ -156,28 +212,28 @@ export default {
 
     // 이메일인증
     const check = async () => {
-      if (info.id === '') {
-        id.value.focus()
+      if (info.id === "") {
+        id.value.focus();
         idError.value = true;
         info.idDuplicate = false;
         return;
       } else if (!(info.id.includes("@") && info.id.includes("."))) {
-        id.value.focus()
+        id.value.focus();
         idError.value = true;
         info.idDuplicate = false;
         return;
       }
-      const url = '/decommi/member/emailCheck'
+      const url = "/decommi/member/emailCheck";
       const headers = {
         "Content-Type": "application/json",
-      }
+      };
       const body = { email: info.id };
       await axios.post(url, body, { headers }).then(function (res) {
         if (res.data.result != 0) {
-          id.value.focus()
+          id.value.focus();
           info.idDuplicate = true;
           idError.value = false;
-          passError.value = false
+          passError.value = false;
           repassError.value = false;
           emailError.value = false;
           q1Error.value = false;
@@ -185,13 +241,13 @@ export default {
           q3Error.value = false;
           info.emailCheck = false;
         } else {
-          alert('사용 가능한 이메일입니다.');
-          pass.value.focus()
+          alert("사용 가능한 이메일입니다.");
+          pass.value.focus();
           info.idDuplicate = false;
           info.emailCheck = true;
         }
-      })
-    }
+      });
+    };
 
     // 회원가입
     const onSubmitForm = async () => {
@@ -199,7 +255,7 @@ export default {
         info.idDuplicate = true;
         return;
       } else if (info.pass === "") {
-        pass.value.focus()
+        pass.value.focus();
         passError.value = true;
         idError.value = false;
         repassError.value = false;
@@ -209,30 +265,30 @@ export default {
         q3Error.value = false;
         return;
       } else if (info.repass === "") {
-        repass.value.focus()
+        repass.value.focus();
         repassError.value = true;
         idError.value = false;
-        passError.value = false
+        passError.value = false;
         emailError.value = false;
         q1Error.value = false;
         q2Error.value = false;
         q3Error.value = false;
         return;
       } else if (info.pass !== info.repass) {
-        repass.value.focus()
+        repass.value.focus();
         repassError.value = true;
         idError.value = false;
-        passError.value = false
+        passError.value = false;
         emailError.value = false;
         q1Error.value = false;
         q2Error.value = false;
         q3Error.value = false;
         return;
       } else if (info.email === "") {
-        email.value.focus()
+        email.value.focus();
         emailError.value = true;
         idError.value = false;
-        passError.value = false
+        passError.value = false;
         repassError.value = false;
         q1Error.value = false;
         q2Error.value = false;
@@ -244,7 +300,7 @@ export default {
       } else if (info.q1 === "") {
         q1Error.value = true;
         idError.value = false;
-        passError.value = false
+        passError.value = false;
         repassError.value = false;
         emailError.value = false;
         q2Error.value = false;
@@ -253,7 +309,7 @@ export default {
       } else if (info.q2 === "") {
         q2Error.value = true;
         idError.value = false;
-        passError.value = false
+        passError.value = false;
         repassError.value = false;
         emailError.value = false;
         q1Error.value = false;
@@ -262,16 +318,13 @@ export default {
       } else if (info.q3 === "") {
         q3Error.value = true;
         idError.value = false;
-        passError.value = false
+        passError.value = false;
         repassError.value = false;
         emailError.value = false;
         q1Error.value = false;
         q2Error.value = false;
         return;
       }
-      router.push({
-        name: "SelectGoodTag",
-      });
       try {
         await store.dispatch("users/signUp", {
           // Entity와 맞출 것
@@ -296,6 +349,18 @@ export default {
         console.log(err);
       }
     };
+
+    function a() {
+      if (store.state.users.me == null || store.state.users.me == "") {
+        console.log("접근가능");
+      } else {
+        router.push({
+          name: "Main",
+        });
+      }
+    }
+
+    a();
 
     return {
       info,

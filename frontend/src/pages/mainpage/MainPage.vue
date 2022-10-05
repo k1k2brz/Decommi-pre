@@ -16,7 +16,7 @@
           <div class="form-floating">
             <div class="card-body">
               <!-- 1회만 클릭하고 다시 여기로 안돌아오면 해결 -->
-              <PostWrite />
+              <PostWrite @Completed="Completed($event)" />
             </div>
           </div>
         </div>
@@ -44,6 +44,7 @@ import PostWrite from "@/components/PostWrite.vue";
 import { computed, onMounted } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import { reactive } from "@vue/reactivity";
+import { useRouter } from "vue-router";
 import axios from "@/axios";
 // import axios from "@/axios";
 
@@ -55,7 +56,7 @@ export default {
   // },
   setup() {
     const store = useStore();
-
+    const router = useRouter();
     let state = reactive({
       mainPosts: [],
       body: 1,
@@ -66,6 +67,14 @@ export default {
       return store.state.users.me;
     });
 
+    function a(){
+      if (store.state.users.me == '' || store.state.users.me == null ) {
+        router.push({
+          name: "Home",
+        });
+      } 
+    }
+    a();
     onMounted(() => {
       getMorePostList();
     });
@@ -117,7 +126,12 @@ export default {
       }
     }
 
-    return { me, state, getMorePostList };
+    const Completed = () => {
+      router.go(0)
+      getMorePostList()
+    }
+
+    return { me, state, getMorePostList, Completed };
   },
 
   components: { HashFilter, RecommendTag, WrittenPosts, PostWrite },

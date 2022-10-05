@@ -19,16 +19,25 @@
             />
             <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
             <span v-if="emailError" class="font14 mt-1 ml-2">
-              이메일,전화번호,사용자이름을 입력하세요
+              이메일을 입력하세요
+            </span>
+            <input
+              v-model="info.pw"
+              type="password"
+              class="form-control mt-2"
+              placeholder="비밀번호를 입력해주세요."
+            />
+            <span v-if="passError" class="font14 mt-1 ml-2">
+              비밀번호를 입력하세요
             </span>
           </div>
           <div class="d-flex justify-content-center align-items-center mb-3">
-            <button class="btn-regular-full">이메일 존재여부 확인</button>
+            <button class="btn-regular-full">비밀번호 찾기</button>
           </div>
 
-          <div class="d-flex justify-content-center findPass">
-            <router-link class="nav-link ml-1 mb-2" :to="{ name: 'Pwfind' }"
-              >비밀번호를 잊으셨나요?</router-link
+          <div class="d-flex justify-content-center findPass mb-2">
+            <router-link class="nav-link ml-1" :to="{ name: 'IdFind' }"
+              >아이디를 잊으셨나요?</router-link
             >
           </div>
           <div class="d-flex justify-content-center align-items-center">
@@ -62,14 +71,20 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const emailError = ref(false);
+    const passError = ref(false);
     let info = reactive({
       id: "",
+      pw: "",
     });
 
     const onSubmitForm = async () => {
       //trim으로 잘라서 하나도 없으면
+      if (info.pw.trim().length == 0) {
+        passError.value = true;
+        return;
+      }
       try {
-        const url = "/decommi/member/findemail";
+        const url = "/decommi/member/findpw";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -77,6 +92,9 @@ export default {
         };
         const body = {
           email: info.id,
+          q1: "3",
+          q2: "3",
+          q3: "3",
         };
         console.log(body);
         await axios
@@ -84,10 +102,8 @@ export default {
           .then((res) => {
             console.log(res.data);
             if (res.data == false) {
-              alert("존재하지 않는 메일주소입니다.");
               return;
             }
-            alert("존재하는 메일주소입니다.");
           })
           .catch((err) => {
             console.error(err);
@@ -95,14 +111,10 @@ export default {
       } catch (err) {
         console.log(err);
       }
-      if (info.id.trim().length == 0) {
-        emailError.value = true;
-        return;
-      }
-      emailError.value = false;
+      passError.value = false;
     };
 
-    return { emailError, info, onSubmitForm, router, route };
+    return { emailError, passError, info, onSubmitForm, router, route };
   },
   middleware: "anonymous",
 };
