@@ -5,37 +5,62 @@
     </div>
     <div class="d-flex justify-content-between">
       <div class="d-flex justify-content-center align-items-center">
-        <button class="new-folder" data-bs-toggle="modal" data-bs-target="#bookmarkModal">
+        <!-- <button class="new-folder" data-bs-toggle="modal" data-bs-target="#bookmarkModal">
           + 새 북마크 폴더
         </button>
         <div class="d-flex align-items-center">
           <div v-if="showModal" class="modal fade" id="bookmarkModal">
-            <div class="modal-dialog d-flex align-items-center" style="height: 90vh">
+            <div
+              class="modal-dialog d-flex align-items-center"
+              style="height: 90vh"
+            >
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">새 북마크 추가</h5>
-                  <button @click="bmCancel" type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  <button
+                    @click="bmCancel"
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
                 </div>
                 <div class="modal-body">
                   <form onsubmit="return false">
                     <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">폴더명</label>
-                      <input maxlength="20" v-model="bookmarkValue" type="text" class="form-control" />
+                      <label for="recipient-name" class="col-form-label"
+                        >폴더명</label
+                      >
+                      <input
+                        maxlength="20"
+                        v-model="bookmarkValue"
+                        type="text"
+                        class="form-control"
+                      />
                     </div>
                   </form>
                 </div>
                 <div class="modal-footer">
-                  <button @click="bmCancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                  <button
+                    @click="bmCancel"
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
                     닫기
                   </button>
-                  <button @click="addBookmark" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                  <button
+                    @click="addBookmark"
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                  >
                     북마크 추가
                   </button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="d-flex align-items-center gap-1">
         <button class="file-sort">이름순</button>
@@ -43,32 +68,57 @@
         <button class="file-sort">최신순</button>
       </div>
     </div>
-    <div v-if="bmExist" class="text-center">
-      <div class="row row-cols-5 mt-3">
-        <div class="col d-flex p-2 mb-4" v-for="(bmTag, index) in bmTags" :key="'bmTag' + index">
+    <div v-if="!bmExist" class="text-center">
+      <div class="MiniPostGrid gap-3">
+        <MiniPost v-for="contents in 6" :key="contents" />
+      </div>
+      <!-- <div class="row row-cols-5 mt-3">
+        <div
+          class="col d-flex p-2 mb-4"
+          v-for="(bmTag, index) in bmTags"
+          :key="'bmTag' + index"
+        >
           <div class="folder-box">
-            <button @click="onClickFolder" class="btnFolder folder-stroke p-4 mb-3">
+            <button
+              @click="onClickFolder"
+              class="btnFolder folder-stroke p-4 mb-3"
+            >
               <img src="@/assets/folder.png" alt="이미지 없음" />
             </button>
             <div class="pl-2 pr-2">
               <span class="bold">{{ bmTag }}</span>
             </div>
-            <button @click="onRemoveBookmark(bmTag, index)" class="bi bi-x-lg"></button>
+            <button
+              @click="onRemoveBookmark(bmTag, index)"
+              class="bi bi-x-lg"
+            ></button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <div v-else>
       <div class="w-100">
-        <div class="d-flex flex-column justify-content-center align-items-center pd-container">
-          <div class="d-flex flex-column justify-content-center align-items-center">
+        <div
+          class="d-flex flex-column justify-content-center align-items-center pd-container"
+        >
+          <div
+            class="d-flex flex-column justify-content-center align-items-center"
+          >
             <div class="w-20 d-flex justify-content-center align-items-center">
               <div class="bookmark-circle">
-                <img src="@/assets/bookmarkAll.png" alt="No image" class="ml-1" />
+                <img
+                  src="@/assets/bookmarkAll.png"
+                  alt="No image"
+                  class="ml-1"
+                />
               </div>
             </div>
-            <span class="bm-title mt-2">아직 북마크 된 다이어리가 없습니다.</span>
-            <span class="bm-title-sm mt-2">다시 보고 싶은 다이어리를 북마크 해보세요!</span>
+            <span class="bm-title mt-2"
+              >아직 북마크 된 다이어리가 없습니다.</span
+            >
+            <span class="bm-title-sm mt-2"
+              >다시 보고 싶은 다이어리를 북마크 해보세요!</span
+            >
           </div>
         </div>
       </div>
@@ -78,14 +128,16 @@
 
 <script>
 import { useRouter } from "vue-router";
-import { computed, reactive, ref, watchEffect } from "vue";
+import { computed, onMounted, reactive, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
+import MiniPost from "@/components/MiniPost.vue";
 import axios from "axios";
+// import axios from "axios";
 // import Modal from "@/pages/bookmark/BmModal.vue";
 
 export default {
   components: {
-    // Modal,
+    MiniPost,
   },
   setup() {
     const store = useStore();
@@ -108,38 +160,63 @@ export default {
       }
     });
 
-    // VUEX로 옮기기 - 그냥 옮기자
-    const addBookmark = async () => {
-      if (!bookmarkValue.value == "") {
-        bmTags.push(bookmarkValue.value);
-
-        try {
-          const url = "./api/diary/save";
-          const headers = {
-            "Content-Type": "application/json",
-            Authorization: store.state.users.me.token,
-            mid: store.state.users.me.mid,
-          };
-          const body = {
-            mid: store.state.users.me.mid,
-            // bfolderName: bookmarkValue.value,
-            // writer: store.state.users.me.email,
-          };
-          console.log(body);
-          await axios
-            .post(url, body, { headers })
-            .then((res) => {
-              console.log(res.data);
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        } catch (err) {
-          console.log(err);
-        }
-        bookmarkValue.value = "";
+    onMounted(async () => {
+      try {
+        const url = "/decommi/api/diary/save";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          mid: store.state.users.me.mid,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
       }
-    };
+    });
+
+    // VUEX로 옮기기 - 그냥 옮기자
+    // const addBookmark = async () => {
+    //   if (!bookmarkValue.value == "") {
+    //     bmTags.push(bookmarkValue.value);
+
+    //     try {
+    //       const url = "./api/diary/save";
+    //       const headers = {
+    //         "Content-Type": "application/json",
+    //         Authorization: store.state.users.me.token,
+    //         mid: store.state.users.me.mid,
+    //       };
+    //       const body = {
+    //         mid: store.state.users.me.mid,
+    //         // bfolderName: bookmarkValue.value,
+    //         // writer: store.state.users.me.email,
+    //       };
+    //       console.log(body);
+    //       await axios
+    //         .post(url, body, { headers })
+    //         .then((res) => {
+    //           console.log(res.data);
+    //         })
+    //         .catch((err) => {
+    //           console.error(err);
+    //         });
+    //     } catch (err) {
+    //       console.log(err);
+    //     }
+    //     bookmarkValue.value = "";
+    //   }
+    // };
 
     const btnCancel = () => {
       if (showModal.value == true) {
@@ -163,7 +240,7 @@ export default {
 
     return {
       bmExist,
-      addBookmark,
+      // addBookmark,
       btnCancel,
       showModal,
       bookmarkValue,

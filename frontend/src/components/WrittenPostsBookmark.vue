@@ -4,7 +4,7 @@
       <div v-if="bookmarkSave" class="bi bi-bookmark-fill icon-purple"></div>
       <div v-else class="bi bi-bookmark"></div>
     </button>
-    <div v-if="bookmarkSave" class="d-flex bmSave position-relative">
+    <!-- <div v-if="bookmarkSave" class="d-flex bmSave position-relative">
       <div class="position-absolute d-flex flex-column box-shadow zindex p-3 gap-2" style="min-width: 250px">
         <div class="d-flex justify-content-between">
           <div style="margin: auto; width: 100%">
@@ -45,7 +45,7 @@
           </button>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -62,39 +62,16 @@ export default {
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const router = useRouter();
     const addBookmark = ref(false);
     const sendBookmarkInput = ref("");
     const bookmarkSaveCheck = ref(false);
     const bookmarkSave = ref(false);
-    const bmSave = ref(false);
+    // const bmSave = ref(false);
 
-    const bookmarkBtn = () => {
-      if (bookmarkSave.value == false) {
-        bookmarkSave.value = true;
-        bmSave.value = true;
-        // bmReport.value = false;
-      } else if (bookmarkSave.value == true) {
-        bookmarkSave.value = false;
-        bmSave.value = false;
-      }
-    };
-
-    const bookmarkPlus = () => {
-      // 북마크 모달창
-      bookmarkSave.value = false;
-      addBookmark.value = true;
-      console.log(addBookmark.value);
-    };
-
-    const addBmCancel = () => {
-      addBookmark.value = false;
-      bookmarkSave.value = true;
-    };
-
-    const sendBookmark = async () => {
+    const bookmarkBtn = async () => {
       try {
         const url = "/decommi/api/diary/save";
         const headers = {
@@ -103,57 +80,19 @@ export default {
           mid: store.state.users.me.mid,
         };
         const body = {
+          dino: props.dino,
           mid: store.state.users.me.mid,
-          // dino: props.dino,
-          // bfolderName: sendBookmarkInput.value,
-          // writer: store.state.users.me.email,
         };
         console.log(body);
         await axios
           .post(url, body, { headers })
           .then((res) => {
-            console.log(res.data);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-          sendBookmarkInput.value = "";
-          addBookmark.value = false;
-          bookmarkSave.value = true;
-        } catch (err) {
-          console.log(err);
-        }
-    };
-
-    const bookmarkSaveBtn = async () => {
-      try {
-        const url = "/decommi/api/diary/save";
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: store.state.users.me.token,
-          mid: store.state.users.me.mid,
-        };
-        const body = {
-          mid: store.state.users.me.mid,
-          // dino: props.dino,
-          // bfolderName: sendBookmarkInput.value,
-          // writer: store.state.users.me.email,
-        };
-        console.log(body);
-        await axios
-          .post(url, body, { headers })
-          .then((res) => {
-            console.log(res.data);
-            if (bookmarkSaveCheck.value == false) {
-              bookmarkSaveCheck.value = true;
+            if (res.data == false) {
               bookmarkSave.value = false;
-              setTimeout(() => {
-                // 마우스가 올라가 있으면 사라지지 않게 이벤트 추가
-                // Fade 애니메이션 줄 것
-                bookmarkSaveCheck.value = false;
-              }, 5000);
-            } else if (bookmarkSaveCheck.value == true)
-              bookmarkSaveCheck.value = false;
+            } else if (res.data == true) {
+              bookmarkSave.value = true;
+            }
+            console.log(res.data);
           })
           .catch((err) => {
             console.error(err);
@@ -161,7 +100,96 @@ export default {
       } catch (err) {
         console.log(err);
       }
+      // if (bookmarkSave.value == false) {
+      //   bookmarkSave.value = true;
+      //   bmSave.value = true;
+      //   // bmReport.value = false;
+      // } else if (bookmarkSave.value == true) {
+      //   bookmarkSave.value = false;
+      //   bmSave.value = false;
+      // }
     };
+
+    // const bookmarkPlus = () => {
+    //   // 북마크 모달창
+    //   bookmarkSave.value = false;
+    //   addBookmark.value = true;
+    //   console.log(addBookmark.value);
+    // };
+
+    // const addBmCancel = () => {
+    //   addBookmark.value = false;
+    //   bookmarkSave.value = true;
+    // };
+
+    // const sendBookmark = async () => {
+    //   try {
+    //     const url = "/decommi/api/diary/save";
+    //     const headers = {
+    //       "Content-Type": "application/json",
+    //       Authorization: store.state.users.me.token,
+    //       mid: store.state.users.me.mid,
+    //     };
+    //     const body = {
+    //       mid: store.state.users.me.mid,
+    //       // dino: props.dino,
+    //       // bfolderName: sendBookmarkInput.value,
+    //       // writer: store.state.users.me.email,
+    //     };
+    //     console.log(body);
+    //     await axios
+    //       .post(url, body, { headers })
+    //       .then((res) => {
+    //         console.log(res.data);
+    //       })
+    //       .catch((err) => {
+    //         console.error(err);
+    //       });
+    //     sendBookmarkInput.value = "";
+    //     addBookmark.value = false;
+    //     bookmarkSave.value = true;
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
+
+    // const bookmarkSaveBtn = async () => {
+    //   try {
+    //     const url = "/decommi/api/diary/save";
+    //     const headers = {
+    //       "Content-Type": "application/json",
+    //       Authorization: store.state.users.me.token,
+    //       mid: store.state.users.me.mid,
+    //     };
+    //     const body = {
+    //       mid: store.state.users.me.mid,
+    //       // dino: props.dino,
+    //       // bfolderName: sendBookmarkInput.value,
+    //       // writer: store.state.users.me.email,
+    //     };
+    //     console.log(body);
+    //     await axios
+    //       .post(url, body, { headers })
+    //       .then((res) => {
+    //         console.log(res.data);
+    //         if (bookmarkSaveCheck.value == false) {
+    //           bookmarkSaveCheck.value = true;
+    //           bookmarkSave.value = false;
+    //           setTimeout(() => {
+    //             // 마우스가 올라가 있으면 사라지지 않게 이벤트 추가
+    //             // Fade 애니메이션 줄 것
+    //             bookmarkSaveCheck.value = false;
+    //           }, 5000);
+    //         } else if (bookmarkSaveCheck.value == true)
+    //           bookmarkSaveCheck.value = false;
+    //       })
+    //       .catch((err) => {
+    //         console.error(err);
+    //       });
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
 
     const bookmarkChecking = () => {
       router.push({
@@ -171,14 +199,14 @@ export default {
 
     return {
       bookmarkSave,
-      bookmarkPlus,
+      // bookmarkPlus,
       addBookmark,
-      sendBookmark,
+      // sendBookmark,
       sendBookmarkInput,
       bookmarkSaveCheck,
-      bookmarkSaveBtn,
+      // bookmarkSaveBtn,
       bookmarkChecking,
-      addBmCancel,
+      // addBmCancel,
       bookmarkBtn,
     };
   },

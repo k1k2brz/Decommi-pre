@@ -7,10 +7,14 @@ export default {
   namespaced: true,
   state: {
     me: "",
+    email: "",
   },
   mutations: {
     setMe(state, payload) {
       state.me = payload;
+    },
+    likeTagEmail(state, payload) {
+      state.email = payload;
     },
     changeEmail(state, payload) {
       state.me.email = payload.email;
@@ -40,7 +44,7 @@ export default {
         q1: payload.q1,
         q2: payload.q2,
         q3: payload.q3,
-        likeTagList: payload.likeTagList,
+        // likeTagList: payload.likeTagList,
         // dislikeTagList: payload.dislikeTagList,
       };
       console.log(body);
@@ -67,30 +71,12 @@ export default {
           return;
         });
     },
-    likeTagList({ commit }, payload) {
-      const url = "/decommi/member/liketaglist";
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      const body = {
-        likeTagList: payload.likeTagList,
-      };
-      console.log(body);
-      axios
-        .post(url, body, { headers })
-        .then((res) => {
-          console.log(res.data);
-          // payload는 프론트 값을 받아옴
-          // res.data 백엔드 값을 받아옴
-          commit("setMe", payload);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+    likeTagEmail({ commit }, payload) {
+      commit("likeTagEmail", payload);
     },
-    dislikeTags({ commit }, payload) {
-      commit("setMe", payload);
-    },
+    // dislikeTags({ commit }, payload) {
+    //   commit("setMe", payload);
+    // },
     logIn({ commit }, payload) {
       const log = async () => {
         try {
@@ -128,7 +114,7 @@ export default {
       localStorage.removeItem("vuex");
       localStorage.removeItem("TOKEN");
       // localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
+      // sessionStorage.removeItem("token");
       commit("setMe", null);
     },
     changeEmail({ commit }, payload) {

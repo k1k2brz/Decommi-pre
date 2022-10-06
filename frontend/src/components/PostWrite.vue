@@ -1,35 +1,36 @@
 <template>
   <div>
-    <input
-      v-model="myWriteTitle"
-      @click="clickTextarea"
-      type="text"
-      class="myWriteTitle none form-control"
-      maxlength="80"
-      placeholder="제목을 입력하세요."
-    />
-    <textarea
+    <div class="textareaPadding">
+      <input
+        v-model="myWriteTitle"
+        @click="clickTextarea"
+        type="text"
+        class="myWriteTitle none form-control mb-3"
+        :class="{ borderBind: clickTA == true }"
+        maxlength="80"
+        placeholder="제목을 입력하세요."
+      />
+    </div>
+    <!-- <textarea
       v-if="clickTA"
       spellcheck="false"
       v-model="myWriteContent"
       @input="autoResize"
       class="myWriteContent form-control"
       placeholder="오늘의 다이어리를 작성해 보세요!"
-    />
-    <!-- v-if="clickTA" -->
+    /> -->
     <ckeditor
+      v-if="clickTA"
       @ready="onReady"
       :editor="editor"
       v-model="editorData"
       :config="editorConfig"
       class="myWriteContent ck-placeholder"
-      placeholder="Type the content here!"
       id="editor"
-      style="border: 1px solid lightgrey; border-radius: 10px;"
-      >::before</ckeditor
-    >
-    <div v-if="clickTA">
-      <div class="flex-wrap gap-2 d-flex">
+      style="border: 1px solid #d8d8d8; border-radius: 10px"
+    ></ckeditor>
+    <div class="textareaPadding" v-if="clickTA">
+      <div class="flex-wrap gap-2 d-flex mt-3">
         <div class="tag" v-for="(tag, index) in tags" :key="'tag' + index">
           <span class="btn-tag-sm d-flex align-items-center">
             <button @click="removeTag(index)" class="bi bi-x-lg mr-1"></button>
@@ -43,16 +44,26 @@
           v-model="tagValue"
           @keyup.enter="addTag"
           type="text"
-          class="tagTextbox form-control mr-1 mb-4 mt-4"
+          class="tagTextbox form-control mb-4 mt-4"
           placeholder="태그 추가하기"
         />
+        <button
+          @click="addTag"
+          class="btn btn-outline-secondary"
+          type="button"
+          id="button-addon2"
+        >
+          <i class="bi bi-plus-lg"></i>
+        </button>
       </div>
     </div>
   </div>
-  <div>
+  <div class="textareaPadding">
     <div class="LoginLine mb-3"></div>
   </div>
-  <div class="d-flex justify-content-between align-items-center">
+  <div
+    class="textareaPadding d-flex justify-content-between align-items-center"
+  >
     <!-- <div class="d-flex gap-1">
       <div class="form-group centerz">
         <div class="filebox">
@@ -123,9 +134,9 @@
         @click="writeCompletedBtn"
         class="btn-regular"
         :class="{
-          btnDisabled: myWriteTitle.length < 1 || myWriteContent.length < 1,
+          btnDisabled: myWriteTitle.length < 1 || editorData.length < 1,
         }"
-        :disabled="myWriteTitle.length < 1 || myWriteContent.length < 1"
+        :disabled="myWriteTitle.length < 1 || editorData.length < 1"
       >
         작성완료
       </button>
@@ -158,7 +169,7 @@ export default {
       editorData: "",
       editorConfig: {
         language: "ko",
-        placeholder:'오늘의 다이어리를 작성해보세요.',
+        placeholder: "오늘의 다이어리를 작성해보세요.",
         simpleUpload: {
           uploadUrl: "./api/diary/write/image",
           withCredentials: true,
@@ -213,8 +224,8 @@ export default {
     const gifInput = ref("");
 
     let getContext = onMounted(() => {
-      state.context = getCurrentInstance().data.editorData
-    })
+      state.context = getCurrentInstance().data.editorData;
+    });
 
     const checkExtension = (fileName, fileSize) => {
       if (fileSize > maxSize) {
@@ -292,12 +303,6 @@ export default {
       return store.state.users.me;
     });
 
-    // intersection observe로 무한 스크롤링
-
-    const handleGifUpload = () => {
-      console.log("selected file", gifInput.value.files);
-    };
-
     const publicPrivacy = () => {
       if (pp.value == false) {
         pp.value = true;
@@ -344,7 +349,7 @@ export default {
           Authorization: store.state.users.me.token,
           mid: store.state.users.me.mid,
         };
-        getContext()
+        getContext();
         const body = {
           title: myWriteTitle.value,
           content: state.context,
@@ -398,7 +403,6 @@ export default {
       selectedFile,
       selectedFiles,
       handleFileUpload,
-      handleGifUpload,
       today,
       privacyPermit,
       me,
@@ -414,7 +418,7 @@ export default {
       imgInput,
       gifInput,
       onReady,
-      getContext
+      getContext,
       // fileChange
     };
   },
@@ -422,15 +426,36 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.ck.ck-editor__editable.ck-focused:not(.ck-editor__nested-editable)
+  box-shadow: none !important
+
+
 .ck-placeholder::before
   color: #d21714
+
+.myWriteTitle::placeholder,
+.tagTextbox::placeholder
+  font-weight: 300
+
+.textareaPadding
+  padding: 0 2rem
+
+.borderBind
+  border: 1px solid #D8D8D8 !important
+
+.tagTextbox
+  border: 1px solid #D8D8D8 !important
+
+
+.ck-editor__editable
+  height: 60vh
 
 .tagContainer
   border: 1px solid lightgrey
   border-radius: 10px
 
 .ck-content
-  margin-left: 2rem
+  margin: 0 2rem
 
 .myWriteContent
   overflow: visible
@@ -532,4 +557,10 @@ a
   overflow: hidden
   clip: rect(0,0,0,0)
   border: 0
+
+.btn-outline-secondary
+  margin-left: 5px
+  &:hover
+    background-color: #AE6FFF
+    border: 1px solid #AE6FFF
 </style>

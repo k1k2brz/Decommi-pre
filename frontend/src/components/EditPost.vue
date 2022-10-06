@@ -10,21 +10,25 @@
         <div class="form-floating">
           <div class="card-body">
             <div>
-              <input
-                v-model="myWriteTitle"
-                type="text"
-                class="myWriteTitle none form-control"
-                maxlength="80"
-                placeholder="제목을 입력하세요."
-              />
-              <textarea
-                spellcheck="false"
-                v-model="myWriteContent"
-                @input="autoResize"
-                class="myWriteContent form-control"
-                placeholder="오늘의 다이어리를 작성해 보세요!"
-                id="floatingTextarea"
-              />
+              <div class="textareaPadding">
+                <input
+                  v-model="myWriteTitle"
+                  @click="clickTextarea"
+                  type="text"
+                  class="myWriteTitle none form-control mb-3"
+                  maxlength="80"
+                  placeholder="제목을 입력하세요."
+                />
+              </div>
+              <ckeditor
+                @ready="onReady"
+                :editor="editor"
+                v-model="editorData"
+                :config="editorConfig"
+                class="myWriteContent ck-placeholder"
+                id="editor"
+                style="border: 1px solid #d8d8d8; border-radius: 10px"
+              ></ckeditor>
               <div>
                 <div class="flex-wrap gap-2 d-flex">
                   <div
@@ -52,6 +56,11 @@
                   />
                 </div>
               </div>
+            </div>
+            <div>
+              <div class="LoginLine mb-3"></div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
               <button
                 v-if="privacyPermit"
                 @click="publicPrivacy"
@@ -84,58 +93,21 @@
                   </div>
                 </div>
               </div>
-            </div>
-            <div>
-              <div class="LoginLine mb-3"></div>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="d-flex gap-1">
-                <div class="form-group centerz">
-                  <div class="filebox">
-                    <label
-                      for="ex_file"
-                      ref="selectedFile"
-                      class="bi bi-file-image"
-                    ></label>
-                    <input
-                      ref="imgInput"
-                      v-on:change="handleFileUpload"
-                      type="file"
-                      id="ex_file"
-                      multiple
-                    />
-                  </div>
-                  <!-- vue3 image upload easy (v-upload-image) 참고 -->
-                  <!-- npm설치해야하면 설치할 것 -->
-                  <!-- <button @click="onUpload">Upload</button> -->
-                </div>
-                <div class="filebox">
-                  <label
-                    for="ex_gif"
-                    ref="selectedGif"
-                    class="bi bi-filetype-gif"
-                  ></label>
-                  <input
-                    ref="gifInput"
-                    v-on:change="handleGifUpload()"
-                    type="file"
-                    id="ex_gif"
-                  />
-                </div>
-                <div class="icon"></div>
-                <div class="icon"></div>
+              <div>
+                <button
+                  @click="editCompleteBtn"
+                  class="btn-regular"
+                  :class="{
+                    btnDisabled:
+                      myWriteTitle.length < 1 || myWriteContent.length < 1,
+                  }"
+                  :disabled="
+                    myWriteTitle.length < 1 || myWriteContent.length < 1
+                  "
+                >
+                  수정완료
+                </button>
               </div>
-              <button
-                @click="editCompleteBtn"
-                class="btn-regular"
-                :class="{
-                  btnDisabled:
-                    myWriteTitle.length < 1 || myWriteContent.length < 1,
-                }"
-                :disabled="myWriteTitle.length < 1 || myWriteContent.length < 1"
-              >
-                수정완료
-              </button>
             </div>
           </div>
         </div>
@@ -149,10 +121,43 @@ import { reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import ClassicEditor from "@ckeditor/ck5/build/ckeditor";
 import { computed, onMounted } from "@vue/runtime-core";
+import store from "@/store";
 
 export default {
+  data() {
+    let token = store.state.users.me.token;
+    let md = store.state.users.me.mid;
+    return {
+      shareable: true,
+      openable: true,
+      editor: ClassicEditor,
+      // 여기에 본문
+      editorData: "",
+      editorConfig: {
+        language: "ko",
+        placeholder: "오늘의 다이어리를 작성해보세요.",
+        simpleUpload: {
+          uploadUrl: "./api/diary/write/image",
+          withCredentials: true,
+          headers: {
+            Authorization: token,
+            mid: md,
+          },
+        },
+      },
+    };
+  },
   setup() {
+    function onReady(editor) {
+      editor.ui
+        .getEditableElement()
+        .parentElement.insertBefore(
+          editor.ui.view.toolbar.element,
+          editor.ui.getEditableElement()
+        );
+    }
     // Comments, Images, id(고유번호), createdAt 등 어케 받을건지 백엔드와 상의
     const router = useRouter();
     const store = useStore();
@@ -165,8 +170,6 @@ export default {
     const myWriteContent = ref("");
     const selectedFile = ref(null);
     const selectedFiles = ref(null);
-    const imgInput = ref(null);
-    const gifInput = ref(null);
     const privacyPermit = ref(true);
     const tagValue = ref("");
     let tags = reactive([]);
@@ -175,9 +178,9 @@ export default {
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
       if (tags.includes(result) == true) {
-        alert('이미 등록된 태그입니다.')
+        alert("이미 등록된 태그입니다.");
         tagValue.value = "";
-        return
+        return;
       }
       if (!result == "") {
         tags.push(result);
@@ -193,23 +196,6 @@ export default {
     const me = computed(() => {
       return store.state.users.me;
     });
-
-    // intersection observe로 무한 스크롤링
-
-    const handleFileUpload = (e) => {
-      // image는 Json이 아니라 FormData로 보낸다.
-      console.log(e.target.files[0]);
-      const imageFormData = new FormData();
-      [].forEach.call(e.target.files, (f) => {
-        imageFormData.append("image", f); // { image: [file1, file2] }
-      });
-      console.log(imageFormData);
-      // store.dispatch("posts/uploadImages", imageFormData);
-    };
-
-    const handleGifUpload = () => {
-      console.log("selected file", gifInput.value.files);
-    };
 
     const publicPrivacy = () => {
       if (pp.value == false) {
@@ -240,10 +226,6 @@ export default {
         commentPrivacyCheck.value = true;
       }
     };
-
-    // 만약 백엔드에서 날짜 관련 자동으로 안받아지면 이거 하나하나 넣어야함
-    const today = new Date();
-    // time: today.getMonth(),
 
     let params = new URLSearchParams(window.location.search).get("edit");
 
@@ -299,7 +281,6 @@ export default {
         await axios
           .post(url, body, { headers })
           .then((res) => {
-            
             console.log(res);
           })
           .catch((err) => {
@@ -332,11 +313,6 @@ export default {
       myWriteContent,
       selectedFile,
       selectedFiles,
-      imgInput,
-      handleFileUpload,
-      handleGifUpload,
-      today,
-      gifInput,
       privacyPermit,
       me,
       tagValue,
@@ -344,6 +320,8 @@ export default {
       addTag,
       removeTag,
       file,
+      ClassicEditor,
+      onReady,
     };
   },
 };

@@ -22,12 +22,12 @@
 
 <script>
 export default {
-  props: {
-    minipost: {
-      type: Object,
-      required: true,
-    },
-  },
+  // props: {
+  //   minipost: {
+  //     type: Object,
+  //     required: true,
+  //   },
+  // },
 };
 </script>
 
@@ -60,7 +60,7 @@ export default {
    text-overflow: ellipsis
    overflow: hidden
    word-break: break-word
-    
+
    display: -webkit-box
    -webkit-line-clamp: 3 // 원하는 라인수
    -webkit-box-orient: vertical

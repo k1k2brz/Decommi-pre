@@ -19,7 +19,11 @@
               getTimeFromJavaDate(post.regDate)
             }}</span>
           </div>
-          <PostMenu :onEditBtn="onEditBtn" :onRemoveBtn="onRemoveBtn" />
+          <PostMenu
+            v-if="state.writer == state.loginWriter"
+            :onEditBtn="onEditBtn"
+            :onRemoveBtn="onRemoveBtn"
+          />
         </div>
         <!-- <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" /> -->
         <p class="card-text mb-4" v-html="post.content"></p>
@@ -35,7 +39,10 @@
             </button>
           </div>
           <!-- icon -->
-          <div class="d-flex justify-content-start">
+          <div
+            class="d-flex justify-content-start"
+            v-if="state.writer !== state.loginWriter"
+          >
             <!-- 받고 싶은 값 바인드 -->
             <WrittenPostsBookmark :dino="state.dino" />
             <WrittenPostsHeart :dino="state.dino" />
@@ -58,6 +65,7 @@ import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
 import PostMenu from "./PostMenu.vue";
 import WrittenPostsHeart from "./WrittenPostsHeart.vue";
 import WrittenComments from "./WrittenComments.vue";
+import { computed } from "@vue/runtime-core";
 
 export default {
   props: {
@@ -77,6 +85,10 @@ export default {
 
     let comment = reactive({
       value: "",
+    });
+
+    const me = computed(() => {
+      return store.state.users.me.writer;
     });
 
     // //**
@@ -108,7 +120,7 @@ export default {
           .post(url, body, { headers })
           .then((res) => {
             console.log(res.data);
-            router.go(0)
+            router.go(0);
           })
           .catch((err) => {
             console.error(err);
@@ -183,6 +195,8 @@ export default {
 
     const state = reactive({
       dino: props.post.dino,
+      writer: props.post.writer,
+      loginWriter: store.state.users.me.id,
       tagList: [],
     });
 
@@ -212,6 +226,7 @@ export default {
       getTimeFromJavaDate,
       dinoTest,
       CheckCmt,
+      me,
     };
   },
   components: {

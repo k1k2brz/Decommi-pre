@@ -1,60 +1,91 @@
 <template>
   <div>
-    <div class="Maincomment mb-1 d-flex justify-content-between gap-2" :style="comment.replyDepth !== 0 ? 'padding-left=3rem':''">
-      <div v-if="onComment">
-        <div class="grid">
-          <span>{{`${comment.replyDepth !== 0 ?"ㄴ"+"user":"user"}`}}</span>
+    <div
+      class="Maincomment mb-1 gap-2"
+      :style="comment.replyDepth !== 0 ? 'padding-left=3rem' : ''"
+    >
+      <div class="d-flex justify-content-between" v-if="onComment">
+        <div class="d-flex">
+          <div class="userWidth">
+            <span>{{
+              `${comment.replyDepth !== 0 ? "&nbsp;  ㄴ  " + "user" : "user"}`
+            }}</span>
+          </div>
           <span class="ml-3">{{ comment.replyContent }}</span>
-          <div>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="days mr-2">
             <span>{{ comment.regDate.split("-")[0] }}.</span>
             <span>{{ comment.regDate.split("-")[1] }}.</span>
             <span>{{ comment.regDate.split("-")[2].split("T")[0] }}</span>
           </div>
-          <button v-if="comment.replyDepth == 0" @click="replyAddReply" class="text-btn pl-1">답글달기</button>
           <button
-            v-if="cmtChangeBtn"
-            @click="changeComment($event)"
-            class="text-btn"
+            v-if="comment.replyDepth == 0"
+            @click="replyAddReply"
+            class="editCancel text-btn sm mr-1"
           >
-            수정
+            답글달기
           </button>
-          <button @click="onRemoveComment" class="ml-2 bi bi-x-lg"></button>
+          <div
+            v-if="comment.mid == state.loginMid"
+            class="d-flex align-items-center"
+          >
+            <button
+              v-if="cmtChangeBtn"
+              @click="changeComment($event)"
+              class="text-btn sm"
+            >
+              수정
+            </button>
+          </div>
+          <button
+            v-if="comment.mid == state.loginMid"
+            @click="onRemoveComment"
+            class="ml-2 bi bi-x-lg"
+          ></button>
         </div>
       </div>
-      <div v-else>
-        <div class="grid2">
-          <span>User</span>
-          <input
-            v-model="commentChangeInput"
-            type="text"
-            @keyup.enter="changeCommentFinal"
-          />
+      <div class="d-flex justify-content-between align-items-center" v-else>
+        <div>
+          <span class="userWidth">user</span>
+        </div>
+        <input
+          class="ml-3 w-70 comment mr-3"
+          v-model="commentChangeInput"
+          type="text"
+          @keyup.enter="changeCommentFinal"
+          style="width: 60%"
+        />
+
+        <div class="d-flex">
+          <button
+            @click="changeComment()"
+            class="editCancel text-btn sm flex-wrap mr-2"
+          >
+            수정취소
+          </button>
           <button @click="changeCommentFinal" class="btn-regular flex-wrap">
             수정완료
-          </button>
-          <button @click="changeComment()" class="text-btn flex-wrap">
-            수정취소
           </button>
         </div>
       </div>
     </div>
-    <!-- <div>
-      <div v-if="onAddReply">
-        <div class="mb-3 d-flex justify-content-center gap-2">
-          <input
-            v-model="commentValue"
-            @keyup.enter="addComment"
-            type="text"
-            class="comment serviceSearch w-100"
-            placeholder="댓글을 입력해주세요."
-          />
-          <button @click="addComment" class="btn-regular">답글달기</button>
-          <button @click="onAddReplyCancel" class="text-btn flex-wrap">
-            답글취소
-          </button>
-        </div>
+    <div v-if="onAddReply">
+      <div class="mb-3 d-flex justify-content-center gap-2">
+        <input
+          v-model="commentValue"
+          @keyup.enter="addComment"
+          type="text"
+          class="comment serviceSearch w-100"
+          placeholder="댓글을 입력해주세요."
+        />
+        <button @click="addComment" class="btn-regular">답글달기</button>
+        <button @click="onAddReplyCancel" class="text-btn flex-wrap">
+          답글취소
+        </button>
       </div>
-      <div v-if="onComment2" class="grid3">
+    </div>
+    <!-- <div v-if="onComment2" class="grid3">
         <div>ㄴ</div>
         <span>User</span>
         <span class="ml-3">{{comment.replyContent}}</span>
@@ -73,7 +104,7 @@
         <button @click="onRemoveComment" class="ml-2 bi bi-x-lg"></button>
       </div>
     </div> -->
-    <hr :class="{}" />
+    <hr style="opacity: 10%" />
   </div>
 </template>
 
@@ -103,6 +134,10 @@ export default {
       dino: props.dino,
       replyComment: "",
       replyDepth: 0,
+      commentMid: 0,
+      loginMid: store.state.users.me.mid,
+      duplicatedCheck: [],
+      userNumber: 1,
     });
     const onAddReply = ref(false);
 
@@ -158,22 +193,24 @@ export default {
             dino: state.dino,
             replyContent: commentValue.value,
             replyGroup: props.comment.replyGroup,
-            replyDepth: props.comment.replyDepth +1,
-            replyOrder: props.comment.replyOrder +1
+            replyDepth: props.comment.replyDepth + 1,
+            replyOrder: props.comment.replyOrder + 1,
           };
           console.log(body);
           await axios
             .post(url, body, { headers })
             .then((res) => {
               console.log(res.data);
-              state.replyComment = res.data.replyContent
-              state.replyDepth = res.data.replyDepth
+              state.replyComment = res.data.replyContent;
+              state.replyDepth = res.data.replyDepth;
+              state.commentMid = res.data.mid;
+              emit("replyreply");
             })
             .catch((err) => {
               console.error(err);
             });
-            onAddReply.value = false
-            onComment2.value = true
+          onAddReply.value = false;
+          onComment2.value = true;
         } catch (err) {
           console.error(err);
         }
@@ -182,15 +219,15 @@ export default {
       commentValue.value = "";
     };
 
-    const changeComment2 = () => {
-      if (onComment2.value == true) {
-        onComment2.value = false;
-        cmtChangeBtn2.value = false;
-      } else if (onComment2.value == false) {
-        onComment2.value = true;
-        cmtChangeBtn2.value = true;
-      }
-    };
+    // const changeComment2 = () => {
+    //   if (onComment2.value == true) {
+    //     onComment2.value = false;
+    //     cmtChangeBtn2.value = false;
+    //   } else if (onComment2.value == false) {
+    //     onComment2.value = true;
+    //     cmtChangeBtn2.value = true;
+    //   }
+    // };
 
     const changeCommentFinal = async () => {
       try {
@@ -230,7 +267,7 @@ export default {
     return {
       changeCommentFinal,
       changeComment,
-      changeComment2,
+      // changeComment2,
       onComment,
       onComment2,
       cmtChangeBtn,
@@ -249,13 +286,14 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.grid
-    display: grid
-    grid-template-columns: 1fr 7fr 1fr 1.3fr 0.7fr 0.7fr
+.editCancel
+  width: 48px
 
-.grid2
-    display: grid
-    grid-template-columns: 1fr 6fr 1fr 1fr
+.sm
+  font-size: 13px
+
+.userWidth
+  min-width: 50px
 
 .grid3
     display: grid
@@ -265,7 +303,8 @@ export default {
     word-break: break-all
 
 .comment
-  border-radius: 10px
+  padding-left: 5px
+  border-radius: 5px
   border: 0.5px solid grey
   font-weight: 300
   &:focus

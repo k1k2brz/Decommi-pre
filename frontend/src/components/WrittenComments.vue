@@ -20,9 +20,15 @@
         :comment="cmt"
         @remove="remove(item, index)"
         @change="change($event)"
+        @replyreply="replyreply"
       />
     </div>
-    <button class="btn btn-primary w-100" v-if="stateInfo" @click="btnreply()">
+    <button
+      style="opacity: 90%"
+      class="btn-regular-round mt-3 w-100"
+      v-if="stateInfo"
+      @click="btnreply()"
+    >
       댓글 더 보기
     </button>
   </div>
@@ -58,7 +64,9 @@ export default {
       reqPage: 0,
       writer: store.state.users.me.id,
       commentList: [],
-      pageee:0
+      pageee: 0,
+      duplicatedCheck: [],
+      userNumber: 1,
     });
 
     // 코멘트 추가
@@ -76,13 +84,22 @@ export default {
             .post(url, body, { headers })
             .then((res) => {
               console.log(res.data);
+              // if (state.duplicatedCheck.includes(res.data.mid) == false) {
+              //   state.duplicatedCheck.push(store.state.users.me.mid);
+              //   console.log(state.duplicatedCheck);
+              // } else {
+              //   const dp = state.duplicatedCheck.indexOf(
+              //     store.state.users.me.mid
+              //   );
+              //   console.log(dp);
+              // }
               state.reqPage = 0;
-              replyMore()
+              replyMore();
               // replyMore()
               // for (let index = 0; index <= state.reqPage; index++) {
               //   replyMoreAddComment(index);
               // }
-              
+
               // commentList.push(commentValue.value);
             })
             .catch((err) => {
@@ -103,16 +120,16 @@ export default {
           reqPage: state.reqPage,
           mid: store.state.users.me.mid,
         };
-        if(state.reqPage == 0 ) state.commentList = null;
+        if (state.reqPage == 0) state.commentList = null;
         await axios
           .post(`/decommi/api/diary/reply/`, body, { headers })
           .then((res) => {
-            console.log(res.data)
+            console.log(res.data);
             if (res.data.replyList == undefined) {
               return;
             }
 
-            state.commentList = []
+            state.commentList = [];
             state.commentList.push(...res.data.replyList);
             if (res.data.replyList.length % 5 == 0) {
               stateInfo.value = true;
@@ -127,7 +144,7 @@ export default {
 
     // 버튼을 클릭했을 때 +1이 되고 reply가 실행되도록 하는 함수
     // 여기서 +1이 작동되어야 댓글이 부분이 안꼬임
-    function btnreply(){
+    function btnreply() {
       state.reqPage += 1;
       reply();
     }
@@ -173,6 +190,10 @@ export default {
       console.log(comment);
     };
 
+    const replyreply = () => {
+      replyMore();
+    };
+
     return {
       remove,
       onComment,
@@ -184,7 +205,8 @@ export default {
       stateInfo,
       reply,
       btnreply,
-      replyMore
+      replyMore,
+      replyreply,
     };
   },
   components: { WrittenCommentsContent },

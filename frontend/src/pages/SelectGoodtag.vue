@@ -1,5 +1,7 @@
 <template>
-  <div class="container container_default d-flex justify-content-center align-items-center p-0 m-0">
+  <div
+    class="container container_default d-flex justify-content-center align-items-center p-0 m-0"
+  >
     <div class="q-pa-md">
       <div class="backgrondBox">
         <div>
@@ -10,17 +12,29 @@
             </h1>
           </div>
           <div class="scroll grid gap-2 pr-3">
-            <div class="rows d-flex mb-1 justify-content-center align-items-center" v-for="(favTag, index) in favTags"
-              :key="'favTag' + index" :data-index="index" @click="clickBg($event)">
-              <button @click="tagSelectBtn" class="d-flex justify-content-center align-items-center tagSelectBtn"
-                style="width: 100%; height: 100%">
+            <div
+              class="rows d-flex mb-1 justify-content-center align-items-center"
+              v-for="(favTag, index) in favTags"
+              :key="'favTag' + index"
+              :data-index="index"
+              @click="clickBg($event)"
+            >
+              <button
+                @click="tagSelectBtn"
+                class="d-flex justify-content-center align-items-center tagSelectBtn"
+                style="width: 100%; height: 100%"
+              >
                 {{ favTag }}
               </button>
             </div>
           </div>
         </div>
         <div class="d-flex justify-content-center mt-4">
-          <button @click="tagSelectRouter" class="btn btn-primary" :disabled="tagSelection.length < 3">
+          <button
+            @click="tagSelectRouter"
+            class="btn btn-primary"
+            :disabled="tagSelection.length < 3"
+          >
             <span>{{ tagSelection.length }}개의 태그가 선택됨</span>
           </button>
         </div>
@@ -34,7 +48,6 @@ import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { computed } from "@vue/runtime-core";
-import { onMounted } from "vue";
 import axios from "@/axios";
 
 export default {
@@ -53,20 +66,14 @@ export default {
       //   // email: store.state.users.me.email,
       //   likeTagList: tagSelection,
       // });
-      console.log(store.state.users.me);
       localStorage.removeItem("vuex");
       localStorage.removeItem("TOKEN");
       // sessionStorage.removeItem("token");
       store.state.users.me = null;
-      console.log(store.state.users.me);
       router.push({
         name: "Home",
       });
     };
-
-    onMounted(() => {
-      console.log(store.state.users.me.id)
-    })
 
     const clickBg = (e) => {
       e.target.style.borderRadius = "15px";
@@ -90,12 +97,13 @@ export default {
       // 배열에 같은 값이 있으면 배열에서 빼버리게
       if (tagSelection.indexOf(e.target.innerHTML) === -1) {
         tagSelection.push(e.target.innerHTML);
-        const url = "/decommi/member/liketaglist";
+        const url = "/decommi/member/editliketaglist";
         const headers = {
           "Content-Type": "application/json",
         };
         const body = {
-          likeTagList: e.target.innerHTML,
+          tagName: e.target.innerHTML,
+          email: store.state.users.me.email,
         };
         console.log(body);
         axios

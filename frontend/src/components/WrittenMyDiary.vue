@@ -19,10 +19,14 @@
               getTimeFromJavaDate(post.regDate)
             }}</span>
           </div>
-          <PostMenu :onEditBtn="onEditBtn" :onRemoveBtn="onRemoveBtn" />
+          <PostMenu
+            v-if="state.writer == state.loginWriter"
+            :onEditBtn="onEditBtn"
+            :onRemoveBtn="onRemoveBtn"
+          />
         </div>
-        <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
-        <p class="card-text mb-4">{{ post.content }}</p>
+        <!-- <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" /> -->
+        <p class="card-text mb-4" v-html="post.content"></p>
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
             <button
@@ -35,7 +39,10 @@
             </button>
           </div>
           <!-- icon -->
-          <div class="d-flex justify-content-start">
+          <div
+            class="d-flex justify-content-start"
+            v-if="state.writer !== state.loginWriter"
+          >
             <!-- 받고 싶은 값 바인드 -->
             <WrittenPostsBookmark :dino="state.dino" />
             <WrittenPostsHeart :dino="state.dino" />
@@ -58,6 +65,7 @@ import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
 import PostMenu from "./PostMenu.vue";
 import WrittenPostsHeart from "./WrittenPostsHeart.vue";
 import WrittenComments from "./WrittenComments.vue";
+import { computed } from "@vue/runtime-core";
 
 export default {
   props: {
@@ -79,6 +87,22 @@ export default {
       value: "",
     });
 
+    const me = computed(() => {
+      return store.state.users.me.writer;
+    });
+
+    // //**
+    //  * axios로 dino 로 favorite와 save 의상태값을 받아와야한다있다(bmFav, isSave)
+    //  * >> 있는지 체크를해서 있다 >  true >> 색칠
+    //  * 없다 >> false
+    //  *
+    //  *
+    //  * 눌렀을떄
+    //  * 체크를 다시보내서 있다(isFav, isSave) >> 그러면 백엔드에서 있다 >> 그러면 지운다
+    //  * 체크를 해서 없다 >> 백엔드에서 없으니 >> 그 sql테이블에 넣는다
+    //  *
+    //  */ >>
+
     const onRemoveBtn = async () => {
       try {
         const url = "./api/diary/delete";
@@ -96,6 +120,7 @@ export default {
           .post(url, body, { headers })
           .then((res) => {
             console.log(res.data);
+            router.go(0);
           })
           .catch((err) => {
             console.error(err);
@@ -104,6 +129,7 @@ export default {
         console.log(err);
       }
     };
+
     const onEditBtn = async () => {
       // store.dispatch("posts/changeMainPost", {
       // id: props.post.id,
@@ -169,16 +195,21 @@ export default {
 
     const state = reactive({
       dino: props.post.dino,
+      writer: props.post.writer,
+      loginWriter: store.state.users.me.id,
       tagList: [],
     });
-    // 컨트롤러 작성해 달라고 할 것
 
-    axios.get(`./diary/read/${state.dino}`).then((res) => {
-      state.dino = res.data.diaryPost.dino;
-      for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
-        state.tagList.push(res.data.diaryPost.tagList[i]);
-      }
-    });
+    const PostList = async () => {
+      await axios.get(`./diary/read/${state.dino}`).then((res) => {
+        state.dino = res.data.diaryPost.dino;
+        for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
+          state.tagList.push(res.data.diaryPost.tagList[i]);
+        }
+      });
+    };
+
+    PostList();
 
     const dinoTest = (dino) => {
       router.push(`/read?id=${dino}`);
@@ -195,6 +226,7 @@ export default {
       getTimeFromJavaDate,
       dinoTest,
       CheckCmt,
+      me,
     };
   },
   components: {
