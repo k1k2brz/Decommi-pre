@@ -67,7 +67,7 @@ public class DiaryApiController {
         String uploadId = UUID.randomUUID().toString() + "."
                 + FilenameUtils.getExtension(uploadFile.getOriginalFilename());
         uploadFile.transferTo(new File(uploadDir + uploadId));
-        paramMap.put("url", "./diary/image/" + uploadId);
+        paramMap.put("url", "/decommi/diary/image/" + uploadId);
         log.info("ckckckkkkkkkkkkkkkkkkkkkk" + paramMap);
         return paramMap;
     }
@@ -86,7 +86,7 @@ public class DiaryApiController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> deleteDiary(@RequestBody DiaryDTO dto) {
-        log.info("controller ::: delete ::::: "+dto);
+        log.info("controller ::: delete ::::: " + dto);
         return new ResponseEntity<>(diaryService.deleteDiary(dto), HttpStatus.OK);
     }
 

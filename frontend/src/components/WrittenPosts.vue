@@ -21,8 +21,8 @@
           </div>
           <PostMenu :onEditBtn="onEditBtn" :onRemoveBtn="onRemoveBtn" />
         </div>
-        <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" />
-        <p class="card-text mb-4">{{ post.content }}</p>
+        <!-- <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" /> -->
+        <p class="card-text mb-4" v-html="post.content"></p>
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
             <button

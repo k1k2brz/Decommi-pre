@@ -41,7 +41,7 @@ import HashFilter from "@/components/HashFilter.vue";
 import RecommendTag from "@/components/RecommendTag.vue";
 import WrittenPosts from "@/components/WrittenPosts.vue";
 import PostWrite from "@/components/PostWrite.vue";
-import { computed, onMounted } from "@vue/runtime-core";
+import { computed, onMounted, onUpdated } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import { reactive } from "@vue/reactivity";
 import { useRouter } from "vue-router";
@@ -61,6 +61,7 @@ export default {
       mainPosts: [],
       body: 1,
       stopScrolling: true,
+      dtoList: store.state.posts.dtoList
     });
 
     const me = computed(() => {
@@ -89,7 +90,39 @@ export default {
         page: state.body,
       };
       await axios
-        .post("./decommi/diary/list", body, { headers })
+        .post("/decommi/diary/list", body, { headers })
+        .then((res) => {
+          if (state.body == 0) {
+            state.mainPosts = res.data;
+          } else {
+            // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
+            for (let i = 0; i < res.data.length; i++) {
+              state.mainPosts.push(res.data[i]);
+            }
+          }
+          if (res.data.length % 5 !== 0) {
+            state.stopScrolling = true;
+          } else if (res.data.length % 5 == 0) {
+            state.stopScrolling = false;
+          }
+        });
+    };
+
+    onUpdated(() => {
+      console.log(state.dtoList)
+    })
+
+    const searchList = async () => {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: store.state.users.me.token,
+        mid: store.state.users.me.mid,
+      };
+      const body = {
+        page: state.body,
+      };
+      await axios
+        .post("/decommi/diary/list", body, { headers })
         .then((res) => {
           if (state.body == 0) {
             state.mainPosts = res.data;
@@ -131,7 +164,7 @@ export default {
       getMorePostList()
     }
 
-    return { me, state, getMorePostList, Completed };
+    return { me, state, getMorePostList, Completed, searchList };
   },
 
   components: { HashFilter, RecommendTag, WrittenPosts, PostWrite },

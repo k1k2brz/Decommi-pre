@@ -12,6 +12,7 @@
           <div class="mb-3">
             <input
               v-model="info.id"
+              ref="id"
               type="email"
               class="form-control"
               placeholder="Email을 입력해주세요."
@@ -51,20 +52,25 @@
 
 <script>
 import { reactive } from "@vue/reactivity";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useStore } from "vuex";
+// import { useStore } from "vuex";
 import axios from "axios";
 
 export default {
   setup() {
-    const store = useStore();
+    // const store = useStore();
     const router = useRouter();
     const route = useRoute();
     const emailError = ref(false);
+    const id = ref();
     let info = reactive({
       id: "",
     });
+
+    onMounted(() => {
+      id.value.focus()
+    })
 
     const onSubmitForm = async () => {
       //trim으로 잘라서 하나도 없으면
@@ -72,8 +78,6 @@ export default {
         const url = "/decommi/member/findemail";
         const headers = {
           "Content-Type": "application/json",
-          Authorization: store.state.users.me.token,
-          mid: store.state.users.me.mid,
         };
         const body = {
           email: info.id,
@@ -85,6 +89,7 @@ export default {
             console.log(res.data);
             if (res.data == false) {
               alert("존재하지 않는 메일주소입니다.");
+              id.value.focus()
               return;
             }
             alert("존재하는 메일주소입니다.");
@@ -102,7 +107,7 @@ export default {
       emailError.value = false;
     };
 
-    return { emailError, info, onSubmitForm, router, route };
+    return { emailError, info, onSubmitForm, router, route, id };
   },
   middleware: "anonymous",
 };

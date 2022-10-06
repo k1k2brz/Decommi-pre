@@ -54,17 +54,6 @@
               >가입하기</router-link
             >
           </div>
-
-          <div class="d-flex justify-content-center findPass">
-            <router-link class="nav-link ml-1" :to="{ name: 'IdFind' }"
-              >아이디 확인하기</router-link
-            >
-          </div>
-          <div class="d-flex justify-content-center findPass">
-            <router-link class="nav-link ml-1" :to="{ name: 'Pwfind' }"
-              >비밀번호를 잊으셨나요?</router-link
-            >
-          </div>
           <div
             class="d-flex justify-content-center align-items-center pt-2 pb-2"
           >
@@ -72,7 +61,17 @@
             <div class="ml-3 mr-3" style="min-width: 30px">또는</div>
             <div class="LoginLine"></div>
           </div>
-          <div class="d-flex justify-content-center gap-3">
+          <div class="d-flex justify-content-center findPass">
+            <router-link class="nav-link ml-1" :to="{ name: 'IdFind' }"
+              >아이디 확인하기</router-link
+            >
+          </div>
+          <div class="d-flex justify-content-center findPass">
+            <router-link class="nav-link ml-1 mt-1" :to="{ name: 'Pwfind' }"
+              >비밀번호를 잊으셨나요?</router-link
+            >
+          </div>
+          <!-- <div class="d-flex justify-content-center gap-3">
             <img
               class="loginImg googleLogo"
               src="@/assets/google.png"
@@ -80,7 +79,7 @@
             />
             <img class="loginImg" src="@/assets/kakao.png" alt="no image" />
             <img class="loginImg" src="@/assets/naver.png" alt="no image" />
-          </div>
+          </div> -->
         </form>
       </div>
     </div>

@@ -14,10 +14,10 @@
         <button @click="addComment" class="btn-regular">댓글입력</button>
       </div>
     </div>
-    <div v-for="(comment, index) in state.commentList" :key="comment + index">
+    <div v-for="(cmt, index) in state.commentList" :key="cmt + index">
       <WrittenCommentsContent
         :dino="state.dino"
-        :comment="comment"
+        :comment="cmt"
         @remove="remove(item, index)"
         @change="change($event)"
       />
@@ -107,6 +107,7 @@ export default {
         await axios
           .post(`/decommi/api/diary/reply/`, body, { headers })
           .then((res) => {
+            console.log(res.data)
             if (res.data.replyList == undefined) {
               return;
             }

@@ -1,3 +1,5 @@
+import axios from "@/axios";
+
 export default {
   namespaced: true,
   state: {
@@ -6,9 +8,13 @@ export default {
     regDate: "",
     bookmarkSave: false,
     report: true,
-    search: "",
+    search: null,
+    dtoList: [],
   },
   mutations: {
+    setDtolist(state, payload) {
+      state.dtoList = payload;
+    },
     setSearch(state, payload) {
       state.search = payload;
     },
@@ -46,7 +52,28 @@ export default {
   },
   actions: {
     setSearch({ commit }, payload) {
-      commit("setSearch", payload);
+      try {
+        const url = "/decommi/diary/list";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: payload.Authorization,
+          mid: payload.mid,
+        };
+        const body = {
+          type: payload.type,
+          keyword: payload.keyword,
+          tagList: payload.tagList,
+          writer: payload.writer,
+        };
+        console.log(body);
+        axios.post(url, body, { headers }).then((res) => {
+          console.log(res.data);
+          commit("setDtolist", JSON.parse(JSON.stringify(res.data)))
+          commit("setSearch", payload);
+        });
+      } catch (err) {
+        console.error(err);
+      }
     },
     // { commit } 자리가 context자리. console.log(context)하면 나옴
     // commit, dispatch, state, rootState, getters등 있음

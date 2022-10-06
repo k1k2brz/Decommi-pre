@@ -1,16 +1,16 @@
 <template>
   <div>
-    <div class="Maincomment mb-1 d-flex justify-content-between gap-2">
+    <div class="Maincomment mb-1 d-flex justify-content-between gap-2" :style="comment.replyDepth !== 0 ? 'padding-left=3rem':''">
       <div v-if="onComment">
         <div class="grid">
-          <span>User</span>
+          <span>{{`${comment.replyDepth !== 0 ?"ㄴ"+"user":"user"}`}}</span>
           <span class="ml-3">{{ comment.replyContent }}</span>
           <div>
             <span>{{ comment.regDate.split("-")[0] }}.</span>
             <span>{{ comment.regDate.split("-")[1] }}.</span>
             <span>{{ comment.regDate.split("-")[2].split("T")[0] }}</span>
           </div>
-          <button @click="replyAddReply" class="text-btn pl-1">답글달기</button>
+          <button v-if="comment.replyDepth == 0" @click="replyAddReply" class="text-btn pl-1">답글달기</button>
           <button
             v-if="cmtChangeBtn"
             @click="changeComment($event)"
@@ -38,10 +38,9 @@
         </div>
       </div>
     </div>
-    <div>
+    <!-- <div>
       <div v-if="onAddReply">
         <div class="mb-3 d-flex justify-content-center gap-2">
-          <div>ㄴ</div>
           <input
             v-model="commentValue"
             @keyup.enter="addComment"
@@ -58,7 +57,7 @@
       <div v-if="onComment2" class="grid3">
         <div>ㄴ</div>
         <span>User</span>
-        <span class="ml-3">답글</span>
+        <span class="ml-3">{{comment.replyContent}}</span>
         <div>
           <span>{{ comment.regDate.split("-")[0] }}.</span>
           <span>{{ comment.regDate.split("-")[1] }}.</span>
@@ -73,8 +72,8 @@
         </button>
         <button @click="onRemoveComment" class="ml-2 bi bi-x-lg"></button>
       </div>
-    </div>
-    <hr />
+    </div> -->
+    <hr :class="{}" />
   </div>
 </template>
 
@@ -102,6 +101,8 @@ export default {
     const state = reactive({
       comment: props.comment,
       dino: props.dino,
+      replyComment: "",
+      replyDepth: 0,
     });
     const onAddReply = ref(false);
 
@@ -156,12 +157,17 @@ export default {
             mid: store.state.users.me.mid,
             dino: state.dino,
             replyContent: commentValue.value,
+            replyGroup: props.comment.replyGroup,
+            replyDepth: props.comment.replyDepth +1,
+            replyOrder: props.comment.replyOrder +1
           };
           console.log(body);
           await axios
             .post(url, body, { headers })
             .then((res) => {
               console.log(res.data);
+              state.replyComment = res.data.replyContent
+              state.replyDepth = res.data.replyDepth
             })
             .catch((err) => {
               console.error(err);

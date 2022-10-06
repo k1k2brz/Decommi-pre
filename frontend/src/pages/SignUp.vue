@@ -137,10 +137,10 @@
           <div
             class="d-flex justify-content-center align-items-center flex-column"
           >
-            <button type="submit" class="btn btn-primary" @click="onSubmitForm">
+            <button style="min-width: 302px" type="submit" class="btn-regular-full" @click="onSubmitForm">
               회원가입
             </button>
-            <div class="d-flex">
+            <div class="d-flex mt-3">
               <span> 계정이 있으신가요? </span>
               <router-link
                 class="nav-link purple-color ml-1"
@@ -149,16 +149,13 @@
               >
             </div>
           </div>
-          <div class="d-flex justify-content-center align-items-center">
+          <!-- <div
+            class="d-flex justify-content-center align-items-center pt-2 pb-2"
+          >
             <div class="LoginLine"></div>
-            <div class="ml-3 mr-3" style="min-width: 30px">또는</div>
+            <div class="ml-3 mr-3" >또는</div>
             <div class="LoginLine"></div>
-          </div>
-          <div class="d-flex justify-content-center">
-            <div>구글</div>
-            <div>카톡</div>
-            <div>네이버</div>
-          </div>
+          </div> -->
         </form>
       </div>
     </div>

@@ -16,16 +16,16 @@
       class="myWriteContent form-control"
       placeholder="오늘의 다이어리를 작성해 보세요!"
     />
+    <!-- v-if="clickTA" -->
     <ckeditor
-      v-if="clickTA"
       @ready="onReady"
       :editor="editor"
       v-model="editorData"
       :config="editorConfig"
       class="myWriteContent ck-placeholder"
+      placeholder="Type the content here!"
       id="editor"
-      data-placeholder="Type some text..."
-      style="border: 1px solid lightgrey; border-radius: 10px"
+      style="border: 1px solid lightgrey; border-radius: 10px;"
       >::before</ckeditor
     >
     <div v-if="clickTA">
@@ -137,6 +137,7 @@
 import { getCurrentInstance } from "@vue/runtime-core";
 import { reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
+import { onMounted } from "vue";
 // import { useRouter } from "vue-router";
 import axios from "axios";
 import { computed } from "@vue/runtime-core";
@@ -157,6 +158,7 @@ export default {
       editorData: "",
       editorConfig: {
         language: "ko",
+        placeholder:'오늘의 다이어리를 작성해보세요.',
         simpleUpload: {
           uploadUrl: "./api/diary/write/image",
           withCredentials: true,
@@ -204,10 +206,15 @@ export default {
       imgInput: "",
       gifInput: "",
       appended: false,
+      context: "",
       // uploaded : '',
     });
     const imgInput = ref("");
     const gifInput = ref("");
+
+    let getContext = onMounted(() => {
+      state.context = getCurrentInstance().data.editorData
+    })
 
     const checkExtension = (fileName, fileSize) => {
       if (fileSize > maxSize) {
@@ -337,9 +344,10 @@ export default {
           Authorization: store.state.users.me.token,
           mid: store.state.users.me.mid,
         };
+        getContext()
         const body = {
           title: myWriteTitle.value,
-          content: myWriteContent.value,
+          content: state.context,
           openYN: diaryPrivacyCheck.value,
           replyYN: commentPrivacyCheck.value,
           writer: store.state.users.me.id,
@@ -406,6 +414,7 @@ export default {
       imgInput,
       gifInput,
       onReady,
+      getContext
       // fileChange
     };
   },
@@ -419,6 +428,9 @@ export default {
 .tagContainer
   border: 1px solid lightgrey
   border-radius: 10px
+
+.ck-content
+  margin-left: 2rem
 
 .myWriteContent
   overflow: visible

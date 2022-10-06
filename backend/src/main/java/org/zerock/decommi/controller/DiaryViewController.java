@@ -35,8 +35,6 @@ import lombok.extern.log4j.Log4j2;
 public class DiaryViewController {
   private final DiaryService diaryService;
 
-
-
   @RequestMapping(value = "/list", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<DiaryDTO>> getDiaryList(@RequestBody PageRequestDTO dto) {
     // <String> type : null 값이면 검색조건없이 모든 게시글 리스트 반환,
@@ -46,10 +44,10 @@ public class DiaryViewController {
     // List<String> tagList : 게시글에 해당 태그가 포함된 결과반환 여러개가 될 수 있고 하나가 될 수 있다. 해당 태그가
     // 하나라도 존재하는 결과 반환
     //
-    // log.info("Controller 프론트에서 보내주는 검색조건 dto:::::" + dto);
-    // log.info("controller dto tagList : " + dto.getTagList());
-    // log.info("controller dto type : " + dto.getType());
-    // log.info("controller dto keyword : " + dto.getKeyword());
+    log.info("Controller 프론트에서 보내주는 검색조건 dto:::::" + dto);
+    log.info("controller dto tagList : " + dto.getTagList());
+    log.info("controller dto type : " + dto.getType());
+    log.info("controller dto keyword : " + dto.getKeyword());
     PageRequestDTO.builder().page(dto.getPage()).size(5).type(dto.getType()).keyword(dto.getKeyword())
         .tagList(dto.getTagList())
         .build();
@@ -62,9 +60,9 @@ public class DiaryViewController {
     return new ResponseEntity<>(result.getDtoList(), HttpStatus.OK);
   }
 
-  //태그를 눌렀을때 그 해당 태그를 포함하고있는 게시글 리스트반환 여기서 String tagName은 해당 태그의 tagName임.
+  // 태그를 눌렀을때 그 해당 태그를 포함하고있는 게시글 리스트반환 여기서 String tagName은 해당 태그의 tagName임.
   @RequestMapping(value = "/list/bytagname", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<DiaryDTO>>getDiaryLisyByTagName(@RequestBody PageRequestDTO dto, String tagName){
+  public ResponseEntity<List<DiaryDTO>> getDiaryLisyByTagName(@RequestBody PageRequestDTO dto, String tagName) {
     PageRequestDTO.builder().page(dto.getPage()).size(5).tagList(dto.getTagList()).build();
     PageResultDTO<DiaryDTO, Diary> result = diaryService.getDiaryPostListByTagName(dto, tagName);
     result.getDtoList().forEach(v -> {
@@ -82,11 +80,11 @@ public class DiaryViewController {
     // List<String> tagList : 게시글에 해당 태그가 포함된 결과반환 여러개가 될 수 있고 하나가 될 수 있다. 해당 태그가
     // 하나라도 존재하는 결과 반환
     PageRequestDTO.builder().page(dto.getPage()).size(5).type(dto.getType()).keyword(dto.getKeyword())
-    .tagList(dto.getTagList())
-    .build();
+        .tagList(dto.getTagList())
+        .build();
     PageResultDTO<DiaryDTO, Diary> result = diaryService.getDiaryPostList(dto);
-    log.info("controller result ::: "+result);
-    log.info("controller dto ::: "+dto);
+    log.info("controller result ::: " + result);
+    log.info("controller dto ::: " + dto);
     log.info("controller dto tagList : " + dto.getTagList());
     log.info("controller dto type : " + dto.getType());
     log.info("controller dto keyword : " + dto.getKeyword());
@@ -107,7 +105,7 @@ public class DiaryViewController {
     ResponseEntity<byte[]> result = null;
     try {
       String srchFileName = URLDecoder.decode(fileName, "UTF-8");
-      File file = new File("c:\testingimage" + File.separator + srchFileName);// window일경우 사용
+      File file = new File("c:\\testingimage" + File.separator + srchFileName);// window일경우 사용
       // File.separator + srchFileName);
       if (size != null && size.equals("1")) {
         file = new File(file.getParent(), file.getName().substring(2));
