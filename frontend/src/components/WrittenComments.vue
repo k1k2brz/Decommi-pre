@@ -93,6 +93,7 @@ export default {
               //   );
               //   console.log(dp);
               // }
+              // 페이지를 0으로 초기화한다
               state.reqPage = 0;
               replyMore();
               // replyMore()
@@ -120,6 +121,7 @@ export default {
           reqPage: state.reqPage,
           mid: store.state.users.me.mid,
         };
+        // commnetList가 없을 때
         if (state.reqPage == 0) state.commentList = null;
         await axios
           .post(`/decommi/api/diary/reply/`, body, { headers })
@@ -128,7 +130,7 @@ export default {
             if (res.data.replyList == undefined) {
               return;
             }
-
+            // 페이지 중복을 막기 위한 초기화
             state.commentList = [];
             state.commentList.push(...res.data.replyList);
             if (res.data.replyList.length % 5 == 0) {
@@ -146,6 +148,7 @@ export default {
     // 여기서 +1이 작동되어야 댓글이 부분이 안꼬임
     function btnreply() {
       state.reqPage += 1;
+      stateInfo.value = false
       reply();
     }
 

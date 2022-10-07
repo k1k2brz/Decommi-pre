@@ -10,9 +10,9 @@
         <div class="mb-3">
           <input
             @keyup.enter="check"
-            ref="id"
+            ref="email"
             type="text"
-            v-model="info.id"
+            v-model="info.email"
             class="form-control"
             placeholder="이메일을 입력해주세요."
             aria-describedby="emailHelp"
@@ -58,10 +58,10 @@
         </div>
         <div class="mb-3">
           <input
-            @keyup.enter="onSubmitForm"
-            ref="email"
+            @keyup.enter="idcheck"
+            ref="id"
             type="email"
-            v-model="info.email"
+            v-model="info.id"
             class="form-control"
             placeholder="id메일을 입력해주세요."
             aria-describedby="emailHelp"
@@ -69,6 +69,12 @@
           <div v-show="emailError" class="font14 mt-1 ml-2">
             id메일을 입력해주세요.
           </div>
+          <button
+            class="btn btn-outline-primary w-100 mt-3"
+            @click.self="idcheck"
+          >
+            중복 확인
+          </button>
         </div>
 
         <!-- <div class="mb-3">
@@ -201,31 +207,33 @@ export default {
     const q3 = ref("");
 
     onMounted(() => {
-      id.value.focus();
+      email.value.focus();
     });
 
     // ref로 focus()할 것
     let info = reactive({
-      id: "",
+      email: "",
       pass: "",
       repass: "",
-      email: "",
+      id: "",
       q1: "",
       q2: "",
       q3: "",
       idDuplicate: false,
+      idDuplicate2: false,
       emailCheck: false,
+      idCheck: false,
     });
 
     // 이메일인증
     const check = async () => {
-      if (info.id === "") {
-        id.value.focus();
+      if (info.email === "") {
+        email.value.focus();
         idError.value = true;
         info.idDuplicate = false;
         return;
-      } else if (!(info.id.includes("@") && info.id.includes("."))) {
-        id.value.focus();
+      } else if (!(info.email.includes("@") && info.email.includes("."))) {
+        email.value.focus();
         idError.value = true;
         info.idDuplicate = false;
         return;
@@ -234,10 +242,10 @@ export default {
       const headers = {
         "Content-Type": "application/json",
       };
-      const body = { email: info.id };
+      const body = { email: info.email };
       await axios.post(url, body, { headers }).then(function (res) {
         if (res.data.result != 0) {
-          id.value.focus();
+          email.value.focus();
           info.idDuplicate = true;
           idError.value = false;
           passError.value = false;
@@ -251,6 +259,46 @@ export default {
           alert("사용 가능한 이메일입니다.");
           pass.value.focus();
           info.idDuplicate = false;
+          info.emailCheck = true;
+        }
+      });
+    };
+
+    const idcheck = async () => {
+      if (info.id === "") {
+        id.value.focus();
+        emailError.value = true;
+        info.idDuplicate2 = false;
+        return;
+      } else if (!(info.id.includes("@") && info.id.includes("."))) {
+        id.value.focus();
+        emailError.value = true;
+        info.idDuplicate2 = false;
+        return;
+      }
+      const url = "/decommi/member/idCheck";
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const body = { id: info.id };
+      console.log(body)
+      await axios.post(url, body, { headers }).then(function (res) {
+        console.log(res.data)
+        if (res.data.result != 0) {
+          id.value.focus();
+          info.idDuplicate2 = true;
+          idError.value = false;
+          passError.value = false;
+          repassError.value = false;
+          emailError.value = false;
+          q1Error.value = false;
+          q2Error.value = false;
+          q3Error.value = false;
+          info.emailCheck = false;
+        } else {
+          alert("사용 가능한 이메일입니다.");
+          q1.value.focus();
+          info.idDuplicate2 = false;
           info.emailCheck = true;
         }
       });
@@ -291,7 +339,7 @@ export default {
         q2Error.value = false;
         q3Error.value = false;
         return;
-      } else if (info.email === "") {
+      } else if (info.id === "") {
         email.value.focus();
         emailError.value = true;
         idError.value = false;
@@ -335,15 +383,15 @@ export default {
       try {
         await store.dispatch("users/signUp", {
           // Entity와 맞출 것
-          email: info.id,
+          email: info.email,
           pw: info.pass,
-          id: info.email,
+          id: info.id,
           q1: info.q1,
           q2: info.q2,
           q3: info.q3,
         });
         await store.dispatch("users/likeTagEmail", {
-          email: info.id,
+          email: info.email,
         });
         // answerError.value = false;
         // store.state.me = true;
@@ -391,6 +439,7 @@ export default {
       q1,
       q2,
       q3,
+      idcheck
     };
   },
   // 회원가입 하지 않은 사람만 접근

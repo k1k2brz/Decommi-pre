@@ -151,8 +151,9 @@ export default {
           .then((res) => {
             // reactive로 빼기
             // 누구나 수정 불가능하도록 고유번호 지정
-            if (res.data.writer == store.state.users.me.email) {
-              router.push(`/editPost?edit=${res.data.dino}`);
+            if (res.data.writer == store.state.users.me.id) {
+              // router.push(`/editPost?edit=${res.data.dino}`);
+              aaaa()
             } else {
               alert("수정할 권한이 없습니다");
               router.push({
@@ -160,6 +161,11 @@ export default {
               });
             }
             console.log(res.data);
+            async function aaaa(){
+                 await axiosComponent();
+                await router.push(`/editPost?edit=${res.data.dino}`);
+
+              }
           })
           .catch((err) => {
             console.error(err);
@@ -168,6 +174,28 @@ export default {
         console.log(err);
       }
     };
+
+    const axiosComponent = async () => {
+      const url = "./api/diary/modify/check";
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: store.state.users.me.token,
+        mid: store.state.users.me.mid,
+      };
+      const body = {
+        dino: state.dino,
+        writer: store.state.users.me.id,
+      };
+      console.log(body);
+      await axios
+        .post(url, body, { headers })
+        .then((res) => {
+          localStorage.setItem("Content", res.data.content)
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+      };
 
     // state 에 리액트로 대충
     // showmodal = false 이렇게 한다음에

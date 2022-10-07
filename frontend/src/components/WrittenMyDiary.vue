@@ -151,7 +151,7 @@ export default {
           .then((res) => {
             // reactive로 빼기
             // 누구나 수정 불가능하도록 고유번호 지정
-            if (res.data.writer == store.state.users.me.email) {
+            if (res.data.writer == store.state.users.me.id) {
               router.push(`/editPost?edit=${res.data.dino}`);
             } else {
               alert("수정할 권한이 없습니다");

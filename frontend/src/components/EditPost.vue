@@ -11,70 +11,41 @@
           <div class="card-body">
             <div>
               <div class="textareaPadding">
-                <input
-                  v-model="myWriteTitle"
-                  @click="clickTextarea"
-                  type="text"
-                  class="myWriteTitle none form-control mb-3"
-                  maxlength="80"
-                  placeholder="제목을 입력하세요."
-                />
+                <input v-model="myWriteTitle" @click="clickTextarea" type="text"
+                  class="borderBind myWriteTitle none form-control mb-3" maxlength="80" placeholder="제목을 입력하세요." />
               </div>
-              <ckeditor
-                @ready="onReady"
-                :editor="editor"
-                v-model="editorData"
-                :config="editorConfig"
-                class="myWriteContent ck-placeholder"
-                id="editor"
-                style="border: 1px solid #d8d8d8; border-radius: 10px"
-              ></ckeditor>
+
+              <ckeditor @ready="onReady" :editor="editor" v-model="editorData" :config="editorConfig"
+                class="myWriteContent ck-placeholder" id="editor"
+                style="border: 1px solid #d8d8d8; border-radius: 10px"></ckeditor>
+                
               <div>
-                <div class="flex-wrap gap-2 d-flex">
-                  <div
-                    class="tag"
-                    v-for="(tag, index) in tags"
-                    :key="'tag' + index"
-                  >
+                <div class="textareaPadding flex-wrap mt-3 gap-2 d-flex">
+                  <div class="tag" v-for="(tag, index) in tags" :key="'tag' + index">
                     <span class="btn-tag-sm d-flex align-items-center">
-                      <button
-                        @click="removeTag(index)"
-                        class="bi bi-x-lg mr-1"
-                      ></button>
+                      <button @click="removeTag(index)" class="bi bi-x-lg mr-1"></button>
                       {{ tag }}
                     </span>
                   </div>
                 </div>
-                <div class="d-flex justify-content-center align-items-center">
-                  <input
-                    maxlength="12"
-                    v-model="tagValue"
-                    @keyup.enter="addTag"
-                    type="text"
-                    class="tagTextbox form-control mr-1 mb-4 mt-4"
-                    placeholder="태그 추가하기"
-                  />
+                <div class="textareaPadding d-flex justify-content-center align-items-center">
+                  <input maxlength="12" v-model="tagValue" @keyup.enter="addTag" type="text"
+                    class="tagTextbox form-control mr-1 mb-4 mt-4" placeholder="태그 추가하기" />
                 </div>
               </div>
             </div>
-            <div>
+            <div class="textareaPadding">
               <div class="LoginLine mb-3"></div>
             </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <button
-                v-if="privacyPermit"
-                @click="publicPrivacy"
-                class="purple-color mb-3"
-              >
+            <div class="textareaPadding d-flex justify-content-between align-items-center">
+              <button v-if="privacyPermit" @click="publicPrivacy" class="zidx purple-color mb-3">
                 모든 사람이 다이어리를 읽을 수 있습니다.
               </button>
-              <button v-else @click="publicPrivacy" class="purple-color mb-3">
+              <button v-else @click="publicPrivacy" class="zidx purple-color mb-3">
                 나만이 다이어리를 읽을 수 있습니다.
               </button>
               <div v-if="pp" class="d-flex position-absolute">
-                <div
-                  class="bg-white d-flex flex-column box-shadow p-4 position-relative gap-1"
-                >
+                <div class="bg-white d-flex flex-column box-shadow p-4 position-relative gap-1">
                   <div>
                     <button @click="diaryPP" class="privacy-public">
                       내 다이어리 공개
@@ -82,11 +53,7 @@
                     <i v-if="diaryPrivacyCheck" class="bi bi-check-lg"></i>
                   </div>
                   <div>
-                    <button
-                      :disabled="commentDisable"
-                      @click="commentPP"
-                      class="privacy-public"
-                    >
+                    <button :disabled="commentDisable" @click="commentPP" class="privacy-public">
                       내 다이어리에 댓글 허용
                     </button>
                     <i v-if="commentPrivacyCheck" class="bi bi-check-lg"></i>
@@ -94,17 +61,13 @@
                 </div>
               </div>
               <div>
-                <button
-                  @click="editCompleteBtn"
-                  class="btn-regular"
-                  :class="{
-                    btnDisabled:
-                      myWriteTitle.length < 1 || myWriteContent.length < 1,
-                  }"
-                  :disabled="
-                    myWriteTitle.length < 1 || myWriteContent.length < 1
-                  "
-                >
+                <!-- :class="{
+                  btnDisabled:
+                    myWriteTitle.length < 1 || editorData.length < 1,
+                }" :disabled="
+                  myWriteTitle.length < 1 || editorData.length < 1
+                " -->
+                <button @click="editCompleteBtn" class="btn-regular">
                   수정완료
                 </button>
               </div>
@@ -117,16 +80,18 @@
 </template>
 
 <script>
+import { getCurrentInstance } from "vue";
 import { reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import ClassicEditor from "@ckeditor/ck5/build/ckeditor";
 import { computed, onMounted } from "@vue/runtime-core";
-import store from "@/store";
+// import store from "@/store";
 
 export default {
   data() {
+    let store = useStore();
     let token = store.state.users.me.token;
     let md = store.state.users.me.mid;
     return {
@@ -134,7 +99,7 @@ export default {
       openable: true,
       editor: ClassicEditor,
       // 여기에 본문
-      editorData: "",
+      editorData: localStorage.getItem('Content'),
       editorConfig: {
         language: "ko",
         placeholder: "오늘의 다이어리를 작성해보세요.",
@@ -148,6 +113,10 @@ export default {
         },
       },
     };
+  },
+  mounted() {
+    // this.editorData = localStorage.getItem('Content');
+    // console.log("늦게뜨기");
   },
   setup() {
     function onReady(editor) {
@@ -174,6 +143,19 @@ export default {
     const tagValue = ref("");
     let tags = reactive([]);
     const file = ref("");
+    const state = reactive({
+      myContent: '',
+      context: '',
+      count: 0
+    })
+    let getContext = onMounted(() => {
+      state.context = getCurrentInstance().data.editorData;
+    });
+
+    // onBeforeMount(()=>{
+    //   axiosComponent()
+    //   console.log(state.myContent)
+    // })
 
     const addTag = () => {
       let result = tagValue.value.trim().replace(/ /, "");
@@ -244,21 +226,32 @@ export default {
       await axios
         .post(url, body, { headers })
         .then((res) => {
-          console.log(res.data);
+          localStorage.setItem("Content", res.data.content)
           myWriteTitle.value = res.data.title;
-          myWriteContent.value = res.data.content;
+          diaryPrivacyCheck.value = res.data.openYN
+          commentPrivacyCheck.value = res.data.replyYN
+          state.myContent = JSON.parse(JSON.stringify(res.data.content))
+          store.dispatch("posts/setContent", {
+            content: res.data.content
+          })
           for (let i = 0; i < res.data.tagList.length; i++) {
             tags.push(res.data.tagList[i]);
           }
         })
         .catch((err) => {
           console.error(err);
-        });
+        })
+        console.log(store.state.posts.count)
+      if (store.state.posts.count == true) {
+        store.dispatch('posts/setCount', {
+          count: false
+        })
+        router.go(0)
+      }
     };
 
-    onMounted(() => {
-      axiosComponent();
-    });
+    axiosComponent();
+
 
     const editCompleteBtn = async () => {
       try {
@@ -268,16 +261,18 @@ export default {
           Authorization: store.state.users.me.token,
           mid: store.state.users.me.mid,
         };
+        getContext();
         const body = {
           dino: params,
           title: myWriteTitle.value,
-          content: myWriteContent.value,
+          content: state.context,
           openYN: diaryPrivacyCheck.value,
           replyYN: commentPrivacyCheck.value,
           writer: store.state.users.me.id,
           tagList: tags,
         };
         console.log(body);
+        localStorage.removeItem('Content')
         await axios
           .post(url, body, { headers })
           .then((res) => {
@@ -290,16 +285,14 @@ export default {
         console.log(err);
       }
       router.push({ name: "Main" });
+      // store.count = true
+      store.dispatch('posts/setCount', {
+        state: state.count
+      })
     };
 
-    const autoResize = (e) => {
-      e.target.style.height = "auto";
-      e.target.style.height = `${e.target.scrollHeight}px`;
-    };
 
     return {
-      // axiosComponent,
-      autoResize,
       pp,
       publicPrivacy,
       diaryPrivacyCheck,
@@ -322,12 +315,45 @@ export default {
       file,
       ClassicEditor,
       onReady,
+      state,
+      getContext
     };
   },
 };
 </script>
 
 <style lang="sass" scoped>
+.ck.ck-editor__editable.ck-focused:not(.ck-editor__nested-editable)
+  box-shadow: none !important
+
+
+.ck-placeholder::before
+  color: #d21714
+
+.myWriteTitle::placeholder,
+.tagTextbox::placeholder
+  font-weight: 300
+
+.textareaPadding
+  padding: 0 2rem
+
+.borderBind
+  border: 1px solid #D8D8D8 !important
+
+.tagTextbox
+  border: 1px solid #D8D8D8 !important
+
+
+.ck-editor__editable
+  height: 60vh
+
+.tagContainer
+  border: 1px solid lightgrey
+  border-radius: 10px
+
+.ck-content
+  margin: 0 2rem
+
 .myWriteContent
   overflow: visible
   border: none
@@ -335,6 +361,9 @@ export default {
   &:hover
     text-decoration: none
     border: none
+
+.zidx
+  z-index: 21
 
 a
   text-decoration: none
@@ -405,6 +434,7 @@ a
 
 .bg-white
   background-color: white
+  top: 60px
 
 .picIcon
   overflow: hidden

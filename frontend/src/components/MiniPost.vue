@@ -4,13 +4,19 @@
       <div class="backgrondBox p-4">
         <div class="d-flex justify-content-between flex-column gap-4">
           <div class="d-flex flex-column gap-1">
-            <h5 class="card-title">고도를 기다리며를 보고</h5>
+            <h5 class="card-title">{{ bm.title }}</h5>
             <div class="d-flex align-items-center">
-              <span class="days">2022.08.11</span>
-              <span class="lastTime ml-1">1일 전</span>
+              <span class="days">{{ bm.regDate.split("-")[0] }}.</span>
+              <span class="days">{{ bm.regDate.split("-")[1] }}.</span>
+              <span class="days">{{
+              bm.regDate.split("-")[2].split("T")[0]
+              }}</span>
+              <span class="ml-1 lastTime margin5">{{
+              getTimeFromJavaDate(bm.regDate)
+              }}</span>
             </div>
           </div>
-          <span class="card-text">대충 비평인지 감상인지 모를 애매한 글</span>
+          <span class="card-text">{{bm.content}}</span>
         </div>
         <div class="d-flex justify-content-end">
           <button class="font12">게시글 전체보기</button>
@@ -22,12 +28,35 @@
 
 <script>
 export default {
-  // props: {
-  //   minipost: {
-  //     type: Object,
-  //     required: true,
-  //   },
-  // },
+  props: {
+    bm: {
+      type: Object,
+      required: true,
+    },
+  },
+  setup(props) {
+    console.log(props.bm)
+
+    function getTimeFromJavaDate(s) {
+      const cont = new Date(s);
+      let date = new Date();
+      let calculated = (new Date(date.getTime()) - cont) / 1000; //초 계산
+      if (calculated < 60) {
+        return "방금 전";
+      } else if (calculated < 60 * 60) {
+        return `${Math.round(calculated / 60)}분 전`;
+      } else if (calculated < 60 * 60 * 24) {
+        return `${Math.round(calculated / (60 * 60))}시간 전`;
+      } else if (calculated < 60 * 60 * 24 * 7) {
+        return `${Math.round(calculated / (60 * 60 * 24))}일 전`;
+      } else if (calculated < 60 * 60 * 24 * 7 * 5) {
+        return `${Math.round(calculated / (60 * 60 * 24 * 7))}주 전`;
+      } else if (calculated > 31536000) {
+        return `${Math.round(calculated / 31536000)}년 전`;
+      }
+    }
+    return { getTimeFromJavaDate }
+  }
 };
 </script>
 

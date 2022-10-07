@@ -7,8 +7,9 @@
       <div class="d-flex justify-content-between" v-if="onComment">
         <div class="d-flex">
           <div class="userWidth">
-            <span>{{
-              `${comment.replyDepth !== 0 ? "&nbsp;  ㄴ  " + "user" : "user"}`
+            <!-- :class="{users: store.state.users.me.mid == comment.mid}" -->
+            <span :class="{usermid: me.mid == comment.mid}" >{{
+              `${comment.replyDepth !== 0 ? "&nbsp;  ㄴ  " + "user" : "user"}${me.mid == comment.mid ? "(나)": ""}`
             }}</span>
           </div>
           <span class="ml-3">{{ comment.replyContent }}</span>
@@ -71,7 +72,7 @@
       </div>
     </div>
     <div v-if="onAddReply">
-      <div class="mb-3 d-flex justify-content-center gap-2">
+      <div class="mb-3 mt-3 d-flex justify-content-between gap-2">
         <input
           v-model="commentValue"
           @keyup.enter="addComment"
@@ -80,9 +81,11 @@
           placeholder="댓글을 입력해주세요."
         />
         <button @click="addComment" class="btn-regular">답글달기</button>
-        <button @click="onAddReplyCancel" class="text-btn flex-wrap">
-          답글취소
-        </button>
+        <div class="d-flex align-items-center" style="width: 70px">
+          <button @click="onAddReplyCancel" class="text-btn flex-wrap">
+            답글취소
+          </button>
+        </div>
       </div>
     </div>
     <!-- <div v-if="onComment2" class="grid3">
@@ -110,7 +113,7 @@
 
 <script>
 import { useStore } from "vuex";
-import { reactive, ref } from "@vue/reactivity";
+import { computed, reactive, ref } from "@vue/reactivity";
 import { getCurrentInstance } from "@vue/runtime-core";
 import axios from "axios";
 export default {
@@ -128,6 +131,10 @@ export default {
   setup(props) {
     const store = useStore();
     const { emit } = getCurrentInstance();
+
+    const me = computed(() => {
+      return store.state.users.me
+    })
 
     const state = reactive({
       comment: props.comment,
@@ -280,12 +287,17 @@ export default {
       onAddReply,
       onAddReplyCancel,
       addComment,
+      me
     };
   },
 };
 </script>
 
 <style lang="sass" scoped>
+.usermid
+  color: #AE6FFF
+  font-weight: 500
+  
 .editCancel
   width: 48px
 
@@ -304,7 +316,7 @@ export default {
 
 .comment
   padding-left: 5px
-  border-radius: 5px
+  border-radius: 10px
   border: 0.5px solid grey
   font-weight: 300
   &:focus

@@ -8,6 +8,8 @@ export default {
     regDate: "",
     bookmarkSave: false,
     report: true,
+    content: '',
+    count: true,
     search: null,
     dtoList: [],
   },
@@ -15,8 +17,14 @@ export default {
     setDtolist(state, payload) {
       state.dtoList = payload;
     },
+    setCount(state, payload) {
+      state.count = payload;
+    },
     setSearch(state, payload) {
       state.search = payload;
+    },
+    setContent(state, payload) {
+      state.content = payload;
     },
     addMainPost(state, payload) {
       // 게시글 맨 앞에 추가
@@ -51,6 +59,12 @@ export default {
     },
   },
   actions: {
+    setContent({ commit }, payload) {
+      commit("setContent", payload);
+    },
+    setCount({ commit }, payload) {
+      commit("setCount", payload);
+    },
     setSearch({ commit }, payload) {
       try {
         const url = "/decommi/diary/list";

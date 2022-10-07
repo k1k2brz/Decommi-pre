@@ -74,6 +74,7 @@ export default {
       stopScrolling: true,
       dtoList: store.state.posts.dtoList,
       searchInput: "",
+      btn:false,
     });
 
     const me = computed(() => {
@@ -91,6 +92,10 @@ export default {
     onMounted(() => {
       getMorePostList();
     });
+
+    if(localStorage.getItem('Content') !== null) {
+      localStorage.removeItem('Content')
+    }
 
     const getMorePostList = async () => {
       const headers = {
@@ -164,7 +169,9 @@ export default {
     }
 
     const Completed = () => {
-      router.go(0);
+      router.push({
+        name: "MyDiary"
+      });
       getMorePostList();
     };
 
@@ -188,7 +195,7 @@ export default {
         //   mid: store.state.users.me.mid,
         // });
         try {
-          const url = "/decommi/diary/list";
+          const url = "/decommi/diary/list/search";
           const headers = {
             "Content-Type": "application/json",
             Authorization: store.state.users.me.token,
@@ -201,6 +208,7 @@ export default {
             writer: store.state.users.me.id,
           };
           console.log(body);
+          state.mainPosts = [];
           await axios.post(url, body, { headers }).then((res) => {
             console.log(res.data);
             if (state.body == 0) {

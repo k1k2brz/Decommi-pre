@@ -100,11 +100,11 @@
     <button
       v-if="privacyPermit"
       @click="publicPrivacy"
-      class="purple-color mb-3"
+      class="zidx purple-color mb-3"
     >
       모든 사람이 다이어리를 읽을 수 있습니다.
     </button>
-    <button v-else @click="publicPrivacy" class="purple-color mb-3">
+    <button v-else @click="publicPrivacy" class="zidx purple-color mb-3">
       나만이 다이어리를 읽을 수 있습니다.
     </button>
     <div v-if="pp" class="d-flex position-absolute">
@@ -149,7 +149,7 @@ import { getCurrentInstance } from "@vue/runtime-core";
 import { reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { onMounted } from "vue";
-// import { useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import axios from "axios";
 import { computed } from "@vue/runtime-core";
 import ClassicEditor from "@ckeditor/ck5/build/ckeditor";
@@ -192,7 +192,7 @@ export default {
     }
 
     const { emit } = getCurrentInstance();
-    // const router = useRouter();
+    const router = useRouter();
     const store = useStore();
     const pp = ref(false);
     const diaryPrivacyCheck = ref(true);
@@ -374,7 +374,7 @@ export default {
         privacyPermit.value = true;
         pp.value = false;
         tags.length = 0;
-        // router.go(0);
+        router.go(0);
       } catch (err) {
         console.log(err);
       }
@@ -465,6 +465,9 @@ export default {
     text-decoration: none
     border: none
 
+.zidx
+  z-index: 21
+
 a
   text-decoration: none
   cursor: pointer
@@ -534,6 +537,8 @@ a
 
 .bg-white
   background-color: white
+  top: 60px
+  z-index: 1
 
 .picIcon
   overflow: hidden

@@ -38,9 +38,9 @@ export default {
         "Content-Type": "application/json",
       };
       const body = {
-        email: payload.id,
+        email: payload.email,
         pw: payload.pw,
-        id: payload.email,
+        id: payload.id,
         q1: payload.q1,
         q2: payload.q2,
         q3: payload.q3,

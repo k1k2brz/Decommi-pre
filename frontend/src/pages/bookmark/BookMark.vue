@@ -70,7 +70,7 @@
     </div>
     <div v-if="!bmExist" class="text-center">
       <div class="MiniPostGrid gap-3">
-        <MiniPost v-for="contents in 6" :key="contents" />
+        <MiniPost v-for="bm in state.bookmarks" :key="bm" :bm="bm" />
       </div>
       <!-- <div class="row row-cols-5 mt-3">
         <div
@@ -147,9 +147,15 @@ export default {
     let bmTags = reactive([]);
     const showModal = ref(true);
 
+    const state = reactive({
+      bookmarks: []
+    })
+
     const me = computed(() => {
       return store.state.users.me;
     });
+
+
 
     // 북마크에 들어왔을 때 북마크가 존재하면 화면 바뀜
     watchEffect(() => {
@@ -162,7 +168,7 @@ export default {
 
     onMounted(async () => {
       try {
-        const url = "/decommi/api/diary/save";
+        const url = "/decommi/api/bookmark";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -175,7 +181,7 @@ export default {
         await axios
           .post(url, body, { headers })
           .then((res) => {
-            console.log(res.data);
+            state.bookmarks.push(...res.data.diary)
           })
           .catch((err) => {
             console.error(err);
@@ -249,6 +255,7 @@ export default {
       bmCancel,
       onClickFolder,
       me,
+      state,
     };
   },
 };
