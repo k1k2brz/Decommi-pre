@@ -35,12 +35,25 @@
             </div>
           </div>
           <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="loginCheck" />
+            <input
+              type="checkbox"
+              v-model="idSave"
+              :value="isChecked()"
+              name="active"
+              class="form-check-input"
+              id="loginCheck"
+            />
             <label class="form-check-label me-5" for="loginCheck"
               >아이디 저장</label
             >
-            <input type="checkbox" class="form-check-input" id="loginCheck2" />
-            <label class="form-check-label" for="loginCheck2">자동로그인</label>
+            <!-- <input
+              type="checkbox"
+              v-model="autoLogin"
+              value="autoLogin"
+              class="form-check-input"
+              id="loginCheck2"
+            />
+            <label class="form-check-label" for="loginCheck2">자동로그인</label> -->
           </div>
           <div class="d-flex justify-content-center align-items-center mb-3">
             <button type="submit" class="btn-regular-full">로그인</button>
@@ -101,6 +114,9 @@ export default {
     const { cookies } = useCookies();
     const emailError = ref(false);
     const passError = ref(false);
+    const idSave = ref("");
+    const autoLogin = ref("");
+    const active = ref(false);
     let info = reactive({
       id: "",
       pass: "",
@@ -109,7 +125,27 @@ export default {
     const id = ref("");
     const pass = ref("");
 
+    onMounted(() => {
+      id.value.focus();
+      info.id = localStorage.getItem("id");
+      isChecked();
+    });
+
+    const isChecked = () => {
+      if (localStorage.getItem("id")) {
+        idSave.value = true;
+      }
+      if (idSave.value == false) {
+        localStorage.removeItem("id");
+      }
+    };
+
     const onSubmitForm = async () => {
+      if (idSave.value == true) {
+        localStorage.setItem("id", info.id);
+      }
+      console.log(autoLogin.value);
+      console.log(idSave.value);
       // cookies
       // let myCookieValue = cookies.get("myCoookie");
       //trim으로 잘라서 하나도 없으면
@@ -138,10 +174,6 @@ export default {
       }
     };
 
-    onMounted(() => {
-      id.value.focus();
-    });
-
     function a() {
       if (store.state.users.me == null || store.state.users.me == "") {
         console.log("비로그인 접근");
@@ -165,6 +197,10 @@ export default {
       cookies,
       id,
       pass,
+      idSave,
+      autoLogin,
+      isChecked,
+      active,
     };
   },
   middleware: "anonymous",

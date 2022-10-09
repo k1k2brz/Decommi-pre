@@ -148,23 +148,15 @@ export default {
     const showModal = ref(true);
 
     const state = reactive({
-      bookmarks: []
-    })
+      bookmarks: [],
+    });
+    console.log(state.bookmarks);
 
     const me = computed(() => {
       return store.state.users.me;
     });
 
-
-
     // 북마크에 들어왔을 때 북마크가 존재하면 화면 바뀜
-    watchEffect(() => {
-      if (bmTags.length === 0) {
-        bmExist.value = false;
-      } else if (bmTags.length !== 0) {
-        bmExist.value = true;
-      }
-    });
 
     onMounted(async () => {
       try {
@@ -181,7 +173,15 @@ export default {
         await axios
           .post(url, body, { headers })
           .then((res) => {
-            state.bookmarks.push(...res.data.diary)
+            state.bookmarks.push(...res.data.diary);
+            console.log(state.bookmarks[0]);
+            watchEffect(() => {
+              if (state.bookmarks[0] === undefined) {
+                bmExist.value = true;
+              } else {
+                bmExist.value = false;
+              }
+            });
           })
           .catch((err) => {
             console.error(err);
@@ -190,39 +190,6 @@ export default {
         console.log(err);
       }
     });
-
-    // VUEX로 옮기기 - 그냥 옮기자
-    // const addBookmark = async () => {
-    //   if (!bookmarkValue.value == "") {
-    //     bmTags.push(bookmarkValue.value);
-
-    //     try {
-    //       const url = "./api/diary/save";
-    //       const headers = {
-    //         "Content-Type": "application/json",
-    //         Authorization: store.state.users.me.token,
-    //         mid: store.state.users.me.mid,
-    //       };
-    //       const body = {
-    //         mid: store.state.users.me.mid,
-    //         // bfolderName: bookmarkValue.value,
-    //         // writer: store.state.users.me.email,
-    //       };
-    //       console.log(body);
-    //       await axios
-    //         .post(url, body, { headers })
-    //         .then((res) => {
-    //           console.log(res.data);
-    //         })
-    //         .catch((err) => {
-    //           console.error(err);
-    //         });
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    //     bookmarkValue.value = "";
-    //   }
-    // };
 
     const btnCancel = () => {
       if (showModal.value == true) {
@@ -237,6 +204,10 @@ export default {
     const onRemoveBookmark = (bmTag, index) => {
       bmTags.splice(index, 1);
     };
+
+    if (localStorage.getItem("Content") !== null) {
+      localStorage.removeItem("Content");
+    }
 
     const onClickFolder = () => {
       router.push({

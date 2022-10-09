@@ -9,7 +9,7 @@ const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
   key: "TOKEN",
   modules: ["users"],
-  reducer: (state) => ({ me: state.users.me }),
+  reducer: (state) => ({ me: state.users.me, onregi: state.users.onregi }),
 });
 
 export default createStore({

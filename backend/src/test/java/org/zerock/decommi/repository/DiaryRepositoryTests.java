@@ -58,27 +58,27 @@ public class DiaryRepositoryTests {
   @Autowired
   LikeTagListService likeTagListService;
 
-  @Test
-  @Transactional
-  public void testGetSearchDiaryPostList(){
-    ArrayList<String> tagList = new ArrayList<String>();
-    tagList.add("안녕");
-    // tagList.add("1");
-    PageRequestDTO requestDTO = PageRequestDTO.builder()
-        .page(1).size(10).type("s").tagList(tagList).sort("dino").keyword("안녕").build();
-    HashMap<String, Object> result = diaryService.getSearchDiaryPostList(requestDTO);
-    log.info(diaryService.getSearchDiaryPostList(requestDTO));
-    log.info("HashMap::::"+result);
-  }
-  
-  @Test
-  @Transactional
-  public void testGetDiaryPostList(){
-    PageRequestDTO requestDTO = PageRequestDTO.builder().page(1).size(5).build();
-    PageResultDTO result = diaryService.getDiaryPostList(requestDTO);
-    log.info(result);
-  }
+  // @Test
+  // @Transactional
+  // public void testGetSearchDiaryPostList(){
+  // // ArrayList<String> tagList = new ArrayList<String>();
+  // // tagList.add("안녕");
+  // // tagList.add("1");
+  // PageRequestDTO requestDTO = PageRequestDTO.builder()
+  // .page(1).size(10).type("s").keyword("안녕").build();
+  // HashMap<String, Object> result =
+  // diaryService.getSearchDiaryPostList(requestDTO);
+  // log.info(diaryService.getSearchDiaryPostList(requestDTO));
+  // log.info("HashMap::::"+result);
+  // }
 
+  // @Test
+  // @Transactional
+  // public void testGetDiaryPostList(){
+  // PageRequestDTO requestDTO = PageRequestDTO.builder().page(1).size(5).build();
+  // PageResultDTO result = diaryService.getDiaryPostList(requestDTO);
+  // log.info(result);
+  // }
 
   @Test
   public void insertDiaryDummies() {
@@ -137,18 +137,18 @@ public class DiaryRepositoryTests {
     });
   }
 
-
   // 마이 다이어리 리스트
   // @Test
   // public void testGetMyDiaryPostList() {
-  //   ArrayList<String> arrList = new ArrayList<String>();
-  //   arrList.add("test");
-  //   arrList.add("1");
-  //   PageRequestDTO requestDTO = PageRequestDTO.builder()
-  //       .page(1).size(10).type("t")
-  //       .tagList(arrList).sort("dino").writer("2@2.2").keyword("테스트").build();
-  //   PageResultDTO<DiaryDTO, Diary> resultDTO = mdService.getMyDiaryPostList(requestDTO);
-  //   log.info("Search Result :::: " + resultDTO);
+  // ArrayList<String> arrList = new ArrayList<String>();
+  // arrList.add("test");
+  // arrList.add("1");
+  // PageRequestDTO requestDTO = PageRequestDTO.builder()
+  // .page(1).size(10).type("t")
+  // .tagList(arrList).sort("dino").writer("2@2.2").keyword("테스트").build();
+  // PageResultDTO<DiaryDTO, Diary> resultDTO =
+  // mdService.getMyDiaryPostList(requestDTO);
+  // log.info("Search Result :::: " + resultDTO);
   // }
 
   // 모든 태그리스트 출력
@@ -159,8 +159,8 @@ public class DiaryRepositoryTests {
 
   // @Test
   // public void getAllLikeTagListByMid() {
-  //   Member member = Member.builder().mid(3L).build();
-  //   log.info(likeTagListRepository.getAllLikeTagListByMid(member));
+  // Member member = Member.builder().mid(3L).build();
+  // log.info(likeTagListRepository.getAllLikeTagListByMid(member));
 
   // }
 
@@ -261,13 +261,13 @@ public class DiaryRepositoryTests {
   }
 
   @Test
-  void testEditLikeTagList(){
-    
-  }
-  @Test
-  void testGetLikeTagList(){
-    log.info(likeTagListService.getLikeTagList("porkbellyweb@gmail.com"));
+  void testEditLikeTagList() {
+
   }
 
+  @Test
+  void testGetLikeTagList() {
+    log.info(likeTagListService.getLikeTagList("porkbellyweb@gmail.com"));
+  }
 
 }

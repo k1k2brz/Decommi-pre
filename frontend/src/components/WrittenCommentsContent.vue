@@ -8,9 +8,15 @@
         <div class="d-flex">
           <div class="userWidth">
             <!-- :class="{users: store.state.users.me.mid == comment.mid}" -->
-            <span :class="{usermid: me.mid == comment.mid}" >{{
-              `${comment.replyDepth !== 0 ? "&nbsp;  ㄴ  " + "user" : "user"}${me.mid == comment.mid ? "(나)": ""}`
-            }}</span>
+            <span
+              :class="{
+                usermid: me.mid == comment.mid,
+                userpadding: comment.replyDepth !== 0,
+              }"
+              >{{ `${comment.replyDepth !== 0 ? "ㄴ  " + "user" : "user"}`
+              }}{{ midCount }}</span
+            >
+            <!-- ${ me.mid == comment.mid ? "(나)" : "" } -->
           </div>
           <span class="ml-3">{{ comment.replyContent }}</span>
         </div>
@@ -126,6 +132,10 @@ export default {
       type: Number,
       required: true,
     },
+    midCount: {
+      type: Number,
+      required: true,
+    },
   },
 
   setup(props) {
@@ -133,8 +143,8 @@ export default {
     const { emit } = getCurrentInstance();
 
     const me = computed(() => {
-      return store.state.users.me
-    })
+      return store.state.users.me;
+    });
 
     const state = reactive({
       comment: props.comment,
@@ -145,8 +155,20 @@ export default {
       loginMid: store.state.users.me.mid,
       duplicatedCheck: [],
       userNumber: 1,
+      numbering: [],
     });
     const onAddReply = ref(false);
+
+    // if (state.duplicatedCheck.includes(props.comment.mid) == false) {
+    //   state.duplicatedCheck.push(props.comment.mid);
+    // }
+    // console.log(state.duplicatedCheck);
+
+    // for (let i = 0; i < state.duplicatedCheck.length; i++) {
+    //   const element = state.duplicatedCheck[i];
+    //   if (element != props.comment.mid) state.duplicatedCheck.push(element);
+    //   console.log(state.duplicatedCheck);
+    // }
 
     const headers = {
       "Content-Type": "application/json",
@@ -287,7 +309,7 @@ export default {
       onAddReply,
       onAddReplyCancel,
       addComment,
-      me
+      me,
     };
   },
 };
@@ -297,7 +319,10 @@ export default {
 .usermid
   color: #AE6FFF
   font-weight: 500
-  
+
+.userpadding
+  padding-left: 20px
+
 .editCancel
   width: 48px
 

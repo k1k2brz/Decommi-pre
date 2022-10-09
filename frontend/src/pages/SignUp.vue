@@ -281,9 +281,9 @@ export default {
         "Content-Type": "application/json",
       };
       const body = { id: info.id };
-      console.log(body)
+      console.log(body);
       await axios.post(url, body, { headers }).then(function (res) {
-        console.log(res.data)
+        console.log(res.data);
         if (res.data.result != 0) {
           id.value.focus();
           info.idDuplicate2 = true;
@@ -439,7 +439,7 @@ export default {
       q1,
       q2,
       q3,
-      idcheck
+      idcheck,
     };
   },
   // 회원가입 하지 않은 사람만 접근

@@ -22,79 +22,7 @@
     <div class="purple mt-1"></div>
     <hr />
   </div>
-  <div class="purple-box">
-    <div class="d-flex justify-content-between mb-2">
-      <span>카테고리</span>
-      <span>글제목</span>
-      <span>작성일</span>
-      <span>조회수</span>
-    </div>
-    <div class="d-flex flex-column gap-2">
-      <div class="d-flex flex-column gap-2">
-        <hr />
-        <div class="d-flex justify-content-between">
-          <span class="red bold">업데이트</span>
-          <span>2022.08.12 일부 기능 리뉴얼 관련 공지사항</span>
-          <span>2022.08.12</span>
-          <span>202</span>
-        </div>
-      </div>
-      <div class="d-flex flex-column gap-2">
-        <hr />
-        <div class="d-flex justify-content-between">
-          <span class="red bold">업데이트</span>
-          <span>2022.08.12 일부 기능 리뉴얼 관련 공지사항</span>
-          <span>2022.08.12</span>
-          <span>202</span>
-        </div>
-      </div>
-      <div class="d-flex flex-column gap-2">
-        <hr />
-        <div class="d-flex justify-content-between">
-          <span class="red bold">업데이트</span>
-          <span>2022.08.12 일부 기능 리뉴얼 관련 공지사항</span>
-          <span>2022.08.12</span>
-          <span>202</span>
-        </div>
-      </div>
-      <div class="d-flex flex-column gap-2">
-        <hr />
-        <div class="d-flex justify-content-between">
-          <span class="red bold">업데이트</span>
-          <span>2022.08.12 일부 기능 리뉴얼 관련 공지사항</span>
-          <span>2022.08.12</span>
-          <span>202</span>
-        </div>
-      </div>
-      <div class="d-flex flex-column gap-2">
-        <hr />
-        <div class="d-flex justify-content-between">
-          <span class="red bold">업데이트</span>
-          <span>2022.08.12 일부 기능 리뉴얼 관련 공지사항</span>
-          <span>2022.08.12</span>
-          <span>202</span>
-        </div>
-      </div>
-      <div class="d-flex flex-column gap-2">
-        <hr />
-        <div class="d-flex justify-content-between">
-          <span class="red bold">업데이트</span>
-          <span>2022.08.12 일부 기능 리뉴얼 관련 공지사항</span>
-          <span>2022.08.12</span>
-          <span>202</span>
-        </div>
-      </div>
-      <div class="d-flex flex-column gap-2">
-        <hr />
-        <div class="d-flex justify-content-between">
-          <span class="red bold">업데이트</span>
-          <span>2022.08.12 일부 기능 리뉴얼 관련 공지사항</span>
-          <span>2022.08.12</span>
-          <span>202</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <notice-content />
   <div class="m-3 d-flex justify-content-center">
     <i class="bi bi-chevron-double-left"></i>
     <i class="bi bi-chevron-left"></i>
@@ -121,12 +49,19 @@
 
 <script>
 import { useStore } from "vuex";
+import NoticeContent from "@/components/NoticeContent.vue";
+import { reactive } from "@vue/reactivity";
 
 export default {
   setup() {
     const store = useStore();
-    return { store };
+    const state = reactive({
+      noticePosts: [],
+    });
+
+    return { store, state };
   },
+  components: { NoticeContent },
 };
 </script>
 

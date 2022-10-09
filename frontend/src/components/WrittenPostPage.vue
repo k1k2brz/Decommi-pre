@@ -18,26 +18,43 @@
             <span class="days">{{ state.regDate.split("-")[0] }}.</span>
             <span class="days">{{ state.regDate.split("-")[1] }}.</span>
             <span class="days">{{
-            state.regDate.split("-")[2].split("T")[0]
+              state.regDate.split("-")[2].split("T")[0]
             }}</span>
             <span class="ml-1 lastTime margin5">{{
-            getTimeFromJavaDate(state.regDate)
+              getTimeFromJavaDate(state.regDate)
             }}</span>
           </div>
           <div class="d-flex">
-            <button @click="onEditBtn" type="button" class="reportBtn reportBtnHover">
+            <button
+              @click="onEditBtn"
+              type="button"
+              class="reportBtn reportBtnHover"
+            >
               수정
             </button>
-            <button @click="onRemoveBtn" type="button" class="reportBtn reportBtnHover">
+            <button
+              @click="onRemoveBtn"
+              type="button"
+              class="reportBtn reportBtnHover"
+            >
               삭제
             </button>
           </div>
         </div>
-        <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4 mt-4" alt="none" />
-        <p class="card-text mb-4">{{ state.content }}</p>
+        <!-- <img
+          src="@/assets/mainimg2.jpg"
+          class="card-img-top mb-4 mt-4"
+          alt="none"
+        /> -->
+        <p class="card-text mb-4" v-html="state.content"></p>
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
-            <button type="button" class="btn-tag-sm d-flex" v-for="tag in state.tags" :key="tag">
+            <button
+              type="button"
+              class="btn-tag-sm d-flex"
+              v-for="tag in state.tags"
+              :key="tag"
+            >
               {{ tag }}
             </button>
           </div>
@@ -53,11 +70,11 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 import { reactive } from "@vue/reactivity";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router"; 
+import { useRouter } from "vue-router";
 import axios from "axios";
 import { onBeforeMount } from "vue";
 import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
@@ -103,10 +120,10 @@ export default {
             if (res.data.writer == store.state.users.me.email) {
               router.push(`/editPost?edit=${res.data.dino}`);
             } else {
-              alert('수정할 권한이 없습니다')
+              alert("수정할 권한이 없습니다");
               router.push({
-                name: "Main"
-              })
+                name: "Main",
+              });
             }
             console.log(res.data);
           })
@@ -116,13 +133,11 @@ export default {
       } catch (err) {
         console.log(err);
       }
-    }
-    const onRemoveBtn = async () => {
-
-    }
+    };
+    const onRemoveBtn = async () => {};
 
     let dino = new URLSearchParams(window.location.search).get("id");
-    state.dino = parseInt(`${dino}`)
+    state.dino = parseInt(`${dino}`);
     // if (dino.length == 0) {
     //   errorAndGetBack();
     // }
@@ -136,20 +151,15 @@ export default {
       let calculated = (new Date(date.getTime()) - cont) / 1000; //초 계산
       if (calculated < 60) {
         return "방금 전";
-      }
-      else if (calculated < 60 * 60) {
+      } else if (calculated < 60 * 60) {
         return `${Math.round(calculated / 60)}분 전`;
-      }
-      else if (calculated < 60 * 60 * 24) {
+      } else if (calculated < 60 * 60 * 24) {
         return `${Math.round(calculated / (60 * 60))}시간 전`;
-      }
-      else if (calculated < 60 * 60 * 24 * 7) {
+      } else if (calculated < 60 * 60 * 24 * 7) {
         return `${Math.round(calculated / (60 * 60 * 24))}일 전`;
-      }
-      else if (calculated < 60 * 60 * 24 * 7 * 5) {
+      } else if (calculated < 60 * 60 * 24 * 7 * 5) {
         return `${Math.round(calculated / (60 * 60 * 24 * 7))}주 전`;
-      }
-      else if (calculated > 31536000) {
+      } else if (calculated > 31536000) {
         return `${Math.round(calculated / 31536000)}년 전`;
       }
     }
@@ -169,10 +179,16 @@ export default {
     });
     return { state, mountedAxios, getTimeFromJavaDate, onEditBtn, onRemoveBtn };
   },
-  components: { WrittenPostsBookmark, WrittenPostsHeart, ReportModal, WrittenComments }
+  components: {
+    WrittenPostsBookmark,
+    WrittenPostsHeart,
+    ReportModal,
+    WrittenComments,
+  },
 };
 </script>
-  
-<style>
 
+<style lang="sass" scoped>
+img
+  max-width: 969px !important
 </style>

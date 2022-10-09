@@ -1,32 +1,27 @@
 <template>
   <div class="p-0 m-0">
-    <div>
-      <div class="backgrondBox p-4">
-        <div class="d-flex justify-content-between flex-column gap-4">
-          <div class="d-flex flex-column gap-1">
-            <h5 class="card-title">{{ bm.title }}</h5>
-            <div class="d-flex align-items-center">
-              <span class="days">{{ bm.regDate.split("-")[0] }}.</span>
-              <span class="days">{{ bm.regDate.split("-")[1] }}.</span>
-              <span class="days">{{
+    <div class="backgrondBox p-4">
+      <div class="d-flex flex-column">
+        <div class="d-flex mb-2">
+          <h5>{{ bm.title }}</h5>
+          <div>
+            <span class="days ml-2">{{ bm.regDate.split("-")[0] }}.</span>
+            <span class="days">{{ bm.regDate.split("-")[1] }}.</span>
+            <span class="days">{{
               bm.regDate.split("-")[2].split("T")[0]
-              }}</span>
-              <span class="ml-1 lastTime margin5">{{
-              getTimeFromJavaDate(bm.regDate)
-              }}</span>
-            </div>
+            }}</span>
           </div>
-          <span class="card-text">{{bm.content}}</span>
         </div>
-        <div class="d-flex justify-content-end">
-          <button class="font12">게시글 전체보기</button>
-        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button @click="postLink" class="font12">게시글 전체보기</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { useRouter } from "vue-router";
 export default {
   props: {
     bm: {
@@ -35,7 +30,11 @@ export default {
     },
   },
   setup(props) {
-    console.log(props.bm)
+    const router = useRouter();
+
+    const postLink = () => {
+      router.push(`/read?id=${props.bm.dino}`);
+    };
 
     function getTimeFromJavaDate(s) {
       const cont = new Date(s);
@@ -55,8 +54,8 @@ export default {
         return `${Math.round(calculated / 31536000)}년 전`;
       }
     }
-    return { getTimeFromJavaDate }
-  }
+    return { getTimeFromJavaDate, postLink };
+  },
 };
 </script>
 
@@ -69,10 +68,12 @@ export default {
 
 .font12
   font-size: 12px
-  color: skyblue
+  color: #AE6FFF
   text-decoration: none
   border: none
   background: none
+  &:hover
+    color: #9b4efc
 
 .card-title
    max-width: 480px

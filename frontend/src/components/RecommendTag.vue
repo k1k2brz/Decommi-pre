@@ -1,5 +1,5 @@
 <template>
-  <div class="tagBox mt-3 d-flex flex-column">
+  <div class="tagBox d-flex flex-column">
     <div class="mt-4 mb-1 d-flex justify-content-center">
       <p class="filterTitle">나의 추천태그</p>
     </div>
@@ -43,5 +43,5 @@ export default {
 <style lang="sass" scoped>
 .tagBox
   border-radius: 5px
-  min-height: 400px
+  min-height: 800px
 </style>

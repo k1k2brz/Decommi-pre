@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import axios from "@/axios";
@@ -61,6 +61,10 @@ export default {
       type: Number,
       required: true,
     },
+    // bmDino: {
+    //   type: Array,
+    //   required: true,
+    // },
   },
   setup(props) {
     const store = useStore();
@@ -70,6 +74,38 @@ export default {
     const bookmarkSaveCheck = ref(false);
     const bookmarkSave = ref(false);
     // const bmSave = ref(false);
+    const state = reactive({
+      bmDino: [],
+    });
+
+    onMounted(async () => {
+      try {
+        const url = "/decommi/api/bookmark";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          mid: store.state.users.me.mid,
+        };
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            for (let i = 0; i < res.data.diary.length; i++) {
+              const element = res.data.diary[i];
+              // if (state.bmDino.indexOf() == -1)
+              if (element.dino == props.dino) bookmarkSave.value = true;
+              // state.bmDino.push(element.dino);
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    });
 
     const bookmarkBtn = async () => {
       try {
@@ -100,6 +136,14 @@ export default {
       } catch (err) {
         console.log(err);
       }
+
+      // for (let i = 0; i < props.bmDino.length; i++) {
+      //   const element = props.bmDino[i];
+      //   if (element == props.dino) bookmarkSave.value = true;
+      //   console.log(element == props.dino);
+      //   console.log(props.dino);
+      // }
+
       // if (bookmarkSave.value == false) {
       //   bookmarkSave.value = true;
       //   bmSave.value = true;
@@ -208,6 +252,7 @@ export default {
       bookmarkChecking,
       // addBmCancel,
       bookmarkBtn,
+      state,
     };
   },
 };

@@ -11,6 +11,7 @@
 import { reactive } from "@vue/reactivity";
 import axios from "axios";
 import { useStore } from "vuex";
+import { onMounted } from "@vue/runtime-core";
 export default {
   props: {
     dino: {
@@ -57,6 +58,33 @@ export default {
     //   }
     // }
 
+    onMounted(async () => {
+      try {
+        const url = "/decommi/api/heart";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          mid: store.state.users.me.mid,
+        };
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            for (let i = 0; i < res.data.diary.length; i++) {
+              const element = res.data.diary[i];
+              if (element.dino == props.dino) state.bmFav = true;
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
     // 좋아요 누르기 (빨간색)
     const bookmarkFav = async () => {
       try {
@@ -70,7 +98,6 @@ export default {
           dino: props.dino,
           mid: store.state.users.me.mid,
         };
-        console.log(body);
         await axios
           .post(url, body, { headers })
           .then((res) => {
@@ -79,9 +106,6 @@ export default {
             } else if (res.data == true) {
               state.bmFav = true;
             }
-            console.log(state.bmFav);
-            console.log(res);
-            console.log(res.data);
           })
           .catch((err) => {
             console.error(err);

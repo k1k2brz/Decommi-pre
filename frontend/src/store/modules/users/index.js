@@ -8,8 +8,12 @@ export default {
   state: {
     me: "",
     email: "",
+    onregi: false,
   },
   mutations: {
+    setOnregi(state, payload) {
+      state.onregi = payload;
+    },
     setMe(state, payload) {
       state.me = payload;
     },
@@ -60,6 +64,7 @@ export default {
           // }
           // console.log(myCookieValue);
           // cookies.set("myCoookie", `${payload}`);
+          commit("setOnregi", true);
           commit("setMe", payload);
           router.push({
             name: "SelectGoodTag",
@@ -95,6 +100,7 @@ export default {
               console.log(res.data);
               // payload는 프론트 값을 받아옴
               // res.data 백엔드 값을 받아옴
+              commit("setOnregi", false);
               commit("setMe", res.data);
               router.push({
                 name: "Main",

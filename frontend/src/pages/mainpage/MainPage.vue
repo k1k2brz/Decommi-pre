@@ -38,7 +38,7 @@
             />
             <button @click="btnSearch" class="btn-regular">입력</button>
           </div>
-          <HashFilter />
+          <!-- <HashFilter /> -->
           <RecommendTag />
         </div>
       </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import HashFilter from "@/components/HashFilter.vue";
+// import HashFilter from "@/components/HashFilter.vue";
 import RecommendTag from "@/components/RecommendTag.vue";
 import WrittenPosts from "@/components/WrittenPosts.vue";
 import PostWrite from "@/components/PostWrite.vue";
@@ -74,7 +74,7 @@ export default {
       stopScrolling: true,
       dtoList: store.state.posts.dtoList,
       searchInput: "",
-      btn:false,
+      btn: false,
     });
 
     const me = computed(() => {
@@ -93,37 +93,11 @@ export default {
       getMorePostList();
     });
 
-    if(localStorage.getItem('Content') !== null) {
-      localStorage.removeItem('Content')
+    if (localStorage.getItem("Content") !== null) {
+      localStorage.removeItem("Content");
     }
 
     const getMorePostList = async () => {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: store.state.users.me.token,
-        mid: store.state.users.me.mid,
-      };
-      const body = {
-        page: state.body,
-      };
-      await axios.post("/decommi/diary/list", body, { headers }).then((res) => {
-        if (state.body == 0) {
-          state.mainPosts = res.data;
-        } else {
-          // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
-          for (let i = 0; i < res.data.length; i++) {
-            state.mainPosts.push(res.data[i]);
-          }
-        }
-        if (res.data.length % 5 !== 0) {
-          state.stopScrolling = true;
-        } else if (res.data.length % 5 == 0) {
-          state.stopScrolling = false;
-        }
-      });
-    };
-
-    const searchList = async () => {
       const headers = {
         "Content-Type": "application/json",
         Authorization: store.state.users.me.token,
@@ -169,9 +143,6 @@ export default {
     }
 
     const Completed = () => {
-      router.push({
-        name: "MyDiary"
-      });
       getMorePostList();
     };
 
@@ -195,7 +166,7 @@ export default {
         //   mid: store.state.users.me.mid,
         // });
         try {
-          const url = "/decommi/diary/list/search";
+          const url = "/decommi/diary/list";
           const headers = {
             "Content-Type": "application/json",
             Authorization: store.state.users.me.token,
@@ -255,6 +226,32 @@ export default {
       searchInput.value.focus();
     };
 
+    const searchList = async () => {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: store.state.users.me.token,
+        mid: store.state.users.me.mid,
+      };
+      const body = {
+        page: state.body,
+      };
+      await axios.post("/decommi/diary/list", body, { headers }).then((res) => {
+        if (state.body == 0) {
+          state.mainPosts = res.data;
+        } else {
+          // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
+          for (let i = 0; i < res.data.length; i++) {
+            state.mainPosts.push(res.data[i]);
+          }
+        }
+        if (res.data.length % 5 !== 0) {
+          state.stopScrolling = true;
+        } else if (res.data.length % 5 == 0) {
+          state.stopScrolling = false;
+        }
+      });
+    };
+
     return {
       me,
       state,
@@ -266,7 +263,7 @@ export default {
     };
   },
 
-  components: { HashFilter, RecommendTag, WrittenPosts, PostWrite },
+  components: { RecommendTag, WrittenPosts, PostWrite },
   middleware: "authenticated",
 };
 </script>

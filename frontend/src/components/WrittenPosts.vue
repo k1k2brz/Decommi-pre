@@ -26,7 +26,11 @@
           />
         </div>
         <!-- <img src="@/assets/mainimg2.jpg" class="card-img-top mb-4" alt="none" /> -->
-        <p class="card-text mb-4" v-html="post.content"></p>
+        <p
+          class="card-text mb-4"
+          style="object-fit: cover"
+          v-html="post.content"
+        ></p>
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
             <button
@@ -43,7 +47,7 @@
             class="d-flex justify-content-start"
             v-if="state.writer !== state.loginWriter"
           >
-            <!-- 받고 싶은 값 바인드 -->
+            <!-- :bmDino="state.bmDino" -->
             <WrittenPostsBookmark :dino="state.dino" />
             <WrittenPostsHeart :dino="state.dino" />
             <ReportModal :dino="state.dino" />
@@ -85,6 +89,14 @@ export default {
 
     let comment = reactive({
       value: "",
+    });
+
+    const state = reactive({
+      dino: props.post.dino,
+      writer: props.post.writer,
+      loginWriter: store.state.users.me.id,
+      tagList: [],
+      bmDino: [],
     });
 
     const me = computed(() => {
@@ -153,7 +165,7 @@ export default {
             // 누구나 수정 불가능하도록 고유번호 지정
             if (res.data.writer == store.state.users.me.id) {
               // router.push(`/editPost?edit=${res.data.dino}`);
-              aaaa()
+              aaaa();
             } else {
               alert("수정할 권한이 없습니다");
               router.push({
@@ -161,11 +173,10 @@ export default {
               });
             }
             console.log(res.data);
-            async function aaaa(){
-                 await axiosComponent();
-                await router.push(`/editPost?edit=${res.data.dino}`);
-
-              }
+            async function aaaa() {
+              await axiosComponent();
+              await router.push(`/editPost?edit=${res.data.dino}`);
+            }
           })
           .catch((err) => {
             console.error(err);
@@ -190,17 +201,17 @@ export default {
       await axios
         .post(url, body, { headers })
         .then((res) => {
-          localStorage.setItem("Content", res.data.content)
+          localStorage.setItem("Content", res.data.content);
         })
         .catch((err) => {
           console.error(err);
-        })
-      };
+        });
+    };
 
-    // state 에 리액트로 대충
+    // state 에 리액티브로 대충
     // showmodal = false 이렇게 한다음에
 
-    // 엑시오스에서 일치하는게 있으면 showmodal띄우게 처음부터 설정하는것도 좋을것같아
+    // 엑시오스에서 일치하는게 있으면 showmodal띄우게 처음부터 설정하는것도 생각
 
     function getTimeFromJavaDate(s) {
       const cont = new Date(s);
@@ -220,13 +231,6 @@ export default {
         return `${Math.round(calculated / 31536000)}년 전`;
       }
     }
-
-    const state = reactive({
-      dino: props.post.dino,
-      writer: props.post.writer,
-      loginWriter: store.state.users.me.id,
-      tagList: [],
-    });
 
     const PostList = async () => {
       await axios.get(`./diary/read/${state.dino}`).then((res) => {

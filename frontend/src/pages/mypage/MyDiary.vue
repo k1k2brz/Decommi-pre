@@ -81,6 +81,10 @@ export default {
       }
     });
 
+    if (localStorage.getItem("Content") !== null) {
+      localStorage.removeItem("Content");
+    }
+
     const handleScrolledToBottom = () => {
       console.log("k");
     };

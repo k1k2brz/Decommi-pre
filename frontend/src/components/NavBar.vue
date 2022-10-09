@@ -10,7 +10,7 @@
       <a href="#" @click="logoBtn" class="navbar-brand"><b>DeCommi</b></a>
       <ul class="navbar-nav d-flex justify-content-between">
         <li
-          v-if="!me"
+          v-if="status()"
           class="nav-item active d-flex align-items-center flex-wrap"
         >
           <router-link class="nav-link mr-3" :to="{ name: 'Login' }"
@@ -274,12 +274,25 @@ export default defineComponent({
     const me = computed(() => {
       return store.state.users.me;
     });
+    const onregi = computed(() => {
+      return store.state.users.onregi;
+    });
     const navToggle = computed(() => {
       return store.state.nav.navToggle;
     });
     const navMenuicon = computed(() => {
       return store.state.nav.navMenuicon;
     });
+
+    const status = function computed() {
+      if (!store.state.users.me) {
+        return true;
+      } else {
+        if (store.state.users.onregi) {
+          return true;
+        }
+      }
+    };
 
     return {
       store,
@@ -288,6 +301,7 @@ export default defineComponent({
       logoBtn,
       onLogout,
       me,
+      onregi,
       navToggle,
       navMenuicon,
       navInput,
@@ -295,6 +309,7 @@ export default defineComponent({
       myPage,
       close,
       dropdown,
+      status,
       // btnSearch,
     };
   },

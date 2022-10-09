@@ -54,6 +54,11 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, QuerydslPre
   // + "group by d.dino ")
   // Optional<List<getDiaryPostList>> getList(Sort sort);
 
+  // id로 다이어리 삭제하기
+  @Modifying
+  @Query("delete from Diary d where writer =:writer")
+  void deleteDiaryByWriter(String writer);
+
   // Dino로 파일 삭제하기
   @Modifying
   @Query("delete from File f where f.dino.dino=:dino")

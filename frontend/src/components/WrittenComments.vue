@@ -17,6 +17,7 @@
     <div v-for="(cmt, index) in state.commentList" :key="cmt + index">
       <WrittenCommentsContent
         :dino="state.dino"
+        :midCount="state.midCount[index]"
         :comment="cmt"
         @remove="remove(item, index)"
         @change="change($event)"
@@ -67,7 +68,12 @@ export default {
       pageee: 0,
       duplicatedCheck: [],
       userNumber: 1,
+      replyMidNum: [],
+      midCount: [],
+      counting: 1,
     });
+
+    // console.log(state.midCount);
 
     // 코멘트 추가
     const addComment = async () => {
@@ -131,6 +137,20 @@ export default {
               return;
             }
             // 페이지 중복을 막기 위한 초기화
+            state.counting = 1;
+            state.replyMidNum = [];
+            for (let index = 0; index < res.data.replyList.length; index++) {
+              const element = res.data.replyList[index].mid;
+              if (!state.replyMidNum.includes(element)) {
+                state.replyMidNum.push(element);
+              }
+              if (state.replyMidNum.indexOf(element) !== -1 && state.midCount) {
+                state.midCount.push(state.replyMidNum.indexOf(element) + 1);
+              } else if (state.replyMidNum.indexOf(element) == -1) {
+                state.midCount.push(state.counting);
+                state.counting + 1;
+              }
+            }
             state.commentList = [];
             state.commentList.push(...res.data.replyList);
             if (res.data.replyList.length % 5 == 0) {
@@ -148,7 +168,7 @@ export default {
     // 여기서 +1이 작동되어야 댓글이 부분이 안꼬임
     function btnreply() {
       state.reqPage += 1;
-      stateInfo.value = false
+      stateInfo.value = false;
       reply();
     }
 
@@ -164,6 +184,18 @@ export default {
           .then((res) => {
             if (res.data.replyList == undefined) {
               return;
+            }
+            for (let index = 0; index < res.data.replyList.length; index++) {
+              const element = res.data.replyList[index].mid;
+              if (!state.replyMidNum.includes(element)) {
+                state.replyMidNum.push(element);
+              }
+              if (state.replyMidNum.indexOf(element) !== -1) {
+                state.midCount.push(state.replyMidNum.indexOf(element) + 1);
+              } else if (state.replyMidNum.indexOf(element) == -1) {
+                state.midCount.push(state.counting);
+                state.counting + 1;
+              }
             }
             state.commentList.push(...res.data.replyList);
             if (res.data.replyList.length % 5 == 0) {

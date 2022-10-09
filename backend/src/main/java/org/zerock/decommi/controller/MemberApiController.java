@@ -22,6 +22,7 @@ import org.zerock.decommi.entity.member.Member;
 import org.zerock.decommi.service.member.LikeTagListService;
 import org.zerock.decommi.service.member.MemberService;
 import org.zerock.decommi.vo.Findpw;
+import org.zerock.decommi.vo.LikeTagList;
 import org.zerock.decommi.vo.Setpw;
 
 import lombok.RequiredArgsConstructor;
@@ -67,9 +68,7 @@ public class MemberApiController {
   @RequestMapping(value = "/idCheck", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Map<String, Long>> idCheck(@RequestBody Map<String, Object> mapObj) {
     String id = mapObj.get("id").toString();
-    log.info(id);
     MemberDTO dto = service.idCheck(id);
-    log.info(dto);
     Map<String, Long> mapForResult = new HashMap<>();
     mapForResult.put("result", (dto == null) ? 0L : 1L);
     return new ResponseEntity<Map<String, Long>>(mapForResult, HttpStatus.OK);
@@ -98,7 +97,7 @@ public class MemberApiController {
   }
 
   // 로그인시 이메일 까먹었을때
-  @RequestMapping(value = "findemail", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "/findemail", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Boolean> findemail(@RequestBody MemberDTO email) {
     log.info(email);
     return new ResponseEntity<>(service.findEmail(email), HttpStatus.OK);
@@ -112,6 +111,13 @@ public class MemberApiController {
     return new ResponseEntity<>(service.findPw(vo), HttpStatus.OK);
   }
 
+  // 회원탈퇴
+  @RequestMapping(value = "/deleteMember", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Boolean> deletemember(@RequestBody MemberDTO dto) {
+    log.info("controller class :::탈퇴하려고하는 회원 dto : " + dto);
+    return new ResponseEntity<>(service.deleteMember(dto), HttpStatus.OK);
+  }
+
   // 선호태그 리스트 출력
   @RequestMapping(value = "/liketaglist", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Optional<List<String>>> getLikeTagList(@RequestBody String email) {
@@ -120,7 +126,7 @@ public class MemberApiController {
 
   // 선호태그 변경
   @RequestMapping(value = "/editliketaglist", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Boolean> reportingDiary(@RequestBody String tagName, String email) {
-    return new ResponseEntity<>(likeTagListService.editLikeTagList(tagName, email), HttpStatus.OK);
+  public ResponseEntity<Boolean> reportingDiary(@RequestBody LikeTagList vo) {
+    return new ResponseEntity<>(likeTagListService.editLikeTagList(vo.getTagName(), vo.getEmail()), HttpStatus.OK);
   }
 }
