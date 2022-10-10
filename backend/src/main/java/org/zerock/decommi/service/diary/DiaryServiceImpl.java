@@ -76,11 +76,12 @@ public class DiaryServiceImpl implements DiaryService {
         });
         log.info("result.getDino() : " + result.getDino());
         List<String> tagList = dto.getTagList();
+        Member writer = memberRepository.findByUserId2(dto.getWriter());
         tagList.forEach(new Consumer<String>() {
             @Override
             public void accept(String dto) {
                 Tag tag = tagDTOtoEntity(dto);
-                tag.updateDiary(result);
+                tag.updateDiary(result, writer);
                 tagRepository.save(tag);
             }
         });
@@ -127,13 +128,13 @@ public class DiaryServiceImpl implements DiaryService {
                 fileRepository.save(file);
             }
         });
-
         // 태그가 있을때만 TagDTO를 Tag로
+        Member writer = memberRepository.findByUserId2(dto.getWriter());
         for (String i : tagList) {
             Optional<Tag> tagTemp = tagRepository.findByDinoAndTagName(modifiedDiary, i);
             if (!tagTemp.isPresent()) {
                 Tag tagResult = tagDTOtoEntity(i);
-                tagResult.updateDiary(modifiedDiary);
+                tagResult.updateDiary(modifiedDiary, writer);
                 tagRepository.save(tagResult);
             }
         }
@@ -185,6 +186,7 @@ public class DiaryServiceImpl implements DiaryService {
         Function<Diary, DiaryDTO> fn = new Function<Diary, DiaryDTO>() {
             @Override
             public DiaryDTO apply(Diary t) {
+
                 return entityToDTO(t);
             }
         };
@@ -193,9 +195,10 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Transactional
     @Override
-    public PageResultDTO<DiaryDTO, Diary> getDiaryPostListByTagName(PageRequestDTO requestDTO, String tagName) {
+    public PageResultDTO<DiaryDTO, Diary> getDiaryPostListByTagName(PageRequestDTO requestDTO) {
         Pageable pageable = requestDTO.getPageable(Sort.by("dino").descending());
-        BooleanBuilder booleanBuilder = getSearchByTagName(requestDTO, tagName);
+        log.info("service code  requestDTO ::::: " + requestDTO);
+        BooleanBuilder booleanBuilder = getSearchByTagName(requestDTO.getTagName());
         Page<Diary> result = repository.findAll(booleanBuilder, pageable);
         Function<Diary, DiaryDTO> fn = new Function<Diary, DiaryDTO>() {
             @Override
@@ -203,6 +206,7 @@ public class DiaryServiceImpl implements DiaryService {
                 return entityToDTO(t);
             }
         };
+        log.info("result.getSize()::::::" + result.getSize());
         return new PageResultDTO<>(result, fn);
     }
 
@@ -344,6 +348,7 @@ public class DiaryServiceImpl implements DiaryService {
         String keyword = requestDTO.getKeyword();
         log.info("service class ::: requestDTO 에서 보내준 keyword:::" + keyword);
         QDiary qDiary = QDiary.diary;
+        // List<Tag> tagList = requestDTO.getTagList();
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         BooleanExpression expression = qDiary.dino.gt(0L).and(qDiary.openYN.isTrue());
         booleanBuilder.and(expression);
@@ -354,10 +359,10 @@ public class DiaryServiceImpl implements DiaryService {
         conditionBuilder
                 .or(qDiary.title.contains(keyword))
                 .or(qDiary.content.contains(keyword));
-        // tagList.forEach(new Consumer<String>() {
+        // tagList.forEach(new Consumer<Tag>() {
         // @Override
-        // public void accept(String t) {
-        // Optional<Tag> temp = tagRepository.findByTagName(t);
+        // public void accept(Tag t) {
+        // Optional<Tag> temp = tagRepository.findByTagName(t.getTagName());
         // if (temp.isPresent()) {
         // conditionBuilder.and(qDiary.tagList.contains(temp.get()));
         // }
@@ -366,14 +371,75 @@ public class DiaryServiceImpl implements DiaryService {
         booleanBuilder.and(conditionBuilder);
         return booleanBuilder;
     }
+    // private BooleanBuilder getSearch(PageRequestDTO requestDTO) {
+    // String keyword = requestDTO.getKeyword();
+    // String type = requestDTO.getKeyword();
+    // log.info("service class ::: requestDTO 에서 보내준 keyword:::" + keyword);
+    // List<Tag> tagList = requestDTO.getTagList();
+    // QDiary qDiary = QDiary.diary;
+    // BooleanBuilder booleanBuilder = new BooleanBuilder();
+    // BooleanExpression expression =
+    // qDiary.dino.gt(0L).and(qDiary.openYN.isTrue());
+    // booleanBuilder.and(expression);
+    // if (keyword == null && tagList.size() > 0) {
+    // tagList.forEach(new Consumer<Tag>() {
+    // @Override
+    // public void accept(Tag t) {
+    // Optional<Tag> temp = tagRepository.findByTagName(t.getTagName());
+    // if (temp.isPresent()) {
+    // booleanBuilder.and(qDiary.tagList.contains(temp.get()));
+    // }
+    // }
+    // });
+    // return booleanBuilder;
+    // }
+    // BooleanBuilder conditionBuilder = new BooleanBuilder();
+    // if (type.contains("s")) {
+    // conditionBuilder
+    // .or(qDiary.title.contains(keyword))
+    // .or(qDiary.content.contains(keyword));
+    // tagList.forEach(new Consumer<Tag>() {
+    // @Override
+    // public void accept(Tag t) {
+    // Optional<Tag> temp = tagRepository.findByTagName(t.getTagName());
+    // if (temp.isPresent()) {
+    // conditionBuilder.and(qDiary.tagList.contains(temp.get()));
+    // }
+    // }
+    // });
+    // booleanBuilder.and(conditionBuilder);
+    // }
+    // return booleanBuilder;
+    // }
 
-    private BooleanBuilder getSearchByTagName(PageRequestDTO requestDTO, String tagName) {
+    private BooleanBuilder getSearchByTagName(String tagName) {
         QDiary qDiary = QDiary.diary;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        Optional<Tag> temp = tagRepository.findByTagName(tagName);
-        BooleanExpression expression = qDiary.dino.gt(0L).and(qDiary.openYN.isTrue())
-                .and(qDiary.tagList.contains(temp.get()));
-        booleanBuilder.and(expression);
-        return booleanBuilder;
+        BooleanBuilder noResult = new BooleanBuilder();
+        BooleanExpression no = qDiary.dino.isNull();
+        noResult.and(no);
+        Optional<List<Tag>> temp = tagRepository.findByTagName2(tagName);
+        // temp.get() ==> Tag
+        if (temp.get().size() > 0) {
+            temp.get().forEach(v -> {
+                BooleanExpression expression;
+                expression = qDiary.dino.gt(0L).and(qDiary.openYN.isTrue()).and(qDiary.tagList.contains(v));
+                booleanBuilder.or(expression);
+            });
+            return booleanBuilder;
+        } else {
+            log.info("hello");
+            return noResult;
+        }
+
+        // if (temp.isPresent()) {
+        // expression =
+        // qDiary.dino.gt(0L).and(qDiary.openYN.isTrue()).and(qDiary.tagList.contains(temp.get().forEach(new
+        // Conusmer<String>)));
+        // booleanBuilder.and(expression);
+        // return booleanBuilder;
+        // } else {
+        // return noResult;
+        // }
     }
 }

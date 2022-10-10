@@ -70,6 +70,7 @@ export default {
       localStorage.removeItem("TOKEN");
       // sessionStorage.removeItem("token");
       store.state.users.me = null;
+      alert("회원가입이 완료되었습니다. 다시 한 번 로그인 해주세요.");
       router.push({
         name: "Home",
       });
@@ -115,8 +116,19 @@ export default {
             console.error(err);
           });
       } else {
+        const url = "/decommi/member/editliketaglist";
+        const headers = {
+          "Content-Type": "application/json",
+        };
+        const body = {
+          tagName: e.target.innerHTML,
+          email: store.state.users.me.email,
+        };
         for (let i = 0; i < tagSelection.length; i++) {
           if (tagSelection[i] === e.target.innerHTML) {
+            axios.post(url, body, { headers }).then((res) => {
+              console.log(res.data);
+            });
             tagSelection.splice(i, 1);
             i--;
           }
@@ -129,12 +141,23 @@ export default {
       "라이프스타일",
       "디지털카메라",
       "게임",
-      "영화",
-      "음악",
+      "영화감상",
+      "음악감상",
       "자동차",
       "패션",
       "독서",
       "컴퓨터",
+      "그림",
+      "전시",
+      "베이킹",
+      "요리",
+      "피아노",
+      "기타",
+      "프라모델조립",
+      "해외축구",
+      "시",
+      "연극",
+      "뮤지컬",
     ]);
     return {
       tagSelectBtn,

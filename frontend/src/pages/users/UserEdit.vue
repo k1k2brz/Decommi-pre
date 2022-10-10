@@ -7,9 +7,9 @@
       <hr />
       <div class="edit-grid">
         <div class="purple-box d-flex justify-content-end">
-          <div class="mt-3 mb-3 mr-3">이름</div>
+          <div class="mt-3 mb-3 mr-3">이메일</div>
         </div>
-        <div class="bold mt-3 mb-3 ml-4">홍길동</div>
+        <div class="bold mt-3 mb-3 ml-4">{{ me.email }}</div>
         <div class="btn-end d-flex justify-content-end">
           <div class="d-flex justify-content-center align-items-center">
             <Withdraw />
@@ -18,23 +18,25 @@
       </div>
     </div>
     <hr />
+    <!-- <div>
+      <div class="edit-grid2">
+        <div class="purple-box d-flex justify-content-end">
+          <div class="mt-3 mb-3 mr-3">이름</div>
+        </div>
+        <div class="bold mt-3 mb-3 ml-4">유저의 이름</div>
+      </div>
+    </div>
+    <hr /> -->
     <div>
+      <!-- 이메일 인증시 변경 - 미구현 -->
+      <!-- v-if="emailChange"  -->
       <div class="edit-grid2">
         <div class="purple-box d-flex justify-content-end">
           <div class="mt-3 mb-3 mr-3">아이디</div>
         </div>
-        <div class="bold mt-3 mb-3 ml-4">{{ me.id }}</div>
-      </div>
-    </div>
-    <hr />
-    <div>
-      <div v-if="emailChange" class="edit-grid2">
-        <div class="purple-box d-flex justify-content-end">
-          <div class="mt-3 mb-3 mr-3">이메일</div>
-        </div>
         <div class="d-flex flex-column gap-3 ml-4 mb-3">
-          <div class="bold mt-3">{{ me.email }}</div>
-          <div>
+          <div class="bold mt-3">{{ me.id }}</div>
+          <!-- <div>
             <div class="d-flex">
               <div class="orange-box pt-1 pb-1 pr-5 d-flex">
                 <span class="email-check ml-2">인증된 이메일 주소입니다.</span>
@@ -43,10 +45,10 @@
           </div>
           <div class="d-flex align-items-center">
             <button @click="emailBtn" class="btnChange">이메일 변경</button>
-          </div>
+          </div> -->
         </div>
       </div>
-      <div v-else class="edit-grid2">
+      <!-- <div v-else class="edit-grid2">
         <div class="purple-box d-flex justify-content-end">
           <div class="mt-3 mb-3 mr-3">이메일</div>
         </div>
@@ -79,7 +81,7 @@
             <button @click="cancelBtn" class="ml-1 btnChange">취소</button>
           </div>
         </div>
-      </div>
+      </div> -->
       <hr />
     </div>
     <div>
@@ -134,7 +136,7 @@
       </div>
     </div>
     <hr />
-    <div class="edit-grid2">
+    <!-- <div class="edit-grid2">
       <div class="purple-box d-flex justify-content-end">
         <div class="mt-3 mb-3 mr-3">계정 연동 여부</div>
       </div>
@@ -145,8 +147,8 @@
         <div class="bi bi-chat-dots"></div>
       </div>
     </div>
-    <hr />
-    <div>
+    <hr /> -->
+    <!-- <div>
       <div class="edit-grid2">
         <div class="purple-box d-flex justify-content-end">
           <div class="mt-3 mb-3 mr-3">DeCommi소식 받기</div>
@@ -163,8 +165,9 @@
         </div>
       </div>
     </div>
-    <hr />
+    <hr /> -->
   </div>
+  <LikeTaglist />
 </template>
 
 <script>
@@ -174,10 +177,12 @@ import { ref } from "vue";
 import { computed, reactive } from "@vue/reactivity";
 import { useStore } from "vuex";
 import axios from "axios";
+import LikeTaglist from "../LikeTaglist.vue";
 
 export default {
   components: {
     Withdraw,
+    LikeTaglist,
   },
   setup() {
     const store = useStore();

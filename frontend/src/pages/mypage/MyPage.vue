@@ -7,7 +7,6 @@
   <div class="w-100 d-flex justify-content-between">
     <div class="d-flex w-100">
       <MyCalender class="mr-3" />
-      <TodoForm />
     </div>
   </div>
   <div class="d-flex flex-column gap-5">
@@ -17,7 +16,7 @@
         <div class="position-absolute">시간 남으면 도표 만들어 넣을 것</div>
       </div>
     </div>
-    <div class="pt-5">
+    <!-- <div class="pt-5">
       <h3>자주 사용하는 태그</h3>
       <div class="mb-4 mt-1 subtext">내가 자주 사용하는 태그입니다.</div>
       <div class="backgrondBox pt-4 pb-4 pr-4 pl-4">
@@ -33,7 +32,6 @@
           v-for="(i, item, index) in frequentlyUsedTag"
           :key="i + item + index"
         >
-          <!-- <div class="grid" v-for="(n, idx) in i" :key="n + idx"> -->
           <div>
             {{ i[0] }}
           </div>
@@ -49,10 +47,9 @@
           <div>
             {{ i[4] }}
           </div>
-          <!-- </div> -->
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
   <div class="pt-5">
     <h3 class="">내가 관심있는 태그</h3>
@@ -86,7 +83,11 @@
       <hr class="mb-5" />
       <div class="ml-2 mr-2 d-flex justify-content-between">
         <div class="flex-wrap gap-2 d-flex">
-          <div class="tag" v-for="(tag, index) in myFavTags" :key="tag + index">
+          <div
+            class="tag"
+            v-for="(tag, index) in state.myFavTags"
+            :key="tag + index"
+          >
             <span class="btn-tag d-flex align-items-center">
               <button
                 @click="deleteTag(tag, index)"
@@ -102,48 +103,54 @@
 </template>
 
 <script>
-import TodoForm from "@/pages/todos/IndexPage.vue";
 import MyCalender from "@/components/MyCalender.vue";
+import { useStore } from "vuex";
 import { reactive } from "@vue/reactivity";
+import axios from "axios";
 
 export default {
   setup() {
-    const myFavTags = reactive([
-      "#인테리어 디자인",
-      "#독서",
-      "#운동",
-      "#시네마토그래피",
-      "#연극",
-      "#클래식",
-      "#인테리어 디자인",
-      "#독서",
-      "#운동",
-      "#시네마토그래피",
-      "#연극",
-      "#클래식",
-      "#인테리어 디자인",
-      "#독서",
-      "#운동",
-      "#시네마토그래피",
-      "#연극",
-      "#클래식",
-    ]);
+    const store = useStore();
+    const state = reactive({
+      myFavTags: [],
+    });
     const frequentlyUsedTag = reactive({
       json1: ["#인테리어 디자인", "180", "96%", "???", "2022.09.13"],
       json2: ["#연극", "144", "89%", "???", "2022.09.10"],
     });
 
+    const tagList = async () => {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: store.state.users.me.token,
+        mid: store.state.users.me.mid,
+      };
+      const body = {
+        email: store.state.users.me.email,
+      };
+      await axios
+        .post("/decommi/member/liketaglist", body, { headers })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+
+    tagList();
+
     const deleteTag = (tag, index) => {
       console.log(tag);
       console.log(index);
-      myFavTags.splice(index, 1);
+      state.myFavTags.splice(index, 1);
     };
 
     const btnTagEdit = () => {};
 
-    return { myFavTags, frequentlyUsedTag, deleteTag, btnTagEdit };
+    return { state, frequentlyUsedTag, deleteTag, btnTagEdit, tagList };
   },
-  components: { TodoForm, MyCalender },
+  components: { MyCalender },
 };
 </script>
 

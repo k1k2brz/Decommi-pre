@@ -24,7 +24,7 @@
               getTimeFromJavaDate(state.regDate)
             }}</span>
           </div>
-          <div class="d-flex">
+          <div v-if="state.writer == me.id" class="d-flex">
             <button
               @click="onEditBtn"
               type="button"
@@ -59,7 +59,10 @@
             </button>
           </div>
           <!-- icon -->
-          <div class="d-flex justify-content-start">
+          <div
+            v-if="state.writer !== me.id"
+            class="d-flex justify-content-start"
+          >
             <WrittenPostsBookmark :dino="state.dino" />
             <WrittenPostsHeart :dino="state.dino" />
             <ReportModal :dino="state.dino" />
@@ -76,7 +79,7 @@ import { reactive } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import { onBeforeMount } from "vue";
+import { computed, onBeforeMount } from "vue";
 import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
 import WrittenPostsHeart from "./WrittenPostsHeart.vue";
 import WrittenComments from "./WrittenComments.vue";
@@ -97,6 +100,7 @@ export default {
       replyYN: null,
       modDate: null,
       regDate: null,
+      writer: null,
     });
 
     const onEditBtn = async () => {
@@ -172,12 +176,25 @@ export default {
         state.replyYN = res.data.diaryPost.replyYN;
         state.modDate = res.data.diaryPost.modDate;
         state.tags = res.data.diaryPost.tagList;
+        state.writer = res.data.diaryPost.writer;
       });
     };
     onBeforeMount(() => {
       mountedAxios();
     });
-    return { state, mountedAxios, getTimeFromJavaDate, onEditBtn, onRemoveBtn };
+
+    const me = computed(() => {
+      return store.state.users.me;
+    });
+
+    return {
+      state,
+      mountedAxios,
+      getTimeFromJavaDate,
+      onEditBtn,
+      onRemoveBtn,
+      me,
+    };
   },
   components: {
     WrittenPostsBookmark,

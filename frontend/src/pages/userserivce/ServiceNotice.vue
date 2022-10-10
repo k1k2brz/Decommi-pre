@@ -15,20 +15,72 @@
       <router-link class="nav-link mr-3" :to="{ name: 'ServiceFaq' }"
         >FAQ</router-link
       >
-      <router-link class="nav-link mr-3" :to="{ name: 'ServiceQuestion' }"
-        >질문내역</router-link
-      >
     </div>
     <div class="purple mt-1"></div>
     <hr />
   </div>
-  <notice-content />
-  <div class="m-3 d-flex justify-content-center">
+  <div class="purple-box mb-4">
+    <div class="d-flex justify-content-between flex-row">
+      <div class="d-flex flex-row">
+        <div class="hbno">
+          <div>글번호</div>
+        </div>
+        <div>카테고리</div>
+        <div class="contentTitle">
+          <div>게시글</div>
+        </div>
+      </div>
+      <div class="d-flex flex-row">
+        <div class="Timemargin">
+          <div>작성시간</div>
+        </div>
+        <div class="margin">
+          <div>작성자</div>
+        </div>
+      </div>
+    </div>
+    <hr class="mt-3 mb-4" />
+    <notice-content
+      v-for="notice in state.noticePosts"
+      :key="notice"
+      :notice="notice"
+    />
+  </div>
+  <!-- <div class="m-3 d-flex justify-content-center">
     <i class="bi bi-chevron-double-left"></i>
     <i class="bi bi-chevron-left"></i>
     <span>page</span>
     <i class="bi bi-chevron-right"></i>
     <i class="bi bi-chevron-double-right"></i>
+  </div> -->
+  <div class="d-flex justify-content-center">
+    <nav aria-label="Page">
+      <ul class="pagination">
+        <li class="page-item">
+          <a
+            class="page-link"
+            v-if="state.info.page != 1"
+            @click="getListWithPage(state.info.page - 1)"
+            >Previous</a
+          >
+        </li>
+        <li
+          :class="state.info.page == page ? 'page-item active' : 'page-item'"
+          v-for="page in state.info.pageList"
+          :key="page"
+        >
+          <a class="page-link" @click="getListWithPage(page)">{{ page }}</a>
+        </li>
+        <li class="page-item">
+          <a
+            class="page-link"
+            v-if="state.info.page != state.info.totalPage"
+            @click="getListWithPage(state.info.page + 1)"
+            >Next</a
+          >
+        </li>
+      </ul>
+    </nav>
   </div>
   <div class="mb-3 d-flex justify-content-center gap-3">
     <div class="d-flex">
@@ -51,40 +103,115 @@
 import { useStore } from "vuex";
 import NoticeContent from "@/components/NoticeContent.vue";
 import { reactive } from "@vue/reactivity";
+import { onMounted } from "@vue/runtime-core";
+import axios from "axios";
 
 export default {
+  components: { NoticeContent },
   setup() {
     const store = useStore();
-    const state = reactive({
-      noticePosts: [],
+    const state = reactive({ noticePosts: [], body: 1, info: "" });
+    onMounted(async () => {
+      try {
+        const url = "/decommi/help/notice";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          page: state.body,
+        };
+        console.log(body);
+        await axios.post(url, body, { headers }).then((res) => {
+          state.noticePosts.push(...res.data.dtoList);
+          state.info = JSON.parse(JSON.stringify(res.data));
+          console.log("========================" + res.data.totalPage);
+          console.log("page" + res.data.page);
+          console.log("page" + res.data.size);
+          console.log("page" + res.data.start);
+          console.log("page" + res.data.end);
+          console.log("page" + res.data.prev);
+          console.log("page" + res.data.next);
+          console.log("page" + res.data.pageList);
+          res.data.writer;
+        });
+      } catch (err) {
+        console.log(err);
+      }
     });
+    console.log(state.noticePosts);
 
-    return { store, state };
+    function getListWithPage(num) {
+      let body = num;
+      state.body = num;
+      const url = "/decommi/help/notice";
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: store.state.users.me.token,
+        mid: store.state.users.me.mid,
+      };
+
+      axios.post(url, { page: body }, { headers }).then((res) => {
+        state.noticePosts = [];
+        state.noticePosts.push(...res.data.dtoList);
+        state.info = JSON.parse(JSON.stringify(res.data));
+        console.log("========================" + res.data.totalPage);
+        console.log("page" + res.data.page);
+        console.log("page" + res.data.size);
+        console.log("page" + res.data.start);
+        console.log("page" + res.data.end);
+        console.log("page" + res.data.prev);
+        console.log("page" + res.data.next);
+        console.log("page" + res.data.pageList);
+        res.data.writer;
+      });
+    }
+    return { store, state, getListWithPage };
   },
-  components: { NoticeContent },
 };
 </script>
 
 <style lang="sass" scoped>
+.page-item
+  cursor: pointer
+
 hr
-    margin: 0
-    padding: 0
+  margin: 0
+  padding: 0
 
 .purple-box
-    padding: 40px 30px
+  padding: 40px 30px
 
 .purple
-    background-color: #AE6EFF
-    width: 70px
-    height: 8px
+  background-color: #AE6EFF
+  width: 70px
+  height: 8px
 
 .nav-link
-    font-size: 18px
-    font-weight: 500
+  font-size: 18px
+  font-weight: 500
 
 .serviceSearch
-    width: 400px
+  width: 400px
 
 .btn-regular
-    width: 65px
+  width: 65px
+
+.hbno
+  width: 72px
+
+.hbnoMargin
+  margin-left: 15px
+  width: 60px
+
+.Timemargin
+  width: 70px
+
+.margin
+  margin-left: 20px
+  width: 80px
+
+.contentTitle
+  margin-left: 53px
 </style>

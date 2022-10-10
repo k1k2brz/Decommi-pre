@@ -67,7 +67,10 @@
             aria-describedby="emailHelp"
           />
           <div v-show="emailError" class="font14 mt-1 ml-2">
-            id메일을 입력해주세요.
+            id메일이 올바르지 않습니다.
+          </div>
+          <div v-show="info.idDuplicate2" class="font14 mt-1 ml-2">
+            이미 존재하는 id메일입니다.
           </div>
           <button
             class="btn btn-outline-primary w-100 mt-3"
@@ -260,6 +263,7 @@ export default {
           pass.value.focus();
           info.idDuplicate = false;
           info.emailCheck = true;
+          idError.value = false;
         }
       });
     };
@@ -300,6 +304,8 @@ export default {
           q1.value.focus();
           info.idDuplicate2 = false;
           info.emailCheck = true;
+          idError.value = false;
+          emailError.value = false;
         }
       });
     };
@@ -307,7 +313,8 @@ export default {
     // 회원가입
     const onSubmitForm = async () => {
       if (info.emailCheck == false) {
-        info.idDuplicate = true;
+        idError.value = true;
+        info.idDuplicate = false;
         return;
       } else if (info.pass === "") {
         pass.value.focus();
@@ -403,6 +410,7 @@ export default {
         q1Error.value = false;
         q2Error.value = false;
         q3Error.value = false;
+        info.idDuplicate = false;
       } catch (err) {
         console.log(err);
       }

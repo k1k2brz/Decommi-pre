@@ -17,12 +17,10 @@
 </template>
 
 <script>
-import Toast from "@/components/TodoToast.vue";
 import Navbar from "@/components/NavBar.vue";
 import Footer from "@/components/FooterV.vue";
 export default {
   components: {
-    Toast,
     Navbar,
     Footer,
   },

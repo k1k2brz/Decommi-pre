@@ -2,23 +2,25 @@
   <div class="colors d-flex justify-content-between mb-2">
     <div class="d-flex flex-row">
       <div class="hbnoMargin">
-        <span>{{ notice.hbno }}</span>
+        <span>{{ faq.hbno }}</span>
       </div>
-      <span>{{ notice.helpType }}</span>
+      <div class="helpType d-flex justify-content-center">
+        <span>{{ faq.helpType }}</span>
+      </div>
       <div class="contentTitle">
-        <span @click="hbnoTest(notice.hbno)" type="button" class="card-title">{{
-          notice.title
+        <span @click="hbnoTest(faq.hbno)" type="button" class="card-title">{{
+          faq.title
         }}</span>
       </div>
     </div>
     <div class="d-flex flex-row">
       <div>
-        <span>{{ notice.modDate.split("-")[0] }}.</span>
-        <span>{{ notice.modDate.split("-")[1] }}.</span>
-        <span>{{ notice.modDate.split("-")[2].split("T")[0] }}</span>
+        <span>{{ faq.modDate.split("-")[0] }}.</span>
+        <span>{{ faq.modDate.split("-")[1] }}.</span>
+        <span>{{ faq.modDate.split("-")[2].split("T")[0] }}</span>
       </div>
       <div class="margin">
-        <span>관리자</span>
+        <span>{{ faq.content }}</span>
       </div>
     </div>
   </div>
@@ -30,18 +32,18 @@ import router from "@/router";
 import { reactive } from "@vue/reactivity";
 export default {
   props: {
-    notice: {
+    faq: {
       type: Object,
       required: true,
     },
   },
   setup(props) {
-    console.log(props.notice);
+    console.log(props.faq);
     const state = reactive({
       hbno: "",
     });
     const hbnoTest = (hbno) => {
-      router.push(`/NoticeRead?id=${hbno}`);
+      router.push(`/FaqRead?id=${hbno}`);
     };
 
     return { hbnoTest, state };
@@ -55,12 +57,15 @@ export default {
   width: 60px
   color: black
 
+.helpType
+  width: 54px
+
 .margin
   margin-left: 20px
   width: 80px
 
 .contentTitle
-  margin-left: 40px
+  margin-left: 50px
   &:hover
     color: black
 
@@ -68,6 +73,4 @@ export default {
   &:hover
     font-weight: 500
     color: #AE6FFF
-
-.colors
 </style>

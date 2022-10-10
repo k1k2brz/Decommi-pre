@@ -40,21 +40,20 @@
           <div
             class="d-flex justify-content-center align-items-center flex-wrap"
           >
-            <router-link class="nav-link mr-3" :to="{ name: 'Main' }"
-              >홈</router-link
-            >
-            <router-link class="nav-link mr-3" :to="{ name: 'MyDiary' }"
+            <button @click="home" class="nav-link mr-3">홈</button>
+            <button @click="myDiary" class="nav-link mr-3">내 다이어리</button>
+            <!-- <router-link class="nav-link mr-3" :to="{ name: 'MyDiary' }"
               >내 다이어리</router-link
-            >
+            > -->
             <router-link class="nav-link mr-3" :to="{ name: 'BookMark' }"
               >북마크</router-link
             >
-            <router-link class="nav-link mr-3" :to="{ name: 'PopularTag' }"
+            <!-- <router-link class="nav-link mr-3" :to="{ name: 'PopularTag' }"
               >태그찾기</router-link
             >
             <router-link class="nav-link mr-4" :to="{ name: 'Alarm' }"
               >알림</router-link
-            >
+            > -->
           </div>
           <button
             class="button nav-menu-circle d-flex justify-content-center align-items-center"
@@ -81,11 +80,10 @@
                   <span class="mailId">{{ me.email }}</span>
                 </button>
                 <div class="d-flex flex-column ml-2">
-                  <a
-                    href="#"
-                    @click="myPage"
-                    class="nav-link menu-hover menu-btn"
-                    >마이페이지</a
+                  <router-link
+                    class="menu-hover menu-btn nav-link"
+                    :to="{ name: 'UserEditPass' }"
+                    >회원정보수정</router-link
                   >
                   <router-link
                     class="menu-hover menu-btn nav-link"
@@ -96,11 +94,6 @@
                     class="menu-hover menu-btn nav-link"
                     :to="{ name: 'EditTag' }"
                     >관심있는 다이어리</router-link
-                  >
-                  <router-link
-                    class="menu-hover menu-btn nav-link"
-                    :to="{ name: 'UserEditPass' }"
-                    >회원정보 수정</router-link
                   >
                   <router-link
                     class="menu-hover menu-btn nav-link"
@@ -164,6 +157,24 @@ export default defineComponent({
     onMounted(() => {
       document.addEventListener("click", dropdown.close);
     });
+
+    const home = () => {
+      router.push({
+        name: "Main",
+      });
+      setTimeout(() => {
+        router.go(0);
+      }, 100);
+    };
+
+    const myDiary = () => {
+      router.push({
+        name: "MyDiary",
+      });
+      setTimeout(() => {
+        router.go(0);
+      }, 100);
+    };
 
     function loginCheck() {
       if (localStorage.getItem("token") == 0) {
@@ -310,6 +321,8 @@ export default defineComponent({
       close,
       dropdown,
       status,
+      home,
+      myDiary,
       // btnSearch,
     };
   },
@@ -317,6 +330,9 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
+button
+  background: none
+  border: none
 .navbar
   padding: 0 14px
 

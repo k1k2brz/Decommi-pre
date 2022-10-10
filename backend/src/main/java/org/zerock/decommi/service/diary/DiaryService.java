@@ -39,8 +39,8 @@ public interface DiaryService {
     // 결국 태그 검색 구현 못함
     // HashMap<String, Object> getSearchDiaryPostList(PageRequestDTO requestDTO);
 
-    PageResultDTO<DiaryDTO, Diary> getDiaryPostListByTagName(PageRequestDTO requestDTO, String tagName);
-    
+    PageResultDTO<DiaryDTO, Diary> getDiaryPostListByTagName(PageRequestDTO requestDTO);
+
     String registerReply(ReplyDTO dto);
 
     Long addNewReply(ReplyDTO dto); // 대댓글?
@@ -69,6 +69,10 @@ public interface DiaryService {
                 .openYN(dto.isOpenYN())
                 .replyYN(dto.isReplyYN())
                 .writer(dto.getWriter())
+                // .bookmarkCnt(dto.getBookmarkCnt())
+                // .heartCnt(dto.getHeartCnt())
+                // .replyCnt(dto.getReplyCnt())
+                // .reportCnt(dto.getReportCnt())
                 .build();
         return diary;
     }
@@ -82,6 +86,10 @@ public interface DiaryService {
                 .openYN(diary.isOpenYN())
                 .replyYN(diary.isReplyYN())
                 .writer(diary.getWriter())
+                // .bookmarkCnt(diary.getBookmarkCnt())
+                // .heartCnt(diary.getHeartCnt())
+                // .replyCnt(diary.getReplyCnt())
+                // .reportCnt(diary.getReportCnt())
                 .regDate(diary.getRegDate())
                 .build();
         return dto;

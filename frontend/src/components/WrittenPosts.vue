@@ -34,10 +34,11 @@
         <div class="mb-2 d-flex justify-content-between flex-column">
           <div class="mb-3 d-flex gap-1">
             <button
+              @click="onClickTag"
               type="button"
               class="btn-tag-sm d-flex"
-              v-for="tag in state.tagList"
-              :key="tag"
+              v-for="(tag, index) in state.tagList"
+              :key="tag + index"
             >
               {{ tag }}
             </button>
@@ -60,6 +61,7 @@
 </template>
 
 <script>
+import { getCurrentInstance } from "vue";
 import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -81,6 +83,7 @@ export default {
   setup(props) {
     const router = useRouter();
     const store = useStore();
+    const { emit } = getCurrentInstance();
 
     const bmFav = ref(false);
     const bmCmt = ref(false);
@@ -102,6 +105,10 @@ export default {
     const me = computed(() => {
       return store.state.users.me.writer;
     });
+
+    const onClickTag = async (e) => {
+      emit("onClickTag", e.target.innerHTML);
+    };
 
     // //**
     //  * axios로 dino 로 favorite와 save 의상태값을 받아와야한다있다(bmFav, isSave)
@@ -259,6 +266,7 @@ export default {
       dinoTest,
       CheckCmt,
       me,
+      onClickTag,
     };
   },
   components: {

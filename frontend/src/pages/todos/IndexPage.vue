@@ -81,19 +81,6 @@ export default {
     const currentPage = ref(1);
     const searchText = ref("");
 
-    // const a = reactive({
-    //   b: 1,
-    // });
-    //함수 안의 reactive가 바뀌면 watchEffenct가 실행 (reactive와 state가 아니면 실행X)
-    //numberOftodos만 바껴도 W.E가 발동 : 단, currentPage가 바껴도 둘 다 찍힘
-    // 안에 값이 바뀌기만 하면 실행되므로 성능문제가 생길지도?
-    // watchEffect(() => {
-    // console.log(currentPage.value);
-    // console.log(numberOfTodos.value);
-    //   console.log(a.b);
-    // });
-    // a.b = 4;
-
     const numberOfPages = computed(() => {
       return Math.ceil(numberOfTodos.value / limit);
     });

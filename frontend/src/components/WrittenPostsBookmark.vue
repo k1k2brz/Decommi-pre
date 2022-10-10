@@ -137,6 +137,8 @@ export default {
         console.log(err);
       }
 
+      // 북마크 폴더가 들어갈 예정이었음(백엔드 미구현)
+
       // for (let i = 0; i < props.bmDino.length; i++) {
       //   const element = props.bmDino[i];
       //   if (element == props.dino) bookmarkSave.value = true;

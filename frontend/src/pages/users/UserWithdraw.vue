@@ -119,16 +119,21 @@ export default {
               axios
                 .post(
                   "/decommi/member/deleteMember",
-                  { mid: store.state.users.me.mid },
+                  {
+                    mid: store.state.users.me.mid,
+                    writer: store.state.users.me.id,
+                  },
                   { headers }
                 )
                 .then((response) => {
                   console.log(response.data);
                   localStorage.removeItem("vuex");
                   localStorage.removeItem("TOKEN");
+                  localStorage.removeItem("id");
+                  router.push("/");
                   setTimeout(() => {
-                    router.push("/");
-                  }, 1000);
+                    router.go(0);
+                  }, 100);
                 });
             } catch (error) {
               console.log(error);

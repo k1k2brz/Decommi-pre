@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 // 뒤에 todos붙여주면 Todos파일로 가게
 import Home from "../pages/IndexPage.vue";
-import Todos from "../pages/todos/IndexPage.vue";
-import Todo from "../pages/todos/IndexId.vue";
-import TodoCreate from "../pages/todos/create/IndexPage.vue";
 import Login from "../pages/LoginPage.vue";
 import Signup from "../pages/SignUp.vue";
 import Idfind from "../pages/IdFind.vue";
@@ -35,6 +32,9 @@ import DiaryWriteEdit from "../pages/mainpage/DiaryWriteEdit.vue";
 import EditTag from "../pages/findtag/EditTags.vue";
 import UserBookmark from "../pages/bookmark/UserBookmark.vue";
 import Read from "../components/WrittenPostPage.vue";
+import NoticeRead from "../components/NoticeRead.vue";
+import FaqRead from "../components/FaqRead.vue";
+import EditNotice from "../components/EditNotice.vue";
 
 // import { useStore } from "vuex";
 
@@ -88,23 +88,6 @@ const router = createRouter({
       meta: {
         requiresGuest: true,
       },
-    },
-    {
-      path: "/todos",
-      name: "Todos",
-      component: Todos,
-    },
-    // create부터 선언하고 밑에 :id가 나오는게 좋음(아니면 먼저 id를 받아버리기 때문에)
-    {
-      path: "/todos/create",
-      name: "TodoCreate",
-      component: TodoCreate,
-    },
-    // 콜론 넣고 주소 넣어야 여러개 값을 받는다
-    {
-      path: "/todos/:id",
-      name: "Todo",
-      component: Todo,
     },
     {
       path: "/mainpage",
@@ -244,6 +227,21 @@ const router = createRouter({
       path: "/read",
       name: "Read",
       component: Read,
+    },
+    {
+      path: "/NoticeRead",
+      name: "NoticeRead",
+      component: NoticeRead,
+    },
+    {
+      path: "/FaqRead",
+      name: "FaqRead",
+      component: FaqRead,
+    },
+    {
+      path: "/EditNotice",
+      name: "EditNotice",
+      component: EditNotice,
     },
   ],
 });

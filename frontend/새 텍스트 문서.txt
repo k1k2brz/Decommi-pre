@@ -1,16 +1,23 @@
+SELECT d.dino, d.regdate, d.content, d.openyn, d.replyyn, d.title, d.writer 
+FROM d_diary d
+left JOIN d_tag h ON h.diary_dino = d.dino
+WHERE h.tag_name LIKE "운동"; 
+
+다음에는 꼭 Leave Site (백스페이스 / 라우터 바뀌면 재로딩) 구현할 것
+
 vuex로 필터값이랑 입력값을 보낸다.
 입력을 눌렀을 때. + 
 async await인가?
+
+회원가입 부분 이멜중복뜨는거
+
+추천 태그 클릭시 true false 유지
 
 검색 되는지 확인하고 인풋안에 아이콘 넣기
 
 북마크 Enter누르면 넘어가게, 닫기 차례대로 해야함 (안됨)
 마이페이지 레이아웃 좀 맞추기
 report창 alert뜨는거 좀 이쁘게 수정하기
-
-검색 에어리뷰 searchlist 참고해서 써보기
-고객센터 공지사항 qna (클릭했을 때 content를 만들기)
-문의게시판 빼고
 
 1페이지 이상인 댓글 삭제할 때 다음 페이지로 넘어가는 문제 (((for문을 돌려서 state.pageee=state.reqPage)))
 
@@ -40,13 +47,7 @@ page = 현재 total = 총페이지 인데
 그래서 로딩 더이상 안하게하는게 44~46 번줄
 
 
-자동로그인 구현하기 (세션 로그인이랑 로컬스토리지를 분리하는건가?)
-
-async await으로 새로고침 안해도 되게 (함수로 빼고 axios 맨 밑에다 await으로 붙여준다)
 스크롤바 자동으로 위로 올라가게(임시로 top 0 이거 해둠)
-댓글 레이아웃 맞추기
-
-가입 될 때 FavTag 선택 부분에서 token이 뜨는 현상 막기
 
 https://ckeditor.com/ckeditor-5/online-builder/
 ***** 이미지 업로드 확인 + ck에디터 맞는거 찾기!!! (c드라이브에 testingimage 파일 만들기)
