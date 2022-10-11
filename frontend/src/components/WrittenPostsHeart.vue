@@ -31,7 +31,7 @@ export default {
     //   // controller >> 서비스에서 DB로 가서 DB에서 userid , dino가 같은게 있는지 확인하는 컨트롤러
     //   // 있으면 true반환 없으면 false반환
     //   // controller가 두개 나와야한다.
-    //   const url = "./api/diary/isheart";
+    //   const url = "/decommi/api/diary/isheart";
     //   const headers = {
     //     "Content-Type": "application/json",
     //     Authorization: store.state.users.me.token,
@@ -88,7 +88,7 @@ export default {
     // 좋아요 누르기 (빨간색)
     const bookmarkFav = async () => {
       try {
-        const url = "./api/diary/heart";
+        const url = "/decommi/api/diary/heart";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,

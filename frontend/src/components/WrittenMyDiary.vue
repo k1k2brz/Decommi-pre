@@ -105,7 +105,7 @@ export default {
 
     const onRemoveBtn = async () => {
       try {
-        const url = "./api/diary/delete";
+        const url = "/decommi/api/diary/delete";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -135,7 +135,7 @@ export default {
       // id: props.post.id,
       // });
       try {
-        const url = "./api/diary/modify/check";
+        const url = "/decommi/api/diary/modify/check";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -201,7 +201,7 @@ export default {
     });
 
     const PostList = async () => {
-      await axios.get(`./diary/read/${state.dino}`).then((res) => {
+      await axios.get(`/decommi/diary/read/${state.dino}`).then((res) => {
         state.dino = res.data.diaryPost.dino;
         for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
           state.tagList.push(res.data.diaryPost.tagList[i]);

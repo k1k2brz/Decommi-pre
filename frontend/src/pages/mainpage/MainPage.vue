@@ -83,14 +83,14 @@ export default {
     });
 
     // 비로그인시 home으로 보내버림
-    function a() {
+    function homeRouter() {
       if (store.state.users.me == "" || store.state.users.me == null) {
         router.push({
           name: "Home",
         });
       }
     }
-    a();
+    homeRouter();
     onMounted(() => {
       getMorePostList();
     });
@@ -364,6 +364,7 @@ export default {
       searchInput,
       onClickTag,
       onClickRecommendTag,
+      homeRouter,
     };
   },
 

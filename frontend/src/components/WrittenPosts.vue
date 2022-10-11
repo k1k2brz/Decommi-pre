@@ -53,7 +53,31 @@
             <WrittenPostsHeart :dino="state.dino" />
             <ReportModal :dino="state.dino" />
           </div>
-          <WrittenComments :dino="state.dino" />
+          <WrittenComments v-if="state.replyYN == true" :dino="state.dino" />
+          <div v-else>
+            <hr />
+            <div>
+              <div
+                class="replyNoComment mb-3 d-flex justify-content-center gap-2"
+              >
+                <input
+                  type="text"
+                  class="comment serviceSearch w-100"
+                  placeholder="댓글이 허용되지 않은 다이어리입니다."
+                  readonly
+                  disalbed
+                />
+                <button
+                  class="btn-regular"
+                  style="background-color: #b4b4b4"
+                  disalbed
+                >
+                  댓글입력
+                </button>
+              </div>
+            </div>
+            <!-- <div class="diaryComment"></div> -->
+          </div>
         </div>
       </div>
     </div>
@@ -100,6 +124,7 @@ export default {
       loginWriter: store.state.users.me.id,
       tagList: [],
       bmDino: [],
+      replyYN: props.post.replyYN,
     });
 
     const me = computed(() => {
@@ -124,7 +149,7 @@ export default {
 
     const onRemoveBtn = async () => {
       try {
-        const url = "./api/diary/delete";
+        const url = "/decommi/api/diary/delete";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -154,7 +179,7 @@ export default {
       // id: props.post.id,
       // });
       try {
-        const url = "./api/diary/modify/check";
+        const url = "/decommi/api/diary/modify/check";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -194,7 +219,7 @@ export default {
     };
 
     const axiosComponent = async () => {
-      const url = "./api/diary/modify/check";
+      const url = "/decommi/api/diary/modify/check";
       const headers = {
         "Content-Type": "application/json",
         Authorization: store.state.users.me.token,
@@ -240,12 +265,16 @@ export default {
     }
 
     const PostList = async () => {
-      await axios.get(`./diary/read/${state.dino}`).then((res) => {
-        state.dino = res.data.diaryPost.dino;
-        for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
-          state.tagList.push(res.data.diaryPost.tagList[i]);
-        }
-      });
+      try {
+        await axios.get(`/decommi/diary/read/${state.dino}`).then((res) => {
+          state.dino = res.data.diaryPost.dino;
+          for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
+            state.tagList.push(res.data.diaryPost.tagList[i]);
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     PostList();
@@ -281,6 +310,21 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.replyNoComment
+  opacity: 50%
+
+.comment
+    border-radius: 10px
+    border: 0.5px solid grey
+    font-weight: 300
+    &:focus
+      outline: 0.5px solid #AE6FFF
+    &::placeholder
+      padding-left: 7px
+      color: black
+.diaryComment
+  font-size: 14px
+  color: #6C6C6C
 .zindex
   z-index: 10
   background-color: white

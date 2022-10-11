@@ -11,41 +11,80 @@
           <div class="card-body">
             <div>
               <div class="textareaPadding">
-                <input v-model="myWriteTitle" @click="clickTextarea" type="text"
-                  class="borderBind myWriteTitle none form-control mb-3" maxlength="80" placeholder="제목을 입력하세요." />
+                <input
+                  v-model="myWriteTitle"
+                  @click="clickTextarea"
+                  type="text"
+                  class="borderBind myWriteTitle none form-control mb-3"
+                  maxlength="80"
+                  placeholder="제목을 입력하세요."
+                />
               </div>
 
-              <ckeditor @ready="onReady" :editor="editor" v-model="editorData" :config="editorConfig"
-                class="myWriteContent ck-placeholder" id="editor"
-                style="border: 1px solid #d8d8d8; border-radius: 10px"></ckeditor>
-                
+              <ckeditor
+                @ready="onReady"
+                :editor="editor"
+                v-model="editorData"
+                :config="editorConfig"
+                class="myWriteContent ck-placeholder"
+                id="editor"
+                style="border: 1px solid #d8d8d8; border-radius: 10px"
+              ></ckeditor>
+
               <div>
                 <div class="textareaPadding flex-wrap mt-3 gap-2 d-flex">
-                  <div class="tag" v-for="(tag, index) in tags" :key="'tag' + index">
+                  <div
+                    class="tag"
+                    v-for="(tag, index) in tags"
+                    :key="'tag' + index"
+                  >
                     <span class="btn-tag-sm d-flex align-items-center">
-                      <button @click="removeTag(index)" class="bi bi-x-lg mr-1"></button>
+                      <button
+                        @click="removeTag(index)"
+                        class="bi bi-x-lg mr-1"
+                      ></button>
                       {{ tag }}
                     </span>
                   </div>
                 </div>
-                <div class="textareaPadding d-flex justify-content-center align-items-center">
-                  <input maxlength="12" v-model="tagValue" @keyup.enter="addTag" type="text"
-                    class="tagTextbox form-control mr-1 mb-4 mt-4" placeholder="태그 추가하기" />
+                <div
+                  class="textareaPadding d-flex justify-content-center align-items-center"
+                >
+                  <input
+                    maxlength="12"
+                    v-model="tagValue"
+                    @keyup.enter="addTag"
+                    type="text"
+                    class="tagTextbox form-control mr-1 mb-4 mt-4"
+                    placeholder="태그 추가하기"
+                  />
                 </div>
               </div>
             </div>
             <div class="textareaPadding">
               <div class="LoginLine mb-3"></div>
             </div>
-            <div class="textareaPadding d-flex justify-content-between align-items-center">
-              <button v-if="privacyPermit" @click="publicPrivacy" class="zidx purple-color mb-3">
+            <div
+              class="textareaPadding d-flex justify-content-between align-items-center"
+            >
+              <button
+                v-if="privacyPermit"
+                @click="publicPrivacy"
+                class="zidx purple-color mb-3"
+              >
                 모든 사람이 다이어리를 읽을 수 있습니다.
               </button>
-              <button v-else @click="publicPrivacy" class="zidx purple-color mb-3">
+              <button
+                v-else
+                @click="publicPrivacy"
+                class="zidx purple-color mb-3"
+              >
                 나만이 다이어리를 읽을 수 있습니다.
               </button>
               <div v-if="pp" class="d-flex position-absolute">
-                <div class="bg-white d-flex flex-column box-shadow p-4 position-relative gap-1">
+                <div
+                  class="bg-white d-flex flex-column box-shadow p-4 position-relative gap-1"
+                >
                   <div>
                     <button @click="diaryPP" class="privacy-public">
                       내 다이어리 공개
@@ -53,7 +92,11 @@
                     <i v-if="diaryPrivacyCheck" class="bi bi-check-lg"></i>
                   </div>
                   <div>
-                    <button :disabled="commentDisable" @click="commentPP" class="privacy-public">
+                    <button
+                      :disabled="commentDisable"
+                      @click="commentPP"
+                      class="privacy-public"
+                    >
                       내 다이어리에 댓글 허용
                     </button>
                     <i v-if="commentPrivacyCheck" class="bi bi-check-lg"></i>
@@ -99,12 +142,12 @@ export default {
       openable: true,
       editor: ClassicEditor,
       // 여기에 본문
-      editorData: localStorage.getItem('Content'),
+      editorData: localStorage.getItem("Content"),
       editorConfig: {
         language: "ko",
         placeholder: "오늘의 다이어리를 작성해보세요.",
         simpleUpload: {
-          uploadUrl: "./api/diary/write/image",
+          uploadUrl: "/decommi/api/diary/write/image",
           withCredentials: true,
           headers: {
             Authorization: token,
@@ -144,10 +187,10 @@ export default {
     let tags = reactive([]);
     const file = ref("");
     const state = reactive({
-      myContent: '',
-      context: '',
-      count: 0
-    })
+      myContent: "",
+      context: "",
+      count: 0,
+    });
     let getContext = onMounted(() => {
       state.context = getCurrentInstance().data.editorData;
     });
@@ -212,7 +255,7 @@ export default {
     let params = new URLSearchParams(window.location.search).get("edit");
 
     const axiosComponent = async () => {
-      const url = "./api/diary/modify/check";
+      const url = "/decommi/api/diary/modify/check";
       const headers = {
         "Content-Type": "application/json",
         Authorization: store.state.users.me.token,
@@ -226,36 +269,35 @@ export default {
       await axios
         .post(url, body, { headers })
         .then((res) => {
-          localStorage.setItem("Content", res.data.content)
+          localStorage.setItem("Content", res.data.content);
           myWriteTitle.value = res.data.title;
-          diaryPrivacyCheck.value = res.data.openYN
-          commentPrivacyCheck.value = res.data.replyYN
-          state.myContent = JSON.parse(JSON.stringify(res.data.content))
+          diaryPrivacyCheck.value = res.data.openYN;
+          commentPrivacyCheck.value = res.data.replyYN;
+          state.myContent = JSON.parse(JSON.stringify(res.data.content));
           store.dispatch("posts/setContent", {
-            content: res.data.content
-          })
+            content: res.data.content,
+          });
           for (let i = 0; i < res.data.tagList.length; i++) {
             tags.push(res.data.tagList[i]);
           }
         })
         .catch((err) => {
           console.error(err);
-        })
-        console.log(store.state.posts.count)
+        });
+      console.log(store.state.posts.count);
       if (store.state.posts.count == true) {
-        store.dispatch('posts/setCount', {
-          count: false
-        })
-        router.go(0)
+        store.dispatch("posts/setCount", {
+          count: false,
+        });
+        router.go(0);
       }
     };
 
     axiosComponent();
 
-
     const editCompleteBtn = async () => {
       try {
-        const url = "./api/diary/modify/register";
+        const url = "/decommi/api/diary/modify/register";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -272,7 +314,7 @@ export default {
           tagList: tags,
         };
         console.log(body);
-        localStorage.removeItem('Content')
+        localStorage.removeItem("Content");
         await axios
           .post(url, body, { headers })
           .then((res) => {
@@ -286,11 +328,10 @@ export default {
       }
       router.push({ name: "Main" });
       // store.count = true
-      store.dispatch('posts/setCount', {
-        state: state.count
-      })
+      store.dispatch("posts/setCount", {
+        state: state.count,
+      });
     };
-
 
     return {
       pp,
@@ -316,7 +357,7 @@ export default {
       ClassicEditor,
       onReady,
       state,
-      getContext
+      getContext,
     };
   },
 };

@@ -1,11 +1,9 @@
 package org.zerock.decommi.service.member;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.zerock.decommi.dto.LikeTagListDTO;
 import org.zerock.decommi.entity.member.LikeTagList;
-import org.zerock.decommi.entity.member.Member;
 
 public interface LikeTagListService {
 
@@ -38,8 +36,8 @@ public interface LikeTagListService {
   default LikeTagListDTO entityToDTO(LikeTagList likeTagList) {
     LikeTagListDTO dto = LikeTagListDTO.builder()
         .lid(likeTagList.getLid())
-        .tagName(likeTagList.getTagName())
         .email(likeTagList.getEmail())
+        .tagName(likeTagList.getTagName())
         .build();
     return dto;
   }

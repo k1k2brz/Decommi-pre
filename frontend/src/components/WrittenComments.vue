@@ -33,7 +33,6 @@
       댓글 더 보기
     </button>
   </div>
-  <!-- <PageInfinite /> -->
 </template>
 
 <script>
@@ -42,7 +41,6 @@ import { useStore } from "vuex";
 import { ref, reactive } from "@vue/reactivity";
 import WrittenCommentsContent from "./WrittenCommentsContent.vue";
 import axios from "axios";
-// import PageInfinite from "./PageInfinite.vue";
 
 export default {
   props: {
@@ -65,18 +63,13 @@ export default {
       reqPage: 0,
       writer: store.state.users.me.id,
       commentList: [],
-      pageee: 0,
+      pageTotalCount: 0,
       duplicatedCheck: [],
       userNumber: 1,
       replyMidNum: [],
       midCount: [],
       counting: 1,
     });
-
-    console.log(state.midCount)
-    console.log(state.replyMidNum)
-
-    // console.log(state.midCount);
 
     // 코멘트 추가
     const addComment = async () => {
@@ -93,24 +86,9 @@ export default {
             .post(url, body, { headers })
             .then((res) => {
               console.log(res.data);
-              // if (state.duplicatedCheck.includes(res.data.mid) == false) {
-              //   state.duplicatedCheck.push(store.state.users.me.mid);
-              //   console.log(state.duplicatedCheck);
-              // } else {
-              //   const dp = state.duplicatedCheck.indexOf(
-              //     store.state.users.me.mid
-              //   );
-              //   console.log(dp);
-              // }
               // 페이지를 0으로 초기화한다
               state.reqPage = 0;
               replyMore();
-              // replyMore()
-              // for (let index = 0; index <= state.reqPage; index++) {
-              //   replyMoreAddComment(index);
-              // }
-
-              // commentList.push(commentValue.value);
             })
             .catch((err) => {
               console.error(err);
@@ -186,6 +164,7 @@ export default {
         await axios
           .post(`/decommi/api/diary/reply/`, body, { headers })
           .then((res) => {
+            state.pageTotalCount = res.data.pageTotalCount;
             if (res.data.replyList == undefined) {
               return;
             }
@@ -222,6 +201,8 @@ export default {
     // 좋아요
     // false가 체크임
     const remove = async () => {
+      // 댓글 삭제시 첫 댓글로 돌아감
+      state.reqPage = 0;
       replyMore();
     };
 

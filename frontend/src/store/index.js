@@ -13,40 +13,36 @@ const vuexLocal = new VuexPersistence({
 });
 
 export default createStore({
-  // state를 관련된 것 끼리 묶어서 폴더화하는 것 modules
-  // 여태 만든걸 다 toast안에 넣는다
   modules,
   plugins: [new VuexPersistence().plugin, vuexLocal.plugin],
-  state:{
-    latestcGroup:0,
-    token:0,
-    email:0,
-    mid:0,
-    authorid:0,
-    isAlarm:0,
-    axiosLink:".",
-    axiosLinkAdmin:"..",
-    EmbedLink:"."
+  state: {
+    latestcGroup: 0,
+    token: 0,
+    email: 0,
+    mid: 0,
+    authorid: 0,
+    isAlarm: 0,
+    axiosLink: ".",
+    axiosLinkAdmin: "..",
+    EmbedLink: ".",
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
-    setDino(state, num){
-      state.user.me.dino = num
+    setDino(state, num) {
+      state.user.me.dino = num;
     },
-    setcLatestcGroup(state, group){
-      state.latestcGroup = group
+    setcLatestcGroup(state, group) {
+      state.latestcGroup = group;
     },
-    setToken(state, payload){
-      state.token = payload
+    setToken(state, payload) {
+      state.token = payload;
     },
-    setEmail(state, payload){
-      state.email = payload
+    setEmail(state, payload) {
+      state.email = payload;
     },
-    setMId(state, payload){
-      state.mid = payload
-    }
+    setMId(state, payload) {
+      state.mid = payload;
+    },
   },
-  actions: {
-  },
+  actions: {},
 });

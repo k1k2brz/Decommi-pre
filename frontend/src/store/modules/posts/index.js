@@ -8,7 +8,7 @@ export default {
     regDate: "",
     bookmarkSave: false,
     report: true,
-    content: '',
+    content: "",
     count: true,
     search: null,
     dtoList: [],
@@ -82,7 +82,7 @@ export default {
         console.log(body);
         axios.post(url, body, { headers }).then((res) => {
           console.log(res.data);
-          commit("setDtolist", JSON.parse(JSON.stringify(res.data)))
+          commit("setDtolist", JSON.parse(JSON.stringify(res.data)));
           commit("setSearch", payload);
         });
       } catch (err) {
@@ -94,7 +94,7 @@ export default {
     add({ commit }, payload) {
       // 같은 모듈 안에서는 posts/addMainPost같이 앞에 안 붙여도 됨
       // 서버에 게시글 등록 요청 보냄
-      // const url = "./decommi/api/diary";
+      // const url = "/decommi/api/diary";
       // const headers = {
       //   "Content-Type": "application/json",
       // };

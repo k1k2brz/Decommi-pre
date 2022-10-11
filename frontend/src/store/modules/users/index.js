@@ -85,7 +85,7 @@ export default {
     logIn({ commit }, payload) {
       const log = async () => {
         try {
-          const url = "./decommi/member/login";
+          const url = "/decommi/member/login";
           const headers = {
             "Content-Type": "application/json",
           };
@@ -138,10 +138,6 @@ export default {
     // getters는 component안에서 사용하는 computed라고 생각하면 편함
   },
   getters: {
-    toastMessageWithSmile(state) {
-      return state.toastMessage + "^-^";
-    },
-
     isLogin(state) {
       return state.users.me == null;
     },

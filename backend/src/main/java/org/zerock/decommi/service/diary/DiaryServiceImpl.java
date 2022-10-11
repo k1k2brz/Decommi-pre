@@ -1,11 +1,7 @@
 package org.zerock.decommi.service.diary;
 
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,7 +20,6 @@ import org.zerock.decommi.dto.PageRequestDTO;
 import org.zerock.decommi.dto.PageResultDTO;
 import org.zerock.decommi.dto.ReplyDTO;
 import org.zerock.decommi.dto.ReportDTO;
-import org.zerock.decommi.dto.TagDTO;
 import org.zerock.decommi.entity.diary.Diary;
 import org.zerock.decommi.entity.diary.File;
 import org.zerock.decommi.entity.diary.Heart;
@@ -258,6 +253,7 @@ public class DiaryServiceImpl implements DiaryService {
     public String registerReply(ReplyDTO dto) {
         Optional<Member> result = memberRepository.findByMid(dto.getMid());
         Optional<List<Long>> lastestrg = replyRepository.getLastestReplyGroupWhereMatchWithDino(dto.getDino());
+        Diary post = repository.getByDino(dto.getDino());
         // rno 안쓰는 이유는 대 댓글때문임.
         Long setrg = 1L; // set ReplyGroup = rg //처음 등록된 댓글은 setrg = 1L
         if (lastestrg.get().size() != 0) { // 처음 등록된 댓글이 아닐 경우
@@ -268,7 +264,11 @@ public class DiaryServiceImpl implements DiaryService {
         dto.setReplyOrder(0L);
         dto.setMid(result.get().getMid());
         Reply reply = replyDTOtoEntity(dto);
-        replyRepository.save(reply);
+        if (post.isReplyYN() == false) {
+            return null;
+        } else {
+            replyRepository.save(reply);
+        }
         log.info("reply rno " + reply.getRno());
         log.info("reply.getReplyContent()" + reply.getReplyContent());
         log.info("reply.getReplyDepth()" + reply.getReplyDepth());

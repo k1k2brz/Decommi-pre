@@ -87,7 +87,7 @@
           placeholder="댓글을 입력해주세요."
         />
         <button @click="addComment" class="btn-regular">답글달기</button>
-        <div class="d-flex align-items-center" style="width: 70px">
+        <div class="d-flex align-items-center" style="width: 80px">
           <button @click="onAddReplyCancel" class="text-btn flex-wrap">
             답글취소
           </button>
@@ -186,7 +186,7 @@ export default {
         await axios
           .post(`/decommi/api/diary/reply/remove`, body, { headers })
           .then((res) => {
-            console.log(res);
+            console.log(res.data);
             emit("remove");
           });
       } catch (err) {

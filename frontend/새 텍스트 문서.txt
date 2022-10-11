@@ -3,6 +3,9 @@ FROM d_diary d
 left JOIN d_tag h ON h.diary_dino = d.dino
 WHERE h.tag_name LIKE "운동"; 
 
+페이징 물어볼 것
+
+
 다음에는 꼭 Leave Site (백스페이스 / 라우터 바뀌면 재로딩) 구현할 것
 
 vuex로 필터값이랑 입력값을 보낸다.

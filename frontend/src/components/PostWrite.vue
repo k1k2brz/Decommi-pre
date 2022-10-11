@@ -171,7 +171,7 @@ export default {
         language: "ko",
         placeholder: "오늘의 다이어리를 작성해보세요.",
         simpleUpload: {
-          uploadUrl: "./api/diary/write/image",
+          uploadUrl: "/decommi/api/diary/write/image",
           withCredentials: true,
           headers: {
             Authorization: token,
@@ -343,7 +343,7 @@ export default {
 
     const writeCompletedBtn = async () => {
       try {
-        const url = "./api/diary/write";
+        const url = "/decommi/api/diary/write";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,

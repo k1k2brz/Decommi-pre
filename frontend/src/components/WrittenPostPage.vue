@@ -105,7 +105,7 @@ export default {
 
     const onEditBtn = async () => {
       try {
-        const url = "./api/diary/modify/check";
+        const url = "/decommi/api/diary/modify/check";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -121,7 +121,7 @@ export default {
           .then((res) => {
             // reactive로 빼기
             // 누구나 수정 불가능하도록 고유번호 지정
-            if (res.data.writer == store.state.users.me.email) {
+            if (res.data.writer == store.state.users.me.id) {
               router.push(`/editPost?edit=${res.data.dino}`);
             } else {
               alert("수정할 권한이 없습니다");
@@ -138,7 +138,34 @@ export default {
         console.log(err);
       }
     };
-    const onRemoveBtn = async () => {};
+    const onRemoveBtn = async () => {
+      try {
+        const url = "/decommi/api/diary/delete";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          dino: state.dino,
+          writer: store.state.users.me.id,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            console.log(res.data);
+            router.push({
+              name: "Main",
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
     let dino = new URLSearchParams(window.location.search).get("id");
     state.dino = parseInt(`${dino}`);
@@ -168,7 +195,7 @@ export default {
       }
     }
     const mountedAxios = async () => {
-      await axios.get(`./diary/read/${dino}`).then((res) => {
+      await axios.get(`decommi/diary/read/${dino}`).then((res) => {
         state.regDate = res.data.diaryPost.regDate;
         state.title = res.data.diaryPost.title;
         state.content = res.data.diaryPost.content;

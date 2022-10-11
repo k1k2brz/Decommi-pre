@@ -208,7 +208,7 @@ export default defineComponent({
     //       mid: store.state.users.me.mid,
     //     });
     //     // try {
-    //     //   const url = "./diary/list";
+    //     //   const url = "/decommi/diary/list";
     //     //   const headers = {
     //     //     "Content-Type": "application/json",
     //     //     Authorization: store.state.users.me.token,
@@ -229,7 +229,7 @@ export default defineComponent({
     //     // }
     //   } else if (!keyword || keyword == "") {
     //     try {
-    //       const url = "./diary/list";
+    //       const url = "/decommi/diary/list";
     //       const headers = {
     //         "Content-Type": "application/json",
     //         Authorization: store.state.users.me.token,
@@ -260,9 +260,10 @@ export default defineComponent({
           name: "Home",
         });
       } else {
-        router.push({
-          name: "Main",
-        });
+        router.push("/mainpage");
+        setTimeout(() => {
+          router.go(0);
+        }, 50);
       }
     };
 

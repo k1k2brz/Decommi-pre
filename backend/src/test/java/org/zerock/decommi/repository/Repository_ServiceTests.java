@@ -1,8 +1,8 @@
 package org.zerock.decommi.repository;
 
-import static org.mockito.ArgumentMatchers.anyList;
+// import static org.mockito.ArgumentMatchers.anyList;
 
-import java.util.List;
+// import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -15,13 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.zerock.decommi.dto.DiaryDTO;
+// import org.zerock.decommi.dto.DiaryDTO;
 import org.zerock.decommi.dto.MemberDTO;
-import org.zerock.decommi.dto.TagDTO;
+// import org.zerock.decommi.dto.TagDTO;
 import org.zerock.decommi.entity.Help;
-import org.zerock.decommi.entity.diary.Diary;
-import org.zerock.decommi.entity.diary.Heart;
-import org.zerock.decommi.entity.diary.Report;
+// import org.zerock.decommi.entity.diary.Diary;
+// import org.zerock.decommi.entity.diary.Heart;
+// import org.zerock.decommi.entity.diary.Report;
 import org.zerock.decommi.entity.member.Member;
 import org.zerock.decommi.repository.diary.BookmarkRepository;
 import org.zerock.decommi.repository.diary.DiaryRepository;
@@ -198,8 +198,8 @@ public class Repository_ServiceTests {
     @Test
     public void insertHelp() {
         IntStream.rangeClosed(1, 20).forEach(i -> {
-            Member member = Member.builder().mid(1L).build();
-            Help help = Help.builder().content("QNA" + i).title("QNA" + i).writer(member).helpType("FAQ")
+            Member member = Member.builder().mid(20L).build();
+            Help help = Help.builder().content("FAQ" + i).title("FAQ" + i).writer(member).helpType("FAQ")
                     .build();
             helpRepository.save(help);
         });
@@ -208,7 +208,7 @@ public class Repository_ServiceTests {
     @Test
     public void insertHelp2() {
         IntStream.rangeClosed(1, 20).forEach(i -> {
-            Member member = Member.builder().mid(1L).build();
+            Member member = Member.builder().mid(20L).build();
             Help help = Help.builder().content("NOTICE" + i).title("NOTICE" + i).writer(member).helpType("NOTICE")
                     .build();
             helpRepository.save(help);
