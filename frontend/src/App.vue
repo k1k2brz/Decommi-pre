@@ -35,5 +35,5 @@ export default {
   width: 100%
 
 .bg
-  background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%)
+  background-color: #FBF9FF
 </style>
