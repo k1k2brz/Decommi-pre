@@ -4,8 +4,8 @@ const target = "http://localhost:8081";
 module.exports = defineConfig({
   configureWebpack: {
     performance: {
-      maxEntrypointSize: 5120000,
-      maxAssetSize: 5120000,
+      maxEntrypointSize: 512000000,
+      maxAssetSize: 512000000,
     },
   },
   devServer: {
@@ -21,6 +21,6 @@ module.exports = defineConfig({
     },
   },
 
-  publicPath: "/decommi",
+  // publicPath: "/decommi",
   transpileDependencies: ["vue-meta"],
 });

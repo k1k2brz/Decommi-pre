@@ -73,6 +73,9 @@ export default {
       counting: 1,
     });
 
+    console.log(state.midCount)
+    console.log(state.replyMidNum)
+
     // console.log(state.midCount);
 
     // 코멘트 추가
