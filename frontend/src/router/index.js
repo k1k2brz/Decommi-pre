@@ -21,10 +21,7 @@ import Recommendtag from "../pages/findtag/RecommendTag.vue";
 import Selectgoodtag from "../pages/SelectGoodtag.vue";
 import Selectdisliketag from "../pages/SelectDisliketag.vue";
 import Managerpage from "../pages/managerpage/ManagerPage.vue";
-import Tagmanagement from "../pages/managerpage/TagManagement.vue";
 import Reportmanagement from "../pages/managerpage/ReportManagement.vue";
-import Dashboard from "../pages/managerpage/DashBoard.vue";
-import Statisticsmanagement from "../pages/managerpage/StatisticsManagement.vue";
 import Usermanagement from "../pages/managerpage/UserManagement.vue";
 import Editpost from "../components/EditPost.vue";
 import Mydiary from "../pages/mypage/MyDiary.vue";
@@ -174,29 +171,14 @@ const router = createRouter({
       component: Managerpage,
     },
     {
-      path: "/managerpage/tag",
-      name: "TagManagement",
-      component: Tagmanagement,
-    },
-    {
       path: "/managerpage/report",
       name: "ReportManagement",
       component: Reportmanagement,
     },
     {
-      path: "/managerpage/dashboard",
-      name: "DashBoard",
-      component: Dashboard,
-    },
-    {
       path: "/managerpage/user",
       name: "UserManagement",
       component: Usermanagement,
-    },
-    {
-      path: "/managerpage/statistics",
-      name: "StatisticsManagement",
-      component: Statisticsmanagement,
     },
     {
       path: "/editPost",

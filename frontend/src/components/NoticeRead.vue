@@ -26,13 +26,13 @@
           </div>
 
           <div v-if="state.writer == me.mid" class="d-flex">
-            <button
+            <!-- <button
               @click="onEditBtn"
               type="button"
               class="reportBtn reportBtnHover"
             >
               수정
-            </button>
+            </button> -->
             <button
               @click="onRemoveBtn"
               type="button"
@@ -89,33 +89,33 @@ export default {
       return store.state.users.me;
     });
 
-    const onEditBtn = async () => {
-      try {
-        const url = `./api/help/modify/${hbno}`;
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: store.state.users.me.token,
-          mid: store.state.users.me.mid,
-        };
-        const body = {
-          hbno,
-          writer: store.state.users.me.mid,
-        };
-        console.log(body);
-        await axios
-          .post(url, body, { headers })
-          .then((res) => {
-            router.push(`/EditNotice?edit=${hbno}`);
-            console.log("수정이동");
-            console.log(res.data);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    // const onEditBtn = async () => {
+    //   try {
+    //     const url = `./api/help/modify/${hbno}`;
+    //     const headers = {
+    //       "Content-Type": "application/json",
+    //       Authorization: store.state.users.me.token,
+    //       mid: store.state.users.me.mid,
+    //     };
+    //     const body = {
+    //       hbno,
+    //       writer: store.state.users.me.mid,
+    //     };
+    //     console.log(body);
+    //     await axios
+    //       .post(url, body, { headers })
+    //       .then((res) => {
+    //         router.push(`/EditNotice?edit=${hbno}`);
+    //         console.log("수정이동");
+    //         console.log(res.data);
+    //       })
+    //       .catch((err) => {
+    //         console.error(err);
+    //       });
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
 
     const onRemoveBtn = async () => {
       try {
@@ -134,7 +134,9 @@ export default {
           .post(url, body, { headers })
           .then((res) => {
             console.log(res.data);
-            // router.go(0);
+            router.push({
+              name:'ServiceNotice'
+            });
           })
           .catch((err) => {
             console.error(err);
@@ -148,7 +150,7 @@ export default {
       state,
       mountedAxios,
       me,
-      onEditBtn,
+      // onEditBtn,
       onRemoveBtn,
     };
   },

@@ -69,5 +69,5 @@ export default {
     font-weight: 500
     color: #AE6FFF
 
-.colors
+
 </style>

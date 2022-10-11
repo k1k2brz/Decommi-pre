@@ -139,34 +139,32 @@ export default {
       }
     };
 
-    let params = new URLSearchParams(window.location.search).get("edit");
+    let params = new URLSearchParams(window.location.search).get("hbno");
 
     const axiosComponent = async () => {
-      const url = "./api/diary/modify/check";
+      const url = `./api/help/modify/${params}`;
       const headers = {
         "Content-Type": "application/json",
         Authorization: store.state.users.me.token,
         mid: store.state.users.me.mid,
       };
       const body = {
-        dino: params,
-        writer: store.state.users.me.id,
+        hbno: params,
+        writer: store.state.users.me.mid,
       };
       console.log(body);
       await axios
         .post(url, body, { headers })
         .then((res) => {
+          console.log("==============="+res)
           localStorage.setItem("Content", res.data.content);
           myWriteTitle.value = res.data.title;
           diaryPrivacyCheck.value = res.data.openYN;
           commentPrivacyCheck.value = res.data.replyYN;
-          state.myContent = JSON.parse(JSON.stringify(res.data.content));
+          // state.myContent = JSON.parse(JSON.stringify(res.data.content));
           store.dispatch("posts/setContent", {
             content: res.data.content,
           });
-          for (let i = 0; i < res.data.tagList.length; i++) {
-            tags.push(res.data.tagList[i]);
-          }
         })
         .catch((err) => {
           console.error(err);
@@ -182,9 +180,11 @@ export default {
 
     axiosComponent();
 
+    let edit = new URLSearchParams(window.location.search).get("edit");
+
     const editCompleteBtn = async () => {
       try {
-        const url = "./api/diary/modify/register";
+        const url = `./api/help/modify/${edit}`;
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,

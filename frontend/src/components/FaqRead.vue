@@ -26,13 +26,13 @@
           </div>
 
           <div v-if="state.writer == me.mid" class="d-flex">
-            <button
+            <!-- <button
               @click="onEditBtn"
               type="button"
               class="reportBtn reportBtnHover"
             >
               수정
-            </button>
+            </button> -->
             <button
               @click="onRemoveBtn"
               type="button"
@@ -52,12 +52,12 @@
 import { reactive } from "@vue/reactivity";
 import axios from "axios";
 import { useStore } from "vuex";
-// import { useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { computed, onBeforeMount } from "@vue/runtime-core";
 export default {
   setup() {
     const store = useStore();
-    // const router = useRouter();
+    const router = useRouter();
     let state = reactive({
       title: null,
       content: null,
@@ -87,33 +87,33 @@ export default {
       return store.state.users.me;
     });
 
-    const onEditBtn = async () => {
-      try {
-        const url = `./api/help/modify/${hbno}`;
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: store.state.users.me.token,
-          mid: store.state.users.me.mid,
-        };
-        const body = {
-          hbno,
-          writer: store.state.users.me.mid,
-        };
-        console.log(body);
-        await axios
-          .post(url, body, { headers })
-          .then((res) => {
-            // router.push(`/editPost?edit=${res.data.dino}`);
-            console.log("수정이동");
-            console.log(res.data);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    // const onEditBtn = async () => {
+    //   try {
+    //     const url = `./api/help/modify/${hbno}`;
+    //     const headers = {
+    //       "Content-Type": "application/json",
+    //       Authorization: store.state.users.me.token,
+    //       mid: store.state.users.me.mid,
+    //     };
+    //     const body = {
+    //       hbno,
+    //       writer: store.state.users.me.mid,
+    //     };
+    //     console.log(body);
+    //     await axios
+    //       .post(url, body, { headers })
+    //       .then((res) => {
+    //         // router.push(`/editPost?edit=${res.data.dino}`);
+    //         console.log("수정이동");
+    //         console.log(res.data);
+    //       })
+    //       .catch((err) => {
+    //         console.error(err);
+    //       });
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
 
     const onRemoveBtn = async () => {
       try {
@@ -132,7 +132,9 @@ export default {
           .post(url, body, { headers })
           .then((res) => {
             console.log(res.data);
-            // router.go(0);
+            router.push({
+              name:'ServiceFaq'
+            });
           })
           .catch((err) => {
             console.error(err);
@@ -145,7 +147,7 @@ export default {
     return {
       state,
       mountedAxios,
-      onEditBtn,
+      // onEditBtn,
       onRemoveBtn,
       me,
     };

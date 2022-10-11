@@ -14,21 +14,12 @@
           >
         </div>
         <hr />
-        <div class="d-flex">
-          <i class="bi bi-calendar4-week"></i>
-          <router-link class="nav-link ml-2" :to="{ name: 'DashBoard' }"
-            >대시보드</router-link
-          >
-        </div>
-        <hr />
         <div>
           <i class="bi bi-person-lines-fill"></i>
           <span class="ml-2">회원관리</span>
         </div>
         <div class="d-flex">
-          <router-link class="nav-link ml-4" :to="{ name: 'UserManagement' }"
-            >회원 정보 관리</router-link
-          >
+          <router-link class="nav-link ml-4" :to="{ name: 'UserManagement' }">회원 정보 관리</router-link>
         </div>
         <hr />
         <div>
@@ -36,84 +27,122 @@
           <span class="ml-2">게시물 관리</span>
         </div>
         <div class="d-flex">
-          <router-link class="nav-link ml-4" :to="{ name: 'TagManagement' }"
-            >태그 관리</router-link
-          >
-        </div>
-        <div class="d-flex">
-          <router-link class="nav-link ml-4" :to="{ name: 'ReportManagement' }"
-            >신고 관리</router-link
-          >
-        </div>
-        <hr />
-        <div class="d-flex">
-          <i class="bi bi-reception-4"></i>
-          <router-link
-            class="nav-link ml-2"
-            :to="{ name: 'StatisticsManagement' }"
-            >통계</router-link
-          >
+          <router-link class="nav-link ml-4" :to="{ name: 'ReportManagement' }">신고 관리</router-link>
         </div>
         <hr />
         <div class="d-flex">
           <i class="bi bi-reply-fill"></i>
-          <router-link class="nav-link ml-2" :to="{ name: 'Main' }"
-            >메인 페이지로 이동</router-link
-          >
+          <router-link class="nav-link ml-2" :to="{ name: 'Main' }">메인 페이지로 이동</router-link>
         </div>
       </div>
     </div>
     <div class="mt-3" style="width: 100%">
-      <div class="purple-box">
-        <div class="d-flex justify-content-between mb-2">
-          <span>카테고리</span>
-          <span>글제목</span>
-          <span>신고사유</span>
-          <span>작성자</span>
-          <span>등록일자</span>
-          <span>신고횟수</span>
-        </div>
-        <div class="d-flex flex-column gap-2" v-for="i in 10" :key="i">
-          <div class="d-flex flex-column gap-2">
-            <hr />
-            <div class="d-flex justify-content-between">
-              <span class="red bold">다이어리</span>
-              <span>개인정보유출 할 것 같은 제목</span>
-              <span>불법정보</span>
-              <span>@id123213124</span>
-              <span>2022.09.01</span>
-              <span>123</span>
-            </div>
-          </div>
-        </div>
+        <div class="bg p-4">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">신고 번호</th>
+              <th scope="col">작성자</th>
+              <th scope="col">신고 제목</th>
+              <th scope="col">신고 내용</th>
+              <th scope="col">다이어리 번호</th>
+              <th scope="col">신고 당한 글</th>
+              <th scope="col">신고 취소</th>
+              <th scope="col">글 삭제</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="dto in reportInfo.dtoList" :key="dto" class="w-100">
+              <td>{{dto.reid}}</td>
+              <td>{{dto.mid}}</td>
+              <td>{{dto.title}}</td>
+              <td>{{dto.reportContent}}</td>
+              <td>{{dto.dino}}</td>
+              <td><a :href='"../read?id="+dto.dino'><button class="btn btn-primary">다이어리 보기</button></a></td>
+              <td><button class="btn btn-warning" @click="reportCancel(dto.reid)">신고 취소</button></td>
+              <td><button class="btn btn-danger" @click="diaryDelete(dto.dino)">다이어리 삭제</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link" @click="getUserList(reportInfo.page-1)"
+                v-if="reportInfo.page!=1">Previous</a></li>
+            <li :class="reportInfo.page == page?'page-item active':'page-item'" v-for="page in reportInfo.pageList"
+              :key="page"><a class="page-link" @click="getUserList(page)">{{page}}</a></li>
+            <li class="page-item"><a class="page-link" @click="getUserList(reportInfo.page+1)"
+                v-if="reportInfo.page!=reportInfo.totalPage">Next</a></li>
+          </ul>
+        </nav>
       </div>
-      <div class="m-3 d-flex justify-content-center">
-        <i class="bi bi-chevron-double-left"></i>
-        <i class="bi bi-chevron-left"></i>
-        <span>page</span>
-        <i class="bi bi-chevron-right"></i>
-        <i class="bi bi-chevron-double-right"></i>
-      </div>
-      <div class="mb-3 d-flex justify-content-center gap-3">
-        <div class="d-flex">
-          <select class="form-select form-control" id="inputGroupSelect02">
-            <option value="1">제목</option>
-            <option value="2">내용</option>
-            <option value="3">제목+내용</option>
-          </select>
-        </div>
-        <input
-          type="text"
-          class="form-control serviceSearch"
-          aria-label="Text input with segmented dropdown button"
-        />
-        <button class="btn-regular">검색</button>
       </div>
     </div>
-  </div>
 </template>
 
-<script></script>
+<script setup>
+import { reactive } from 'vue';
+import axios from 'axios';
+import store from '@/store';
+import router from '@/router';
+const headers = {
+  "Content-Type": "application/json;",
+  Authorization: store.state.users.me.token,
+  mid: store.state.users.me.mid,
+};
+
+function diaryDelete(num) {
+  let body = { dino: num }
+  axios.post(store.state.axiosLinkAdmin + "/api/admin/diarymanagement/delete", body, { headers }).then(function (res) { res.data == true ? router.go(0) : alert("삭제실패") });
+}
+function reportCancel(num) {
+  let body = { reid: num }
+  axios.post(store.state.axiosLinkAdmin + "/api/admin/reportmanagement/delete", body, { headers }).then(function (res) { res.data == true ? router.go(0) : alert("삭제실패") });
+}
+
+let reportInfo = reactive({
+  dtoList: null,
+  end: null,
+  next: null,
+  page: null,
+  pageList: null,
+  prev: null,
+  size: null,
+  start: null,
+  totalPage: null
+})
+
+
+
+function getUserList(page) {
+  axios.post(store.state.axiosLinkAdmin + "/api/admin/reportmanagement", { page: page }, { headers })
+    .then(function (res) {
+      reportInfo.dtoList = res.data.dtoList,
+        reportInfo.end = res.data.end,
+        reportInfo.next = res.data.next,
+        reportInfo.page = res.data.page,
+        reportInfo.pageList = res.data.pageList,
+        reportInfo.prev = res.data.prev,
+        reportInfo.size = res.data.size,
+        reportInfo.start = res.data.start,
+        reportInfo.totalPage = res.data.totalPag
+      console.log(res);
+    })
+}
+axios.post(store.state.axiosLinkAdmin + "/api/admin/reportmanagement", { page: 1 }, { headers })
+  .then(function (res) {
+    console.log(res);
+    reportInfo.dtoList = res.data.dtoList,
+      reportInfo.end = res.data.end,
+      reportInfo.next = res.data.next,
+      reportInfo.page = res.data.page,
+      reportInfo.pageList = res.data.pageList,
+      reportInfo.prev = res.data.prev,
+      reportInfo.size = res.data.size,
+      reportInfo.start = res.data.start,
+      reportInfo.totalPage = res.data.totalPag
+  })
+</script>
+
 
 <style lang="sass" scoped>
 .white-space

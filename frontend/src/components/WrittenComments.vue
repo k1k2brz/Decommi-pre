@@ -139,6 +139,7 @@ export default {
             // 페이지 중복을 막기 위한 초기화
             state.counting = 1;
             state.replyMidNum = [];
+            state.midCount = [];
             for (let index = 0; index < res.data.replyList.length; index++) {
               const element = res.data.replyList[index].mid;
               if (!state.replyMidNum.includes(element)) {
