@@ -8,8 +8,6 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 import "@ckeditor/ckeditor5-build-classic/build/translations/ko";
 // import "@ckeditor/ckeditor5-editor-inline";
 
-import "./plugins/chart.js";
-
 import "@/sass/style.sass";
 // Bootstrap importing
 import "bootstrap/dist/css/bootstrap.css";

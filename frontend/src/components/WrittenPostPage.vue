@@ -195,7 +195,7 @@ export default {
       }
     }
     const mountedAxios = async () => {
-      await axios.get(`decommi/diary/read/${dino}`).then((res) => {
+      await axios.get(`/decommi/diary/read/${dino}`).then((res) => {
         state.regDate = res.data.diaryPost.regDate;
         state.title = res.data.diaryPost.title;
         state.content = res.data.diaryPost.content;

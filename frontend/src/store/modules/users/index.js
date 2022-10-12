@@ -37,7 +37,7 @@ export default {
   actions: {
     signUp({ commit }, payload) {
       // let myCookieValue = cookies.get("myCoookie");
-      const url = "/decommi/member/signup";
+      const url = "./decommi/member/signup";
       const headers = {
         "Content-Type": "application/json",
       };
@@ -85,7 +85,7 @@ export default {
     logIn({ commit }, payload) {
       const log = async () => {
         try {
-          const url = "/decommi/member/login";
+          const url = "./decommi/member/login";
           const headers = {
             "Content-Type": "application/json",
           };

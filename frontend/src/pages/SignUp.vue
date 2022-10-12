@@ -241,7 +241,7 @@ export default {
         info.idDuplicate = false;
         return;
       }
-      const url = "/decommi/member/emailCheck";
+      const url = "./decommi/member/emailCheck";
       const headers = {
         "Content-Type": "application/json",
       };
@@ -280,7 +280,7 @@ export default {
         info.idDuplicate2 = false;
         return;
       }
-      const url = "/decommi/member/idCheck";
+      const url = "./decommi/member/idCheck";
       const headers = {
         "Content-Type": "application/json",
       };

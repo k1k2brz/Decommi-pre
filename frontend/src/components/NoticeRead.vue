@@ -91,7 +91,7 @@ export default {
 
     // const onEditBtn = async () => {
     //   try {
-    //     const url = `./api/help/modify/${hbno}`;
+    //     const url = `/decommi/api/help/modify/${hbno}`;
     //     const headers = {
     //       "Content-Type": "application/json",
     //       Authorization: store.state.users.me.token,

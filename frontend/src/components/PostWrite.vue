@@ -153,7 +153,6 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { computed } from "@vue/runtime-core";
 import ClassicEditor from "@ckeditor/ck5/build/ckeditor";
-// import InlineEditor from "@ckeditor/ck5/build/ckeditor";
 import store from "@/store";
 
 export default {
