@@ -119,7 +119,7 @@ export default {
 
     const onRemoveBtn = async () => {
       try {
-        const url = `./api/help/delete/${hbno}`;
+        const url = `/decommi/api/help/delete/${hbno}`;
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,

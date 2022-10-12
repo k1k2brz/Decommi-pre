@@ -4,16 +4,32 @@
     <hr />
     <div>
       <div class="mb-3 d-flex justify-content-center gap-2">
-        <input v-model="commentValue" @keyup.enter="addComment" type="text" class="comment serviceSearch w-100"
-          placeholder="댓글을 입력해주세요." />
+        <input
+          v-model="commentValue"
+          @keyup.enter="addComment"
+          type="text"
+          class="comment serviceSearch w-100"
+          placeholder="댓글을 입력해주세요."
+        />
         <button @click="addComment" class="btn-regular">댓글입력</button>
       </div>
     </div>
     <div v-for="(cmt, index) in state.commentList" :key="cmt + index">
-      <WrittenCommentsContent :dino="state.dino" :midCount="state.midCount[index]" :comment="cmt"
-        @remove="remove(item, index)" @change="change($event)" @replyreply="replyreply" />
+      <WrittenCommentsContent
+        :dino="state.dino"
+        :midCount="state.midCount[index]"
+        :comment="cmt"
+        @remove="remove(item, index)"
+        @change="change($event)"
+        @replyreply="replyreply"
+      />
     </div>
-    <button style="opacity: 90%" class="btn-regular-round mt-3 w-100" v-if="stateInfo" @click="btnreply()">
+    <button
+      style="opacity: 90%"
+      class="btn-regular-round mt-3 w-100"
+      v-if="stateInfo"
+      @click="btnreply()"
+    >
       댓글 더 보기
     </button>
   </div>
@@ -48,14 +64,11 @@ export default {
       writer: store.state.users.me.id,
       commentList: [],
       pageTotalCount: 0,
-      pageNumber: 0,
       duplicatedCheck: [],
       userNumber: 1,
       replyMidNum: [],
       midCount: [],
       counting: 1,
-      pageArray: [],
-      aaaa: 0,
     });
 
     // 코멘트 추가
@@ -74,8 +87,8 @@ export default {
             .then((res) => {
               console.log(res.data);
               // 페이지를 0으로 초기화한다
-              // state.reqPage = 0;
-              replyreply();
+              state.reqPage = 0;
+              replyMore();
             })
             .catch((err) => {
               console.error(err);
@@ -120,52 +133,7 @@ export default {
                 state.counting + 1;
               }
             }
-            // state.commentList = [];
-            state.commentList.push(...res.data.replyList);
-            if (res.data.replyList.length % 5 == 0) {
-              stateInfo.value = true;
-            } else {
-              stateInfo.value = false;
-            }
-          });
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    const replyMoreMore = async () => {
-      try {
-        const body = {
-          dino: state.dino,
-          reqPage: state.reqPage,
-          mid: store.state.users.me.mid,
-        };
-        // commnetList가 없을 때
-        if (state.reqPage == 0) state.commentList = null;
-        await axios
-          .post(`/decommi/api/diary/reply/`, body, { headers })
-          .then((res) => {
-            console.log(res.data);
-            if (res.data.replyList == undefined) {
-              return;
-            }
-            // 페이지 중복을 막기 위한 초기화
-            state.counting = 1;
-            state.replyMidNum = [];
-            // state.midCount = [];
-            for (let index = 0; index < res.data.replyList.length; index++) {
-              const element = res.data.replyList[index].mid;
-              if (!state.replyMidNum.includes(element)) {
-                state.replyMidNum.push(element);
-              }
-              if (state.replyMidNum.indexOf(element) !== -1 && state.midCount) {
-                state.midCount.push(state.replyMidNum.indexOf(element) + 1);
-              } else if (state.replyMidNum.indexOf(element) == -1) {
-                state.midCount.push(state.counting);
-                state.counting + 1;
-              }
-            }
-            // state.commentList = [];
+            state.commentList = [];
             state.commentList.push(...res.data.replyList);
             if (res.data.replyList.length % 5 == 0) {
               stateInfo.value = true;
@@ -242,24 +210,8 @@ export default {
       console.log(comment);
     };
 
-    const replyreply = async () => {
-      state.counting = 1;
-      state.replyMidNum = [];
-      state.midCount = [];
-      state.commentList = [];
-
-      state.aaaa = state.reqPage;
-      state.reqPage = 0
-      await reply();
-      await a();
-
-      function a() {
-        for (let index = 1; index <= state.aaaa; index++) {
-          state.reqPage = index;
-          replyMoreMore();
-        }
-        
-      }
+    const replyreply = () => {
+      replyMore();
     };
 
     return {

@@ -131,7 +131,7 @@ function diaryDelete(num) {
   let body = { dino: num };
   axios
     .post(
-      store.state.axiosLinkAdmin + "/api/admin/diarymanagement/delete",
+      store.state.axiosLinkAdmin + "/decommi/api/admin/diarymanagement/delete",
       body,
       { headers }
     )
@@ -143,7 +143,7 @@ function reportCancel(num) {
   let body = { reid: num };
   axios
     .post(
-      store.state.axiosLinkAdmin + "/api/admin/reportmanagement/delete",
+      store.state.axiosLinkAdmin + "/decommi/api/admin/reportmanagement/delete",
       body,
       { headers }
     )
@@ -167,7 +167,7 @@ let reportInfo = reactive({
 function getUserList(page) {
   axios
     .post(
-      store.state.axiosLinkAdmin + "/api/admin/reportmanagement",
+      store.state.axiosLinkAdmin + "/decommi/api/admin/reportmanagement",
       { page: page },
       { headers }
     )
@@ -186,7 +186,7 @@ function getUserList(page) {
 }
 axios
   .post(
-    store.state.axiosLinkAdmin + "/api/admin/reportmanagement",
+    store.state.axiosLinkAdmin + "/decommi/api/admin/reportmanagement",
     { page: 1 },
     { headers }
   )

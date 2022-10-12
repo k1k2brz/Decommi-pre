@@ -166,7 +166,7 @@ let serchingInfo = reactive({
 function getUserList(page) {
   axios
     .post(
-      store.state.axiosLinkAdmin + "/api/admin/usermanagement",
+      store.state.axiosLinkAdmin + "/decommi/api/admin/usermanagement",
       { page: page, keyword: serchingInfo.keyword, type: serchingInfo.type },
       { headers }
     )
@@ -184,7 +184,7 @@ function getUserList(page) {
 }
 axios
   .post(
-    store.state.axiosLinkAdmin + "/api/admin/usermanagement",
+    store.state.axiosLinkAdmin + "/decommi/api/admin/usermanagement",
     { page: 1 },
     { headers }
   )
@@ -204,7 +204,7 @@ axios
 function getSearchingList() {
   axios
     .post(
-      store.state.axiosLinkAdmin + "/api/admin/usermanagement",
+      store.state.axiosLinkAdmin + "/decommi/api/admin/usermanagement",
       { page: 1, keyword: serchingInfo.keyword, type: serchingInfo.type },
       { headers }
     )

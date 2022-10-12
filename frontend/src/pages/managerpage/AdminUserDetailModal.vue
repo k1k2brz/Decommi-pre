@@ -139,7 +139,7 @@ const headers = {
 function modifyUser() {
   axios
     .post(
-      store.state.axiosLinkAdmin + "/api/admin/usermanagement/modify",
+      store.state.axiosLinkAdmin + "/decommi/api/admin/usermanagement/modify",
       info,
       { headers }
     )
@@ -151,7 +151,7 @@ function DeleteUser() {
   console.log(props.info);
   axios
     .post(
-      store.state.axiosLinkAdmin + "/api/admin/usermanagement/delete",
+      store.state.axiosLinkAdmin + "/decommi/api/admin/usermanagement/delete",
       props.info,
       { headers }
     )

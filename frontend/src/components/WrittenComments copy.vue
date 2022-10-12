@@ -133,51 +133,6 @@ export default {
       }
     };
 
-    const replyMoreMore = async () => {
-      try {
-        const body = {
-          dino: state.dino,
-          reqPage: state.reqPage,
-          mid: store.state.users.me.mid,
-        };
-        // commnetList가 없을 때
-        if (state.reqPage == 0) state.commentList = null;
-        await axios
-          .post(`/decommi/api/diary/reply/`, body, { headers })
-          .then((res) => {
-            console.log(res.data);
-            if (res.data.replyList == undefined) {
-              return;
-            }
-            // 페이지 중복을 막기 위한 초기화
-            state.counting = 1;
-            state.replyMidNum = [];
-            // state.midCount = [];
-            for (let index = 0; index < res.data.replyList.length; index++) {
-              const element = res.data.replyList[index].mid;
-              if (!state.replyMidNum.includes(element)) {
-                state.replyMidNum.push(element);
-              }
-              if (state.replyMidNum.indexOf(element) !== -1 && state.midCount) {
-                state.midCount.push(state.replyMidNum.indexOf(element) + 1);
-              } else if (state.replyMidNum.indexOf(element) == -1) {
-                state.midCount.push(state.counting);
-                state.counting + 1;
-              }
-            }
-            // state.commentList = [];
-            state.commentList.push(...res.data.replyList);
-            if (res.data.replyList.length % 5 == 0) {
-              stateInfo.value = true;
-            } else {
-              stateInfo.value = false;
-            }
-          });
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     // 버튼을 클릭했을 때 +1이 되고 reply가 실행되도록 하는 함수
     // 여기서 +1이 작동되어야 댓글이 부분이 안꼬임
     function btnreply() {
@@ -193,6 +148,7 @@ export default {
           reqPage: state.reqPage,
           mid: store.state.users.me.mid,
         };
+        // console.log("reqPage" + state.reqPage);
         await axios
           .post(`/decommi/api/diary/reply/`, body, { headers })
           .then((res) => {
@@ -243,22 +199,17 @@ export default {
     };
 
     const replyreply = async () => {
-      state.counting = 1;
-      state.replyMidNum = [];
-      state.midCount = [];
-      state.commentList = [];
-
+      state.commentList = []
       state.aaaa = state.reqPage;
       state.reqPage = 0
       await reply();
       await a();
-
       function a() {
         for (let index = 1; index <= state.aaaa; index++) {
+          console.log("reqpage ====>" + state.reqPage);
           state.reqPage = index;
-          replyMoreMore();
+          replyMore();
         }
-        
       }
     };
 
