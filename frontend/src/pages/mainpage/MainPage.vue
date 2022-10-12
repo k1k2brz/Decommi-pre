@@ -40,7 +40,7 @@
             <button @click="btnSearch" class="btn-regular">입력</button>
           </div>
           <!-- <HashFilter /> -->
-          <RecommendTag @onClickRecommendTag="onClickRecommendTag" />
+          <RecommendTag  @onClickRecommendTag="onClickRecommendTag" />
         </div>
       </div>
     </div>
@@ -150,8 +150,6 @@ export default {
         };
         const body = {
           tagName: event,
-          // page: 1,
-          // size: 5,
         };
         console.log(body);
         await axios
@@ -171,7 +169,7 @@ export default {
             } else if (res.data.length % 5 == 0) {
               state.stopScrolling = false;
             }
-            router.push(`/mainpage?tagsearch=${event}`);
+            router.push(`/mainpage?tagsearch=?${event}`);
           })
           .catch((err) => {
             console.error(err);

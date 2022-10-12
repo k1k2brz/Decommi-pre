@@ -142,7 +142,7 @@ export default {
     let params = new URLSearchParams(window.location.search).get("hbno");
 
     const axiosComponent = async () => {
-      const url = `/decommi/api/help/modify/${params}`;
+      const url = `./decommi/api/help/modify/${params}`;
       const headers = {
         "Content-Type": "application/json",
         Authorization: store.state.users.me.token,
@@ -184,7 +184,7 @@ export default {
 
     const editCompleteBtn = async () => {
       try {
-        const url = `/decommi/api/help/modify/${edit}`;
+        const url = `./decommi/api/help/modify/${edit}`;
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,

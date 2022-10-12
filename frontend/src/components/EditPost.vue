@@ -255,7 +255,7 @@ export default {
     let params = new URLSearchParams(window.location.search).get("edit");
 
     const axiosComponent = async () => {
-      const url = "/decommi/api/diary/modify/check";
+      const url = "./decommi/api/diary/modify/check";
       const headers = {
         "Content-Type": "application/json",
         Authorization: store.state.users.me.token,
@@ -297,7 +297,7 @@ export default {
 
     const editCompleteBtn = async () => {
       try {
-        const url = "/decommi/api/diary/modify/register";
+        const url = "./decommi/api/diary/modify/register";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
