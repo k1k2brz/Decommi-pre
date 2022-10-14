@@ -105,6 +105,7 @@ export default {
     },
   },
   setup(props) {
+    console.log(props.post)
     const router = useRouter();
     const store = useStore();
     const { emit } = getCurrentInstance();
@@ -130,6 +131,12 @@ export default {
     const me = computed(() => {
       return store.state.users.me.writer;
     });
+
+    // onMounted(() => {
+    //   state.tagList = []
+    //   state.tagList = props.post.tagList
+    //   console.log(state.tagList)
+    // })
 
     const onClickTag = async (e) => {
       emit("onClickTag", e.target.innerHTML);
@@ -267,6 +274,7 @@ export default {
     const PostList = async () => {
       try {
         await axios.get(`/decommi/diary/read/${state.dino}`).then((res) => {
+          console.log(res.data)
           state.dino = res.data.diaryPost.dino;
           for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
             state.tagList.push(res.data.diaryPost.tagList[i]);

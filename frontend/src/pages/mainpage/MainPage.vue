@@ -112,17 +112,18 @@ export default {
           // page: 1,
           // size: 5,
         };
-        console.log(body);
         await axios
           .post(url, body, { headers })
           .then((res) => {
             state.mainPosts = [];
+            
             if (state.body == 0) {
               state.mainPosts = res.data;
             } else {
               // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
               for (let i = 0; i < res.data.length; i++) {
                 state.mainPosts.push(res.data[i]);
+                res.data[i]
               }
             }
             if (res.data.length % 5 !== 0) {
@@ -162,6 +163,7 @@ export default {
               // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
               for (let i = 0; i < res.data.length; i++) {
                 state.mainPosts.push(res.data[i]);
+                console.log(state.mainPosts);
               }
             }
             if (res.data.length % 5 !== 0) {
@@ -191,6 +193,7 @@ export default {
         page: state.body,
       };
       await axios.post("/decommi/diary/list", body, { headers }).then((res) => {
+        console.log(res.data)
         if (state.body == 0) {
           state.mainPosts = res.data;
         } else {
