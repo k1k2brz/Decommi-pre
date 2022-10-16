@@ -37,8 +37,8 @@
               @click="onClickTag"
               type="button"
               class="btn-tag-sm d-flex"
-              v-for="(tag, index) in state.tagList"
-              :key="tag + index"
+              v-for="tag in state.tagList"
+              :key="tag"
             >
               {{ tag }}
             </button>
@@ -53,7 +53,12 @@
             <WrittenPostsHeart :dino="state.dino" />
             <ReportModal :dino="state.dino" />
           </div>
-          <WrittenComments v-if="state.replyYN == true" :dino="state.dino" />
+          <WrittenComments
+            v-if="state.replyYN == true"
+            :dino="state.dino"
+            :commentList="post.replyList"
+            @reply="reply($event)"
+          />
           <div v-else>
             <hr />
             <div>
@@ -95,7 +100,7 @@ import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
 import PostMenu from "./PostMenu.vue";
 import WrittenPostsHeart from "./WrittenPostsHeart.vue";
 import WrittenComments from "./WrittenComments.vue";
-import { computed } from "@vue/runtime-core";
+import { computed, onBeforeUpdate } from "@vue/runtime-core";
 
 export default {
   props: {
@@ -105,7 +110,7 @@ export default {
     },
   },
   setup(props) {
-    console.log(props.post)
+    // console.log(props.post);
     const router = useRouter();
     const store = useStore();
     const { emit } = getCurrentInstance();
@@ -123,8 +128,9 @@ export default {
       dino: props.post.dino,
       writer: props.post.writer,
       loginWriter: store.state.users.me.id,
-      tagList: [],
+      tagList: props.post.tagList,
       bmDino: [],
+      commentList: props.post.replyList,
       replyYN: props.post.replyYN,
     });
 
@@ -132,11 +138,18 @@ export default {
       return store.state.users.me.writer;
     });
 
-    // onMounted(() => {
-    //   state.tagList = []
-    //   state.tagList = props.post.tagList
-    //   console.log(state.tagList)
-    // })
+    onBeforeUpdate(() => {
+      state.tagList = [];
+      state.tagList = props.post.tagList;
+      state.replyYN = [];
+      state.replyYN = props.post.replyYN;
+      // state.commentList = [];
+      // state.commentList = props.post.commentList;
+    });
+
+    const reply = (item) => {
+      emit("reply", item);
+    };
 
     const onClickTag = async (e) => {
       emit("onClickTag", e.target.innerHTML);
@@ -274,11 +287,11 @@ export default {
     const PostList = async () => {
       try {
         await axios.get(`/decommi/diary/read/${state.dino}`).then((res) => {
-          console.log(res.data)
+          // console.log(res.data);
           state.dino = res.data.diaryPost.dino;
-          for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
-            state.tagList.push(res.data.diaryPost.tagList[i]);
-          }
+          // for (let i = 0; i < res.data.diaryPost.tagList.length; i++) {
+          //   state.tagList.push(res.data.diaryPost.tagList[i]);
+          // }
         });
       } catch (err) {
         console.error(err);
@@ -304,6 +317,7 @@ export default {
       CheckCmt,
       me,
       onClickTag,
+      reply,
     };
   },
   components: {

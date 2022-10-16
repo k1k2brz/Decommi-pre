@@ -67,7 +67,7 @@
             <WrittenPostsHeart :dino="state.dino" />
             <ReportModal :dino="state.dino" />
           </div>
-          <WrittenComments :dino="state.dino" />
+          <WrittenCommentsOrigin :dino="state.dino" />
         </div>
       </div>
     </div>
@@ -82,8 +82,9 @@ import axios from "axios";
 import { computed, onBeforeMount } from "vue";
 import WrittenPostsBookmark from "./WrittenPostsBookmark.vue";
 import WrittenPostsHeart from "./WrittenPostsHeart.vue";
-import WrittenComments from "./WrittenComments.vue";
+// import WrittenComments from "./WrittenComments.vue";
 import ReportModal from "./ReportModal.vue";
+import WrittenCommentsOrigin from "./WrittenCommentsOrigin.vue";
 
 export default {
   setup() {
@@ -169,13 +170,7 @@ export default {
 
     let dino = new URLSearchParams(window.location.search).get("id");
     state.dino = parseInt(`${dino}`);
-    // if (dino.length == 0) {
-    //   errorAndGetBack();
-    // }
-    // function errorAndGetBack() {
-    //   alert("잘못된 접근입니다");
-    //   router.push("/");
-    // }
+
     function getTimeFromJavaDate(s) {
       const cont = new Date(s);
       let date = new Date();
@@ -227,7 +222,8 @@ export default {
     WrittenPostsBookmark,
     WrittenPostsHeart,
     ReportModal,
-    WrittenComments,
+    // WrittenComments,
+    WrittenCommentsOrigin,
   },
 };
 </script>

@@ -4,22 +4,39 @@
     <hr />
     <div>
       <div class="mb-3 d-flex justify-content-center gap-2">
-        <input v-model="commentValue" @keyup.enter="addComment" type="text" class="comment serviceSearch w-100"
-          placeholder="댓글을 입력해주세요." />
+        <input
+          v-model="commentValue"
+          @keyup.enter="addComment"
+          type="text"
+          class="comment serviceSearch w-100"
+          placeholder="댓글을 입력해주세요."
+        />
         <button @click="addComment" class="btn-regular">댓글입력</button>
       </div>
     </div>
     <div v-for="(cmt, index) in state.commentList" :key="cmt + index">
-      <WrittenCommentsContent :dino="state.dino" :midCount="state.midCount[index]" :comment="cmt"
-        @remove="remove(item, index)" @change="change($event)" @replyreply="replyreply" />
+      <!-- :midCount="state.midCount[index]" -->
+      <WrittenCommentsContent
+        :dino="state.dino"
+        :comment="cmt"
+        @remove="remove(item, index)"
+        @change="change($event)"
+        @replyreply="replyreply"
+      />
     </div>
-    <button style="opacity: 90%" class="btn-regular-round mt-3 w-100" v-if="stateInfo" @click="btnreply()">
+    <button
+      style="opacity: 90%"
+      class="btn-regular-round mt-3 w-100"
+      v-if="stateInfo"
+      @click="btnreply()"
+    >
       댓글 더 보기
     </button>
   </div>
 </template>
 
 <script>
+import { getCurrentInstance } from "@vue/runtime-core";
 import { useStore } from "vuex";
 // import { useRouter } from "vue-router";
 import { ref, reactive } from "@vue/reactivity";
@@ -32,9 +49,14 @@ export default {
       type: Number,
       required: true,
     },
+    commentList: {
+      type: Array,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
+    const { emit } = getCurrentInstance();
     // const router = useRouter();
     const headers = {
       "Content-Type": "application/json",
@@ -104,23 +126,6 @@ export default {
             if (res.data.replyList == undefined) {
               return;
             }
-            // 페이지 중복을 막기 위한 초기화
-            state.counting = 1;
-            state.replyMidNum = [];
-            state.midCount = [];
-            for (let index = 0; index < res.data.replyList.length; index++) {
-              const element = res.data.replyList[index].mid;
-              if (!state.replyMidNum.includes(element)) {
-                state.replyMidNum.push(element);
-              }
-              if (state.replyMidNum.indexOf(element) !== -1 && state.midCount) {
-                state.midCount.push(state.replyMidNum.indexOf(element) + 1);
-              } else if (state.replyMidNum.indexOf(element) == -1) {
-                state.midCount.push(state.counting);
-                state.counting + 1;
-              }
-            }
-            // state.commentList = [];
             state.commentList.push(...res.data.replyList);
             if (res.data.replyList.length % 5 == 0) {
               stateInfo.value = true;
@@ -149,23 +154,6 @@ export default {
             if (res.data.replyList == undefined) {
               return;
             }
-            // 페이지 중복을 막기 위한 초기화
-            state.counting = 1;
-            state.replyMidNum = [];
-            // state.midCount = [];
-            for (let index = 0; index < res.data.replyList.length; index++) {
-              const element = res.data.replyList[index].mid;
-              if (!state.replyMidNum.includes(element)) {
-                state.replyMidNum.push(element);
-              }
-              if (state.replyMidNum.indexOf(element) !== -1 && state.midCount) {
-                state.midCount.push(state.replyMidNum.indexOf(element) + 1);
-              } else if (state.replyMidNum.indexOf(element) == -1) {
-                state.midCount.push(state.counting);
-                state.counting + 1;
-              }
-            }
-            // state.commentList = [];
             state.commentList.push(...res.data.replyList);
             if (res.data.replyList.length % 5 == 0) {
               stateInfo.value = true;
@@ -185,6 +173,10 @@ export default {
       stateInfo.value = false;
       reply();
     }
+    // function replyEmit() {
+    //   state.commentList = [];
+    //   // console.log("replyreply");
+    // }
 
     const reply = async () => {
       try {
@@ -193,24 +185,13 @@ export default {
           reqPage: state.reqPage,
           mid: store.state.users.me.mid,
         };
+        // await replyEmit();
         await axios
           .post(`/decommi/api/diary/reply/`, body, { headers })
           .then((res) => {
-            state.pageTotalCount = res.data.pageTotalCount;
+            console.log("=======================");
             if (res.data.replyList == undefined) {
               return;
-            }
-            for (let index = 0; index < res.data.replyList.length; index++) {
-              const element = res.data.replyList[index].mid;
-              if (!state.replyMidNum.includes(element)) {
-                state.replyMidNum.push(element);
-              }
-              if (state.replyMidNum.indexOf(element) !== -1) {
-                state.midCount.push(state.replyMidNum.indexOf(element) + 1);
-              } else if (state.replyMidNum.indexOf(element) == -1) {
-                state.midCount.push(state.counting);
-                state.counting + 1;
-              }
             }
             state.commentList.push(...res.data.replyList);
             if (res.data.replyList.length % 5 == 0) {
@@ -219,6 +200,7 @@ export default {
               stateInfo.value = false;
             }
           });
+        emit("reply", state.commentList);
       } catch (err) {
         console.error(err);
       }
@@ -235,7 +217,7 @@ export default {
     const remove = async () => {
       // 댓글 삭제시 첫 댓글로 돌아감
       state.reqPage = 0;
-      replyMore();
+      replyreply();
     };
 
     const change = (comment) => {
@@ -243,13 +225,13 @@ export default {
     };
 
     const replyreply = async () => {
-      state.counting = 1;
-      state.replyMidNum = [];
-      state.midCount = [];
+      // state.counting = 1;
+      // state.replyMidNum = [];
+      // state.midCount = [];
       state.commentList = [];
 
       state.aaaa = state.reqPage;
-      state.reqPage = 0
+      state.reqPage = 0;
       await reply();
       await a();
 
@@ -258,7 +240,6 @@ export default {
           state.reqPage = index;
           replyMoreMore();
         }
-        
       }
     };
 

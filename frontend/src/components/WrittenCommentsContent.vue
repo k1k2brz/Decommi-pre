@@ -13,9 +13,13 @@
                 usermid: me.mid == comment.mid,
                 userpadding: comment.replyDepth !== 0,
               }"
-              >{{ `${comment.replyDepth !== 0 ? "ㄴ  " + "user" : "user"}`
-              }}{{ midCount }}</span
+              >{{
+                `${comment.replyDepth !== 0 ? "ㄴ  " + "user" : "user"}${
+                  me.mid == comment.mid ? "(나)" : ""
+                }`
+              }}</span
             >
+            <!-- {{ midCount }} -->
             <!-- ${ me.mid == comment.mid ? "(나)" : "" } -->
           </div>
           <span class="ml-3">{{ comment.replyContent }}</span>
@@ -94,25 +98,6 @@
         </div>
       </div>
     </div>
-    <!-- <div v-if="onComment2" class="grid3">
-        <div>ㄴ</div>
-        <span>User</span>
-        <span class="ml-3">{{comment.replyContent}}</span>
-        <div>
-          <span>{{ comment.regDate.split("-")[0] }}.</span>
-          <span>{{ comment.regDate.split("-")[1] }}.</span>
-          <span>{{ comment.regDate.split("-")[2].split("T")[0] }}</span>
-        </div>
-        <button
-          v-if="cmtChangeBtn2"
-          @click="changeComment2($event)"
-          class="text-btn"
-        >
-          수정
-        </button>
-        <button @click="onRemoveComment" class="ml-2 bi bi-x-lg"></button>
-      </div>
-    </div> -->
     <hr style="opacity: 10%" />
   </div>
 </template>
@@ -132,10 +117,10 @@ export default {
       type: Number,
       required: true,
     },
-    midCount: {
-      type: Number,
-      required: true,
-    },
+    // midCount: {
+    //   type: Number,
+    //   required: true,
+    // },
   },
 
   setup(props) {
@@ -330,7 +315,7 @@ export default {
   font-size: 13px
 
 .userWidth
-  min-width: 50px
+  min-width: 60px
 
 .grid3
     display: grid

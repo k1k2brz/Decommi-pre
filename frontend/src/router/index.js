@@ -5,6 +5,7 @@ import Login from "../pages/LoginPage.vue";
 import Signup from "../pages/SignUp.vue";
 import Idfind from "../pages/IdFind.vue";
 import Pwfind from "../pages/PwFind.vue";
+import PwChange from "../pages/PwChange.vue";
 import Mainpage from "../pages/mainpage/MainPage.vue";
 import Alarmmain from "../pages/alarm/AlarmMain.vue";
 import Useredit from "../pages/users/UserEdit.vue";
@@ -82,6 +83,14 @@ const router = createRouter({
       path: "/pwfind",
       name: "Pwfind",
       component: Pwfind,
+      meta: {
+        requiresGuest: true,
+      },
+    },
+    {
+      path: "/pwchange",
+      name: "PwChange",
+      component: PwChange,
       meta: {
         requiresGuest: true,
       },

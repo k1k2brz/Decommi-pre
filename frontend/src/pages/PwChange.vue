@@ -11,43 +11,28 @@
           </div>
           <div class="mb-3">
             <input
-              v-model="info.id"
-              ref="id"
-              type="email"
+              v-model="info.pw"
+              ref="pw"
+              type="password"
               class="form-control"
-              placeholder="Email을 입력해주세요."
-              aria-describedby="emailHelp"
+              placeholder="변경할 비밀번호를 입력해주세요."
             />
-            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
-            <span v-if="emailError" class="font14 mt-1 ml-2">
-              이메일이 올바르지 않습니다.
+            <span v-if="pwError" class="font14 mt-1 ml-2">
+              비밀번호가 올바르지 않습니다.
             </span>
-            <div class="input-group idsection mt-2">
-              <select
-                class="form-select"
-                aria-label="Default select example"
-                v-model="info.qtype"
-                name="select"
-                id="select"
-              >
-                <option value="q1">인상 깊게 읽은 책 이름은?</option>
-                <option value="q2">나의 보물 1호는?</option>
-                <option value="q3">기억에 남는 추억의 장소는?</option>
-              </select>
-            </div>
             <input
-              v-model="info.answer"
-              ref="answer"
-              type="type"
+              v-model="info.pwre"
+              ref="pwre"
+              type="password"
               class="form-control mt-2"
-              placeholder="답변을 입력해주세요."
+              placeholder="변경할 비밀번호를 다시 입력해주세요."
             />
-            <span v-if="answerError" class="font14 mt-1 ml-2">
-              답변이 올바르지 않습니다.
+            <span v-if="pwreError" class="font14 mt-1 ml-2">
+              비밀번호가 일치하지 않습니다.
             </span>
           </div>
           <div class="d-flex justify-content-center align-items-center mb-3">
-            <button class="btn-regular-full">비밀번호 찾기</button>
+            <button class="btn-regular-full">비밀번호 변경</button>
           </div>
 
           <div class="d-flex justify-content-center findPass mb-2">
@@ -85,69 +70,55 @@ export default {
     // const store = useStore();
     const router = useRouter();
     const route = useRoute();
-    const emailError = ref(false);
-    const answerError = ref(false);
-    const id = ref("");
-    const answer = ref("");
+    const pwError = ref(false);
+    const pwreError = ref(false);
+    const pw = ref("");
+    const pwre = ref("");
     let info = reactive({
-      id: "",
-      answer: "",
-      qtype: "",
-      q1: "",
-      q2: "",
-      q3: "",
+      pw: "",
+      pwre: "",
     });
 
     onMounted(() => {
-      id.value.focus();
+      pw.value.focus();
     });
 
     const onSubmitForm = async () => {
       //trim으로 잘라서 하나도 없으면
-      if (info.id.trim().length == 0) {
-        emailError.value = true;
-        id.value.focus();
+      if (info.pw.trim().length == 0) {
+        pwError.value = true;
+        pw.value.focus();
         return;
-      } else if (info.answer.trim().length == 0) {
-        answerError.value = true;
-        answer.value.focus();
+      } else if (info.pwre.trim().length == 0 || info.pw !== info.pwre) {
+        pwreError.value = true;
+        pwre.value.focus();
         return;
-      }
-      if (info.qtype === "q1") {
-        info.q1 = info.answer;
-      } else if (info.qtype === "q2") {
-        info.q2 = info.answer;
-      } else if (info.qtype === "q3") {
-        info.q3 = info.answer;
       }
       try {
-        const url = "/decommi/member/findpw";
+        const localMid = localStorage.getItem("mid");
+        const url = "/decommi/member/findpw2";
         const headers = {
           "Content-Type": "application/json",
         };
         const body = {
-          email: info.id,
-          q1: info.q1,
-          q2: info.q2,
-          q3: info.q3,
+          mid: localMid,
+          changePw: info.pwre,
         };
         console.log(body);
         await axios
           .post(url, body, { headers })
           .then((res) => {
-            if (res.data == info.answer) {
-              // alert("회원님의 비밀번호는 < " + res.data + " > 입니다.");
-              answerError.value = false;
-              info.id = "";
-              info.answer = "";
-              id.value.focus();
-              localStorage.setItem("mid", res.data);
-              router.push({
-                name: "PwChange",
-              });
+            if (info.pw == info.pwre) {
+              alert("비밀번호가 변경되었습니다. 다시 로그인 해주세요.");
+              pwreError.value = false;
+              info.pw = "";
+              info.pwre = "";
+              pw.value.focus();
+              localStorage.removeItem("mid");
+              router.push("/");
             } else if (res.data == "") {
-              answerError.value = true;
-              answer.value.focus();
+              pwreError.value = true;
+              pwre.value.focus();
               return;
             }
           })
@@ -161,14 +132,14 @@ export default {
     };
 
     return {
-      emailError,
-      answerError,
+      pwError,
+      pwreError,
       info,
       onSubmitForm,
       router,
       route,
-      id,
-      answer,
+      pw,
+      pwre,
     };
   },
   middleware: "anonymous",

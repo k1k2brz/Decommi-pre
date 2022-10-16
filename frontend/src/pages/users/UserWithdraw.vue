@@ -33,7 +33,7 @@
               >
               <input
                 v-model="pass"
-                type="text"
+                type="password"
                 class="form-control"
                 id="recipient-name"
                 placeholder="비밀번호를 입력해주세요."
@@ -121,7 +121,7 @@ export default {
                   "/decommi/member/deleteMember",
                   {
                     mid: store.state.users.me.mid,
-                    writer: store.state.users.me.id,
+                    email: store.state.users.me.email,
                   },
                   { headers }
                 )

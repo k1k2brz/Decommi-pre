@@ -3,19 +3,11 @@
     <div class="mb-4">
       <span class="home-title">홈</span>
     </div>
-    <!-- <div> -->
-    <!-- <span>날짜순</span>
-            <div class="boundaryLine"></div>
-            <span>북마크순</span>
-            <div class="boundaryLine"></div>
-            <span>하트순</span> -->
-    <!-- </div> -->
     <div class="half d-flex justify-content-between">
       <div class="card-line w-70">
         <div class="card mb-4">
           <div class="form-floating">
             <div class="card-body">
-              <!-- 1회만 클릭하고 다시 여기로 안돌아오면 해결 -->
               <PostWrite @Completed="Completed($event)" />
             </div>
           </div>
@@ -40,7 +32,7 @@
             <button @click="btnSearch" class="btn-regular">입력</button>
           </div>
           <!-- <HashFilter /> -->
-          <RecommendTag  @onClickRecommendTag="onClickRecommendTag" />
+          <RecommendTag @onClickRecommendTag="onClickRecommendTag" />
         </div>
       </div>
     </div>
@@ -48,7 +40,6 @@
 </template>
 
 <script>
-// import HashFilter from "@/components/HashFilter.vue";
 import RecommendTag from "@/components/RecommendTag.vue";
 import WrittenPosts from "@/components/WrittenPosts.vue";
 import PostWrite from "@/components/PostWrite.vue";
@@ -57,14 +48,8 @@ import { useStore } from "vuex";
 import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import axios from "@/axios";
-// import axios from "@/axios";
 
 export default {
-  // 화면 실행전 미리 데이터를 준비하는 것
-  // observer intersection
-  // fetch({ store }) {
-  //   store.dispatch("posts/loadPosts");
-  // },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -91,6 +76,8 @@ export default {
       }
     }
     homeRouter();
+
+    // 시작하자마자 게시글을 불러온다
     onMounted(() => {
       getMorePostList();
     });
@@ -99,6 +86,7 @@ export default {
       localStorage.removeItem("Content");
     }
 
+    // 게시글 안에 있는 태그 클릭시 태그검색
     const onClickTag = async (event) => {
       try {
         const url = "/decommi/diary/list/bytagname";
@@ -109,21 +97,18 @@ export default {
         };
         const body = {
           tagName: event,
-          // page: 1,
-          // size: 5,
         };
         await axios
           .post(url, body, { headers })
           .then((res) => {
             state.mainPosts = [];
-            
+
             if (state.body == 0) {
               state.mainPosts = res.data;
             } else {
-              // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
               for (let i = 0; i < res.data.length; i++) {
                 state.mainPosts.push(res.data[i]);
-                res.data[i]
+                res.data[i];
               }
             }
             if (res.data.length % 5 !== 0) {
@@ -156,6 +141,7 @@ export default {
         await axios
           .post(url, body, { headers })
           .then((res) => {
+            // console.log(res.data);
             state.mainPosts = [];
             if (state.body == 0) {
               state.mainPosts = res.data;
@@ -163,9 +149,11 @@ export default {
               // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
               for (let i = 0; i < res.data.length; i++) {
                 state.mainPosts.push(res.data[i]);
-                console.log(state.mainPosts);
+                // console.log(state.mainPosts);
               }
             }
+            console.log(state.mainPosts);
+            console.log(res.data);
             if (res.data.length % 5 !== 0) {
               state.stopScrolling = true;
             } else if (res.data.length % 5 == 0) {
@@ -193,7 +181,7 @@ export default {
         page: state.body,
       };
       await axios.post("/decommi/diary/list", body, { headers }).then((res) => {
-        console.log(res.data)
+        // console.log(res.data);
         if (state.body == 0) {
           state.mainPosts = res.data;
         } else {
@@ -224,7 +212,7 @@ export default {
     function windowSize() {
       if (
         window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 800
+        document.body.offsetHeight - 600
       ) {
         getMorePost();
       }
@@ -241,54 +229,6 @@ export default {
         searchInput.value.focus();
         return;
       }
-      // let keyword2 = localStorage.getItem("tagList");
-      // console.log(keyword2);
-      // let keyword = localStorage.getItem("tagList");
-      // if (keyword !== null && keyword !== "") {
-      //   let kwd = keyword.split(",");
-      //   // store.dispatch("posts/setSearch", {
-      //   //   type: "s",
-      //   //   keyword: state.searchInput,
-      //   //   tagList: kwd,
-      //   //   writer: store.state.users.me.id,
-      //   //   Authorization: store.state.users.me.token,
-      //   //   mid: store.state.users.me.mid,
-      //   // });
-      //   try {
-      //     const url = "/decommi/diary/list";
-      //     const headers = {
-      //       "Content-Type": "application/json",
-      //       Authorization: store.state.users.me.token,
-      //       mid: store.state.users.me.mid,
-      //     };
-      //     const body = {
-      //       type: "s",
-      //       keyword: state.searchInput,
-      //       tagList: kwd,
-      //       writer: store.state.users.me.id,
-      //     };
-      //     console.log(body);
-      //     state.mainPosts = [];
-      //     await axios.post(url, body, { headers }).then((res) => {
-      //       console.log(res.data);
-      //       if (state.body == 0) {
-      //         state.mainPosts = res.data;
-      //       } else {
-      //         // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
-      //         for (let i = 0; i < res.data.length; i++) {
-      //           state.mainPosts.push(res.data[i]);
-      //         }
-      //       }
-      //       if (res.data.length % 5 !== 0) {
-      //         state.stopScrolling = true;
-      //       } else if (res.data.length % 5 == 0) {
-      //         state.stopScrolling = false;
-      //       }
-      //     });
-      //   } catch (err) {
-      //     console.error(err);
-      //   }
-      // } else if (!keyword || keyword == "") {
       try {
         const url = "/decommi/diary/list";
         const headers = {
@@ -298,7 +238,6 @@ export default {
         };
         const body = {
           keyword: state.searchInput,
-          // type: "s",
           writer: store.state.users.me.id,
         };
         console.log(body);
@@ -307,7 +246,6 @@ export default {
           if (state.body == 0) {
             state.mainPosts = res.data;
           } else {
-            // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
             for (let i = 0; i < res.data.length; i++) {
               state.mainPosts.push(res.data[i]);
             }
@@ -322,9 +260,6 @@ export default {
       } catch (err) {
         console.error(err);
       }
-      // }
-      // let tmp = localStorage.getItem("tagList").split(",");
-      // tmp.push(state.searchInput);
       state.searchInput == "";
       searchInput.value.focus();
     };
@@ -342,7 +277,6 @@ export default {
         if (state.body == 0) {
           state.mainPosts = res.data;
         } else {
-          // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
           for (let i = 0; i < res.data.length; i++) {
             state.mainPosts.push(res.data[i]);
           }

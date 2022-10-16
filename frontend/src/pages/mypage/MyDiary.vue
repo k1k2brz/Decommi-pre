@@ -3,19 +3,11 @@
     <div class="mb-4">
       <span class="home-title">내 다이어리</span>
     </div>
-    <!-- <div> -->
-    <!-- <span>날짜순</span>
-            <div class="boundaryLine"></div>
-            <span>북마크순</span>
-            <div class="boundaryLine"></div>
-            <span>하트순</span> -->
-    <!-- </div> -->
     <div class="half d-flex justify-content-between">
       <div class="card-line w-70">
         <div class="card mb-4">
           <div class="form-floating">
             <div class="card-body">
-              <!-- 1회만 클릭하고 다시 여기로 안돌아오면 해결 -->
               <PostWrite @Completed="Completed($event)" />
             </div>
           </div>
@@ -24,6 +16,7 @@
           v-for="(post, index) in state.mainPosts"
           :key="post + index"
           :post="post"
+          @onClickTag="onClickTag"
         />
       </div>
       <div class="w-30 search-tag-line d-flex justify-content-between ml-3">
@@ -39,7 +32,7 @@
             <button @click="btnSearch" class="btn-regular">입력</button>
           </div>
           <!-- <HashFilter /> -->
-          <RecommendTag />
+          <RecommendTag @onClickRecommendTag="onClickRecommendTag" />
         </div>
       </div>
     </div>
@@ -47,7 +40,6 @@
 </template>
 
 <script>
-// import HashFilter from "@/components/HashFilter.vue";
 import RecommendTag from "@/components/RecommendTag.vue";
 import WrittenPosts from "@/components/WrittenPosts.vue";
 import PostWrite from "@/components/PostWrite.vue";
@@ -56,14 +48,8 @@ import { useStore } from "vuex";
 import { reactive, ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import axios from "@/axios";
-// import axios from "@/axios";
 
 export default {
-  // 화면 실행전 미리 데이터를 준비하는 것
-  // observer intersection
-  // fetch({ store }) {
-  //   store.dispatch("posts/loadPosts");
-  // },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -97,6 +83,89 @@ export default {
     if (localStorage.getItem("Content") !== null) {
       localStorage.removeItem("Content");
     }
+
+    const onClickTag = async (event) => {
+      try {
+        const url = "/decommi/diary/list/bytagname";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          tagName: event,
+        };
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            state.mainPosts = [];
+
+            if (state.body == 0) {
+              state.mainPosts = res.data;
+            } else {
+              // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
+              for (let i = 0; i < res.data.length; i++) {
+                state.mainPosts.push(res.data[i]);
+                res.data[i];
+              }
+            }
+            if (res.data.length % 5 !== 0) {
+              state.stopScrolling = true;
+            } else if (res.data.length % 5 == 0) {
+              state.stopScrolling = false;
+            }
+            router.push(`/mydiary?tagsearch=${event}`);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const onClickRecommendTag = async (event) => {
+      try {
+        const url = "/decommi/diary/list/bytagname";
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: store.state.users.me.token,
+          mid: store.state.users.me.mid,
+        };
+        const body = {
+          tagName: event,
+        };
+        console.log(body);
+        await axios
+          .post(url, body, { headers })
+          .then((res) => {
+            // console.log(res.data);
+            state.mainPosts = [];
+            if (state.body == 0) {
+              state.mainPosts = res.data;
+            } else {
+              // '5' 라는 숫자 전부 백엔드 페이지 사이즈에 맞춰 바꿀 것
+              for (let i = 0; i < res.data.length; i++) {
+                state.mainPosts.push(res.data[i]);
+                // console.log(state.mainPosts);
+              }
+            }
+            console.log(state.mainPosts);
+            console.log(res.data);
+            if (res.data.length % 5 !== 0) {
+              state.stopScrolling = true;
+            } else if (res.data.length % 5 == 0) {
+              state.stopScrolling = false;
+            }
+            router.push(`/mydiary?tagsearch=?${event}`);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
     // 게시글 불러오기
     const getMorePostList = async () => {
@@ -143,7 +212,7 @@ export default {
     function windowSize() {
       if (
         window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 800
+        document.body.offsetHeight - 500
       ) {
         getMorePost();
       }
@@ -208,7 +277,7 @@ export default {
       //   }
       // } else if (!keyword || keyword == "") {
       try {
-        const url = "/decommi/mydiary/list";
+        const url = "/decommi/diary/list";
         const headers = {
           "Content-Type": "application/json",
           Authorization: store.state.users.me.token,
@@ -284,6 +353,8 @@ export default {
       searchList,
       btnSearch,
       searchInput,
+      onClickTag,
+      onClickRecommendTag,
     };
   },
 
