@@ -3,6 +3,6 @@
 import axios from "axios";
 
 export default axios.create({
-  // baseURL: "http://43.201.93.101:8080",
-  baseURL: "http://localhost:8080/",
+  baseURL: "http://43.201.93.101:8080",
+  // baseURL: "http://localhost:8080/",
 });
