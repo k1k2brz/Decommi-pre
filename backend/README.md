@@ -1,105 +1,58 @@
 # DeCommi
-#Develop 브랜치 공유사항
+![image](https://user-images.githubusercontent.com/102857959/195088039-81779956-e593-4779-9014-93921004707e.png)
+<br/>
+[Decommi :: 바로가기](http://43.201.93.101:8080/)
+<br/>
+[Decommi Team :: Notion](https://www.notion.so/decommi/Decommi-54b1b7830f8545199a9f7c912e01f4bb)
+<br/>
+<br/>
 
-#0819- 
-작성자 : 김형준
-<변경사항> 
+### 기획의도
 
-1.DecommiApplication.java 클래스 변경 
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class) 를 추가
-사용자인증기능이 구현이 되지 않아서 더미데이터를 넣는것에 문제가 생기는것 같습니다. 그래서 해당 dependency를 disable 하는 코드를 추가했습니다.
+코로나 시국 이후 우리의 일상생활에 SNS가 가지는 비중이 더욱 높아졌다고 생각합니다. 
 
-2.몇몇 entities 주석
-아직 테이블끼리의 관계가 불명확해 대부분의 테이블을 주석처리하고 기본적인 테이블만 살려뒀습니다. 조금씩 데이터를 집어넣으면서 구현하겠습니다.
+개인의 사생활이 모두의 사생활로 바뀌면서 예상치 못했던 부작용들이 심심치 않게 일어나고 있습니다.
 
-# DeCommi
-#Develop 브랜치 공유사항
+예를들어 기존의 SNS서비스를 이용하다보면 주변인들의 특별한 순간들이 사용자의 입장에선 평범한 일상으로 잘못 받아들여져 상대적 박탈감을 야기하기도 합니다.
 
-#0830- 
-작성자 : 이준호
-<변경사항> 
-댓글 기능에 관련된 기능을 Board와 club 폴더 등에서 참조하여
-Decommi Reply로 변경 
+이와 같은 일들이 지속되면서 SNS를 이용하지 않는것이 스트레스를 덜받는 방법이라고 말하는 사람들 늘어나고 있습니다.
 
-DTO/ReplyDTO
-Entity/Reply
-Service/ReplyService
-Controller/ReplyController
+이 문제점에서 착안하여, 익명의 이용자들끼리 피로감을 느끼지 않고 소통 할 수 있는 SNS를 기획했습니다.
 
-추가 및 수정
-저희 파일 구조와 맞지않아서 발생하는 문제가 있으면 말씀부탁드립니다 이후 추가 수정하겠습니다
+<br/><br/>
+### 개발 기간
+![개발기간](https://user-images.githubusercontent.com/102857959/195088171-4f969b59-6033-40aa-834d-04b684991678.jpg)
+<br/>
 
-22-10-03 23:00
-어드민 추가 부분
+### 기능 요약
 
-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+**폐쇄형 SNS 서비스**
 
-ㅇAdmin
--Admin 폴더 추가   (ㅇ)
+- 기본적인 게시글 작성에 대한 CRUD
 
-ㅡAdmin/contollerㅡ
--AdminController.java 파일 추가   (ㅇ)
+- 해당 게시글에 대한 좋아요, 북마크 , 신고, 댓글기능
 
--ㅇ기능 추가{
-- 다이어리 리스트, 삭제   (ㅇ)	
-- // {"/diarymanagement" (리스트), "/diarymanagement/delete" (삭제)}
-- 
-- 태그 리스트, 수정, 삭제   (ㅇ)	
-- // {"/tagmanagement (리스트)", "/tagmanagement/modify" (수정),"/tagmanagement/delete" (삭제)}
-- 
-- 회원 리스트, 수정, 삭제   (ㅇ)	
-- // {"/usermanagement"(리스트) , "/usermanagement/modify" (수정) , "/usermanagement/delete" (삭제)}
-- 
-- 신고 리스트, 삭제   (ㅇ)	// {"/reportmanagement"(리스트) , "/reportmanagement/delete" (삭제)}
-}
+- 태그 기능으로 특정 태그가 포함된 게시글들만 볼 수 있는 편의성을 제공합니다.
 
-Admin/repositoryㅡ
-- AdminMemRepository.java 파일추가			(ㅇ)
-- ㅇ어드민 확인 쿼리문 추가   (ㅇ)	//Admincheck
+- 회원별 선호 태그리스트 기능을 추가하여 선호하는 태그들이 포함되어있는 게시글들에 접근이 용이하게 하였습니다.
+<br/><br/>
+### 개발 기술
 
-AdminReportRepository.java 파일 추가		(ㅇ)
-- ㅇ쿼리문 추가 예정   (~)
-- AdminRepository.java 파일추가   (ㅇ)
-- ㅇ회원 리스트 쿼리문 추가   (ㅇ)	//getDiaryByDinoAndId
+| Frontend | Vue.js | SASS | Bootstrap |
+| --- | --- | --- | --- |
+| Backend | SpringBoot | MariaDB |  QueryDSL |
+| 배포 | AWS lightsail | centOS7 | Ngnix |
+| 협업 | Discord | GitHub |  |
 
-Admin/dtoㅡ
-- PageRequestDTO 파일 추가   (ㅇ)
-- PageResultDTO 파일 추가   (ㅇ)
+### 기술 상세 설명 && 개발 환경
+[Decommi Team :: Notion](https://www.notion.so/decommi/Decommi-54b1b7830f8545199a9f7c912e01f4bb)
+위 링크에 상세 설명이 되어 있습니다.
 
-Admin/serviceㅡ
-- AdminService.java 파일 추가   (ㅇ)
-- ㅇ기능 추가{
-- 회원 관리   (ㅇ)	//getUserList(리스트), UserModifier(수정), UserDeleter(삭제)
-- 태그 관리   (ㅇ)	//getTags(리스트), tagModify(수정), tagDelete(삭제)
-- 다이어리 관리   (ㅇ)	//getDiaryList(리스트), diaryDelete(삭제)
-- 신고 관리   (ㅇ)	//getReportList(리스트), reportDelete(삭제)
-- 어드민 확인   (ㅇ)	//adminChecker(체크)
-}
+### 멤버구성
 
-
-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-
--vo 파일 이름들 대문자로 수정
-
-- TagRepository.java 수정
-- @Query("select t.TagName from Tag t where diary_dino=:dino")
-Optional<List<String>> OptionalfindByDiarys(Long dino);
-//추가.
-
-ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-  
-22-10-10 23:00
-  
-어드민 기능 수정 부분
-  
-ㅇAdminController.java, AdminServiceImpl.java 수정
-  
-ㅇ회원 정보 관리 탭(리스트형식 {회원번호, 이메일, 아이디, 가입일, 기능(모달창을 이용한 상세 수정, 삭제 기능)})
-- 회원 리스트 출력, 회원 리스트 검색, 회원 정보확인, 정보 수정, 삭제 기능 구현  (ㅇ)
-- 변수 이름(member)으로 인한 회원 정보 수정 , 삭제부분의 문제를 변수이름(mmbr)로 변경 (ㅇ)
-- JPAdelete 와 JPAupdate 문법 수정 (ㅇ)
-
-ㅇ신고 관리 탭(리스트형식 {신고 번호, 작성자, 신고 제목, 신고 내용, 다이어리 번호, 신고 당한 글, 신고 취소, 글 삭제})
-- 신고당한 다이어리 정보를 리스트로 출력, 산고 취소, 다이어리 삭제, 다이어리로 이동 구현 (ㅇ) 
-- 수정 내용은 회원 정보 관리와 동일함
-
+| 이름 | 역할 | Github | 이메일 |
+| --- | --- | --- | --- |
+| 김형준 | 팀장,백엔드 | https://github.com/PorkbellyBigfan | porkbellyweb@gmail.com |
+| 이태일 | 프론트엔드 | https://github.com/k1k2brz | refreshandreset@gmail.com |
+| 박상민 | 백엔드 | https://github.com/psm418 | tkdalsdk11@gmail.com |
+| 이준호 | 백엔드 | https://github.com/ZOONo-lee | zoonogig@gmail.com |
