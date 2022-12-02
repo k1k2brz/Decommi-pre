@@ -1,4 +1,5 @@
-HCSS - https://github.com/k1k2brz/HCSS 에서 작업하다가 여기로 옮겼습니다.
+Backend - https://github.com/PorkbellyBigfan/DeCommi (백엔드는 여기서 작업했습니다.) 
+Frontend - https://github.com/k1k2brz/HCSS (여기서 작업하다가 옮겼습니다.)
 
 # DeCommi
 ![image](https://user-images.githubusercontent.com/102857959/195088039-81779956-e593-4779-9014-93921004707e.png)
